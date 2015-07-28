@@ -1764,6 +1764,12 @@ function PostMember() {
 	if (!isset($_POST['ID'])) return;
 
 	if (!$zbp->CheckRights('MemberAll')) {
+		if ($_POST['ID'] != $zbp->user->ID) {
+			$zbp->ShowError(6, __FILE__, __LINE__);
+		}
+	}
+
+	if (!$zbp->CheckRights('MemberAll')) {
 		unset($_POST['Level']);
 		unset($_POST['Name']);
 		unset($_POST['Status']);

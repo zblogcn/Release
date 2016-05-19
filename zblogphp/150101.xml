@@ -11,7 +11,7 @@
 	<file name='zb_system\function\lib\metas.php' md5='DDFB631F62A86538B9BB0125E2AE3BE8' crc32='70095B40'/>
 	<file name='zb_system\function\lib\template.php' md5='20FD9F69D5A4F5F0D310F792E78A139F' crc32='E564CC76'/>
 	<file name='zb_system\function\lib\network.php' md5='F88A4CD04A40520E196FEF7EB1D1B3AD' crc32='7AE4F8E4'/>
-	<file name='zb_system\function\lib\zblogphp.php' md5='113CE905B460529B2FC75666C12F283A' crc32='15563934'/>
+	<file name='zb_system\function\lib\zblogphp.php' md5='C50658DA04D2756D17650B3E9B0718CC' crc32='641C24C6'/>
 	<file name='feed.php' md5='7DB0320ED8A1578C9ED9E525A34AD0FE' crc32='D1874F68'/>
 	<file name='index.php' md5='A3046D99903E6F76C64B37E9F51CA5D5' crc32='5BD4D531'/>
 	<file name='search.php' md5='32AA29B4A4EC2C870FD9A7E1CA75E31F' crc32='BB61B84B'/>
@@ -69,7 +69,7 @@
 	<file name='zb_system\function\lib\networkfile_get_contents.php' md5='FFF206AE8FDBC3FBD579BB6A37D3B781' crc32='BCDE57F9'/>
 	<file name='zb_system\function\lib\networkfsockopen.php' md5='91ADD47B6A02CA963F7A833276E94A69' crc32='D731173F'/>
 	<file name='zb_system\function\lib\pagebar.php' md5='95BDDD82D7F0798424CC95C9A06F8ABB' crc32='8FF43855'/>
-	<file name='zb_system\function\lib\post.php' md5='6B988C3F9C962FB35618687E1B51C185' crc32='D8F1FF2A'/>
+	<file name='zb_system\function\lib\post.php' md5='91C0DDFFFD54912C308616FC499A497D' crc32='B698AF18'/>
 	<file name='zb_system\function\lib\rss2.php' md5='1F6C70F3B020CC06A96FA4D094C2411A' crc32='6A06B9C4'/>
 	<file name='zb_system\function\lib\tag.php' md5='25B5AD3CD8B3ADA5CA0107C9990C68D3' crc32='20D38D84'/>
 	<file name='zb_system\function\lib\upload.php' md5='1B34E530F4EF9C7EB4A5303B38752BB4' crc32='C5ED9F5D'/>

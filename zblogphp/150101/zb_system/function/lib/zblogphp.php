@@ -2369,10 +2369,12 @@ class ZBlogPHP {
 	 * @return bool
 	 */
 	function VerifyCmtKey($id,$key){
-		$article = new Post();
-		$article->LoadInfoByID($id);
-		$nowkey = md5($this->guid . $id . $article->CommNums . date('Y-m-d') . $_SERVER["REMOTE_ADDR"] . $_SERVER["HTTP_USER_AGENT"]);
-		$nowkey2 = md5($this->guid . $id . ((int)$article->CommNums-1) . date('Y-m-d') . $_SERVER["REMOTE_ADDR"] . $_SERVER["HTTP_USER_AGENT"]);
+		//$article = new Post();
+		//$article->LoadInfoByID($id);
+		//$nowkey = md5($this->guid . $id . $article->CommNums . date('Y-m-d') . $_SERVER["REMOTE_ADDR"] . $_SERVER["HTTP_USER_AGENT"]);
+		//$nowkey2 = md5($this->guid . $id . ((int)$article->CommNums-1) . date('Y-m-d') . $_SERVER["REMOTE_ADDR"] . $_SERVER["HTTP_USER_AGENT"]);
+		$nowkey=md5($this->guid . $id . date('Y-m-d'));
+		$nowkey2=md5($this->guid . $id . date('Y-m-d',time()-(3600*24)));
 		if ($key == $nowkey || $key == $nowkey2) {
 			return true;
 		}

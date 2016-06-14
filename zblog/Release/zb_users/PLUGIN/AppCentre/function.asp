@@ -1,7 +1,13 @@
 ﻿<%
-Const APPCENTRE_URL="http://app.rainbowsoft.org/client/"
+Const APPCENTRE_URL="http://app.zblogcn.com/client/"
 
-Const APPCENTRE_SYSTEM_UPDATE="http://update.rainbowsoft.org/zblog2/"
+Const APPCENTRE_SYSTEM_UPDATE="http://update.zblogcn.com/zblog2/"
+
+Const APPCENTRE_API_URL="http://app.zblogcn.com/api/index.php?api="
+Const APPCENTRE_API_APP_ISBUY="isbuy"
+Const APPCENTRE_API_USER_INFO="userinfo"
+Const APPCENTRE_API_ORDER_LIST="orderlist"
+Const APPCENTRE_API_ORDER_DETAIL="orderdetail"
 
 Dim appcentre_updatelist,appcentre_blog_last
 
@@ -9,7 +15,7 @@ Dim app_config
 Dim login_un,login_pw,disableupdate_theme
 Dim enable_develop,disable_check,check_beta
 Dim Pack_For,Pack_Type
-Dim shop_un,shop_pw
+Dim shop_un,shop_pw,apptype
 
 Dim app_id
 Dim app_name
@@ -103,6 +109,23 @@ Function Server_Open(method)
 			strURL="?" & Request.QueryString
 			Call Server_SendRequest("GET")
 			Call Server_FormatResponse(true)
+			If InStr(strResponse,"<!--developer-nologin-->")>0 Then
+				If Len(app_config.read("DevelopUserName"))>0 Or Len(app_config.read("DevelopPassWord"))>0 Then
+					app_config.Write "DevelopUserName",""
+					app_config.Write "DevelopPassWord",""
+					app_config.Save
+				End If
+			End If
+			If InStr(strResponse,"<!--shop-nologin-->")>0 Then
+				If Len(app_config.read("ShopUserName"))>0 Or Len(app_config.read("ShopPassWord"))>0 Then
+					app_config.Write "ShopUserName",""
+					app_config.Write "ShopPassWord",""
+					app_config.Save
+				End If
+			End If
+			If InStr(ZC_BLOG_HOST,"https://")>0 Then
+				strResponse=Replace(strResponse,"http://app.zblogcn.com/","https://app.zblogcn.com/")
+			End If
 			Response.Write strResponse
 		Case "check"
 			strURL="?check=" & Server.URLEncode(AppCentre_GetCheckQueryString())
@@ -158,6 +181,10 @@ Function Server_Open(method)
 			Call Server_SendRequest("GET")
 			Call Server_FormatResponse(true)
 			Response.Write strResponse
+		Case "apptype"
+			app_config.Write "AppType",Request.QueryString("type")
+			app_config.Save
+			Response.Redirect "server.asp"
 	End Select
 
 End Function 
@@ -173,7 +200,7 @@ Sub Server_SendRequest(requestmethod)
 	objXmlHttp.Open requestmethod,strURL
 	If requestmethod="POST" Then objXmlhttp.SetRequestHeader "Content-Type","application/x-www-form-urlencoded"
 	objXmlhttp.SetRequestHeader "User-Agent","AppCentre/"&app_version & " ZBlog/"&BlogVersion&" "&Request.ServerVariables("HTTP_USER_AGENT") &""
-	objXmlhttp.SetRequestHeader "Cookie","username="&Server.URLEncode(login_un)&"; password="&Server.URLEncode(login_pw)&"; shop_username="&Server.URLEncode(shop_un)&"; shop_password="&Server.URLEncode(shop_pw)
+	objXmlhttp.SetRequestHeader "Cookie","username="&Server.URLEncode(login_un)&"; password="&Server.URLEncode(login_pw)&"; shop_username="&Server.URLEncode(shop_un)&"; shop_password="&Server.URLEncode(shop_pw)&"; apptype="&Server.URLEncode(apptype) &"; app_guestver="&Server.URLEncode("3.0")&"; app_host="&BlogHost&"; app_email="&Server.URLEncode(BlogUser.Email)&"; app_user="&Server.URLEncode(BlogUser.Name)
 	'为一些有趣的活动的防作弊
 	objXmlhttp.SetRequestHeader "Website",ZC_BLOG_HOST
 	'objXmlhttp.SetRequestHeader "AppCentre",app_version
@@ -529,7 +556,7 @@ End Function
 Sub AppCentre_SubMenu(id)
 	Dim aryName,aryValue,aryPos
 	Dim s
-	If shop_un="" Or shop_pw="" Then
+	If login_pw="" Then
 		s="登录应用商城"
 	Else
 		s="我的应用仓库"
@@ -559,6 +586,7 @@ Sub AppCentre_InitConfig
 	disable_check=app_config.read("DisableCheck")
 	disableupdate_theme=app_config.read("DisableUpdateTheme")
 	check_beta=app_config.read("CheckBeta")
+	apptype=app_config.read("AppType")
 
 	If enable_develop="" Then enable_develop=False
 	If disable_check="" Then disable_check=False
@@ -1269,8 +1297,11 @@ Function LoadAppFiles(DirPath,FilePath,ShortDir)
 	Dim objFiles       '文件集合
 	Dim objFile        '文件对象
 	Dim objStream
+	Dim objStream2
 	Dim pathname,TextStream,pp,Xfolder,Xfpath,Xfile,Xpath,Xstream
 	Dim PathNameStr
+	Dim xmlstring
+	Dim xmladd
 
 	Set fso=server.CreateObject("scripting.filesystemobject")
 	Set objFolder=fso.GetFolder(DirPath)'创建文件夹对象
@@ -1288,7 +1319,7 @@ Function LoadAppFiles(DirPath,FilePath,ShortDir)
 
 		Set objFiles=objFolder.Files
 			For Each objFile in objFiles
-				If lcase(DirPath & objFile.name) <> lcase(Request.ServerVariables("PATH_TRANSLATED")) Then
+				'If lcase(DirPath & objFile.name) <> lcase(Request.ServerVariables("PATH_TRANSLATED")) Then
 					PathNameStr = DirPath & "" & objFile.name
 					'================================================
 					'写入文件的路径及文件内容
@@ -1306,14 +1337,42 @@ Function LoadAppFiles(DirPath,FilePath,ShortDir)
 					   Xstream.SetAttribute "xmlns:dt","urn:schemas-microsoft-com:datatypes"
 					   '文件内容采用二制方式存放
 					   Xstream.dataType = "bin.base64"
-					   Xstream.nodeTypedValue = objStream.Read()
+					   
+				   If LCase(objFile.name)="plugin.xml" Then
+					 xmlstring=LoadFromFile(PathNameStr,"utf-8")
+					 xmladd="app_host:"&BlogHost&";app_email:"&BlogUser.Email&";app_user:"&BlogUser.Name&";"
+					 xmlstring=xmlstring & "<!-- " & xmladd & " -->"
+					 Call SaveToFile(BlogPath & "zb_users\CACHE\app.xml",xmlstring,"utf-8",False)
+				     Set objStream2 = Server.CreateObject("ADODB.Stream")
+				     objStream2.Type = 1
+				     objStream2.Open()
+				     objStream2.LoadFromFile(BlogPath & "zb_users\CACHE\app.xml")
+				     objStream2.position = 0
+					 Xstream.nodeTypedValue = objStream2.Read()
+					 Set objStream2=Nothing
+				   ElseIf LCase(objFile.name)="theme.xml" Then
+					 xmlstring=LoadFromFile(PathNameStr,"utf-8")
+					 xmladd="app_host:"&BlogHost&";app_email:"&BlogUser.Email&";app_user:"&BlogUser.Name&";"
+					 xmlstring=xmlstring & "<!-- " & xmladd & " -->"
+					 Call SaveToFile(BlogPath & "zb_users\CACHE\app.xml",xmlstring,"utf-8",False)
+				     Set objStream2 = Server.CreateObject("ADODB.Stream")
+				     objStream2.Type = 1
+				     objStream2.Open()
+				     objStream2.LoadFromFile(BlogPath & "zb_users\CACHE\app.xml")
+				     objStream2.position = 0
+					 Xstream.nodeTypedValue = objStream2.Read()
+					 Set objStream2=Nothing
+					Else
+					 Xstream.nodeTypedValue = objStream.Read()
+				   End If
+
 				   
 				   Set objStream=Nothing
 				   Set Xpath = Nothing
 				   Set Xstream = Nothing
 				   Set Xfile = Nothing
 				  '================================================
-				end if
+				'end if
 			next
 	XmlDoc.Save(FilePath)
 	Set Xfpath = Nothing

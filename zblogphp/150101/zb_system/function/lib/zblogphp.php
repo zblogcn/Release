@@ -435,9 +435,7 @@ class ZBlogPHP {
 		}		
 
 		if($this->option['ZC_PERMANENT_DOMAIN_ENABLE']==true){
-			if(str_replace(array('https://','http://'),array('',''),$this->host) != str_replace(array('https://','http://'),array('',''),$this->option['ZC_BLOG_HOST']) ){
-				$this->host=$this->option['ZC_BLOG_HOST'];
-			}
+			$this->host=$this->option['ZC_BLOG_HOST'];
 			$this->cookiespath=strstr( str_replace('://','',$this->host) , '/');
 		}else{
 			$this->option['ZC_BLOG_HOST']=$this->host;

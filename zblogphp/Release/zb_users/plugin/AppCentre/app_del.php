@@ -12,24 +12,36 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
-function rrmdir($dir) {
-	if (is_dir($dir)) {
-		$objects = scandir($dir);
-		foreach ($objects as $object) {
-			if ($object != '.' && $object != '..') {
-				if (filetype($dir . '/' . $object) == 'dir') {
-					rrmdir($dir . '/' . $object);
-				} else {
-					unlink($dir . '/' . $object);
-				}
+if($blogversion>=151525){
 
-			}
+	$app=$zbp->LoadApp($_GET['type'], $_GET['id']);
+	if($app->type == $_GET['type']){
+		if($app->CanDel()){
+			$app->Del();
 		}
-		reset($objects);
-		rmdir($dir);
 	}
-}
 
-rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
+}else{
+
+	function rrmdir($dir) {
+		if (is_dir($dir)) {
+			$objects = scandir($dir);
+			foreach ($objects as $object) {
+				if ($object != '.' && $object != '..') {
+					if (filetype($dir . '/' . $object) == 'dir') {
+						rrmdir($dir . '/' . $object);
+					} else {
+						unlink($dir . '/' . $object);
+					}
+
+				}
+			}
+			reset($objects);
+			rmdir($dir);
+		}
+	}
+
+	rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
+}
 
 Redirect($_SERVER["HTTP_REFERER"]);

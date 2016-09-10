@@ -28,6 +28,31 @@ define('APPCENTRE_API_USER_INFO', 'userinfo');
 define('APPCENTRE_API_ORDER_LIST', 'orderlist');
 define('APPCENTRE_API_ORDER_DETAIL', 'orderdetail');
 
+define('APPCENTRE_PUBLIC_KEY','-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3HYTjyOIzYnJtIl4M50l
+aYgEQmRGeOQA+5H1Ze3Fgc7bbEc+DtJMAmwYaGR3+ULkL4c0m/KXXxujTgEfxGkk
+fO7XI7Z0b1EWFm4M7IbXox6LaLU6mK4OK5nMWWyIyawYn0bdw6X/vaXEyzkDE8fP
+ZGGPo5OydyZdTm47lXdCewyxk1CQ6nMs75u0mLjnDfsFXNiDx8hvXODnTSJKzb+C
+154qg0uRXjaB2ylnhJKDcQCFAbg5uy0iRcrp7+CFG4qvk0c7d/xRRjqY/y3HI+o5
+29/vvByD9KVXfWQQI6unfWfO1uEegXcgypHKHRmuyZoIDH7r56sleXKcN0OLesxp
+zwIDAQAB
+-----END PUBLIC KEY-----');
+
+#定义版本号列
+$zbpvers=array();
+$zbpvers['130707']='1.0 Beta Build 130707';
+$zbpvers['131111']='1.0 Beta2 Build 131111';
+$zbpvers['131221']='1.1 Taichi Build 131221';
+$zbpvers['140220']='1.2 Hippo Build 140220';
+$zbpvers['140614']='1.3 Wonce Build 140614';
+$zbpvers['150101']='1.4 Deeplue Build 150101';
+if(!isset($zbpvers[$GLOBALS['blogversion']])){
+    if(defined('ZC_VERSION_FULL'))
+    	$zbpvers[$GLOBALS['blogversion']] = ZC_VERSION_FULL;
+    else
+    	$zbpvers[$GLOBALS['blogversion']] = ZC_BLOG_VERSION;
+}
+
 function ActivePlugin_AppCentre() {
 	global $zbp;
 	Add_Filter_Plugin('Filter_Plugin_Admin_LeftMenu', 'AppCentre_AddMenu');
@@ -106,4 +131,91 @@ function AppCentre_App_Check_ISBUY($appid) {
 	$http_post->send($postdate);
 	$result = json_decode($http_post->responseText, true);
 	return $result;
+}
+
+function AppCentre_Get_Cookies(){
+	global $zbp;
+	$c = '';
+	$un = $zbp->Config('AppCentre')->username;
+	$ps = $zbp->Config('AppCentre')->password;
+	$c .= ' apptype=' . urlencode($zbp->Config('AppCentre')->apptype) . '; ';
+	$c .= ' app_guestver=' . urlencode('2.0') . '; ';
+	$c .= ' app_host=' . urlencode($zbp->host) . '; ';
+	$c .= ' app_email=' . urlencode($zbp->user->Email) . '; ';
+	$c .= ' app_user=' . urlencode($zbp->user->Name) . '; ';
+	if ($un && $ps) {
+		$c .= "username=" . urlencode($un) . "; password=" . urlencode($ps);
+	}
+
+	$shopun = $zbp->Config('AppCentre')->shop_username;
+	$shopps = $zbp->Config('AppCentre')->shop_password;
+	if ($shopun && $shopps) {
+		$c .= "; shop_username=" . urlencode($shopun) . "; shop_password=" . urlencode($shopps);
+	}
+	return $c;
+}
+
+function AppCentre_Get_UserAgent(){
+	global $zbp;
+    $app = $zbp->LoadApp('plugin', 'AppCentre');
+	if(isset($GLOBALS['blogversion'])) {
+		$u = 'ZBlogPHP/' . $GLOBALS['blogversion'] . ' AppCentre/'. $app->modified . ' ' . GetGuestAgent();
+	}
+	else {
+		$u = 'ZBlogPHP/' . substr(ZC_BLOG_VERSION, -6, 6) . ' AppCentre/'. $app->modified . ' ' . GetGuestAgent();
+	}
+	return $u;
+}
+
+function AppCentre_Check_App_IsBuy($appid){
+	global $zbp;
+	$ajax = Network::Create();
+
+	$url = str_replace('http://','https://',APPCENTRE_URL) . '?checkbuy';
+	$c = AppCentre_Get_Cookies();
+	$u = AppCentre_Get_UserAgent();
+
+	$appid = $appid;
+	$username = $zbp->Config('AppCentre')->username;
+	$password = $zbp->Config('AppCentre')->password;
+	$host = $zbp->host;
+
+	$data = array();
+
+	$data['appid'] = $appid;
+	$data['host'] = $zbp->host;
+
+	$data['includefilehash'] = file_get_contents($zbp->path . 'zb_users/plugin/AppCentre/include.php');
+	$data['includefilehash'] = md5(str_replace(array('\r','\n'), '', $data['includefilehash']));
+
+
+	$pu_key = openssl_pkey_get_public(APPCENTRE_PUBLIC_KEY);
+
+	$encrypted = '';
+	openssl_public_encrypt(implode('|',$data),$encrypted,$pu_key);//公钥加密  
+	$encrypted = base64_encode($encrypted);  
+	$data = array();
+	$data['info'] = $encrypted;
+
+	$ajax->open('POST', $url);
+	//$ajax->enableGzip();
+	$ajax->setTimeOuts(120, 120, 0, 0);
+	$ajax->setRequestHeader('User-Agent', $u);
+	$ajax->setRequestHeader('Cookie', $c);
+	$ajax->setRequestHeader('Website',$zbp->host);
+	$ajax->send($data);
+
+
+	$encrypted = $ajax->responseText;
+	openssl_public_decrypt(base64_decode($encrypted),$decrypted,$pu_key);//公钥解密
+
+	if(md5($zbp->Config('AppCentre')->username . 'ok') == $decrypted){
+		return true;
+	}else{
+		$zbp->ShowError($decrypted);
+		die();
+	}
+
+	return false;
+
 }

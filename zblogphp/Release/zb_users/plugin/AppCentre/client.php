@@ -9,9 +9,9 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
 if (!$zbp->Config('AppCentre')->username || !$zbp->Config('AppCentre')->password) {
-	$blogtitle = '应用中心-登录应用商城';
+	$blogtitle = '应用中心(客户端)-登录应用商城';
 } else {
-	$blogtitle = '应用中心-我的应用仓库';
+	$blogtitle = '应用中心(客户端)-我的应用仓库';
 }
 
 if (GetVars('act') == 'login') {

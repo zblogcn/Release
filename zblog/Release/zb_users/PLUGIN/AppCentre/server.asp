@@ -19,7 +19,7 @@ If BlogUser.Level>1 Then Call ShowError(6)
 If CheckPluginState("AppCentre")=False Then Call ShowError(48)
 Call LoadPluginXmlInfo("AppCentre")
 Call AppCentre_InitConfig
-BlogTitle="应用中心"
+BlogTitle="应用中心(客户端)"
 
 intHighlight=0
 
@@ -34,7 +34,7 @@ intHighlight=0
   <div id="ShowBlogHint">
 	<%Call GetBlogHint()%>
   </div>
-  <div class="divHeader">应用中心</div>
+  <div class="divHeader">应用中心(客户端)</div>
   <div class="SubMenu">
 <%
 If Request.QueryString("method")="check" Then

@@ -549,7 +549,9 @@ class ZBlogPHP {
 	 */
 	public function LoadManage(){
 
-		$this->host = GetCurrentHost($this->path,$this->cookiespath);
+    	if( str_replace('http://', '', $this->path)!==str_replace('https://', '', $this->path) ){
+        	$this->host = GetCurrentHost($this->path, $this->cookiespath);
+    	}
 
 		if($this->user->Status==ZC_MEMBER_STATUS_AUDITING) $this->ShowError(79,__FILE__,__LINE__);
 		if($this->user->Status==ZC_MEMBER_STATUS_LOCKED) $this->ShowError(80,__FILE__,__LINE__);

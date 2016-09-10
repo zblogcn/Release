@@ -1,14 +1,4 @@
-﻿<%
-Const APPCENTRE_URL="http://app.zblogcn.com/client/"
-
-Const APPCENTRE_SYSTEM_UPDATE="http://update.zblogcn.com/zblog2/"
-
-Const APPCENTRE_API_URL="http://app.zblogcn.com/api/index.php?api="
-Const APPCENTRE_API_APP_ISBUY="isbuy"
-Const APPCENTRE_API_USER_INFO="userinfo"
-Const APPCENTRE_API_ORDER_LIST="orderlist"
-Const APPCENTRE_API_ORDER_DETAIL="orderdetail"
-
+<%
 Dim appcentre_updatelist,appcentre_blog_last
 
 Dim app_config
@@ -192,6 +182,23 @@ End Function
 
 Sub Server_SendRequest(requestmethod)
 
+	Dim objXmlFile,strXmlFile
+	Dim fso, s
+	Set fso = CreateObject("Scripting.FileSystemObject")
+
+	strXmlFile =BlogPath & "zb_users/plugin/AppCentre/plugin.xml"
+
+	Set objXmlFile=Server.CreateObject("Microsoft.XMLDOM")
+	objXmlFile.async = False
+	objXmlFile.ValidateOnParse=False
+	objXmlFile.load(strXmlFile)
+	If objXmlFile.readyState=4 Then
+		If objXmlFile.parseError.errorCode <> 0 Then
+		Else
+			app_modified=objXmlFile.documentElement.selectSingleNode("modified").text
+		End If
+	End If
+
 	Set objXmlHttp=Server.CreateObject("MSXML2.ServerXMLHTTP")
 
 	'On Error Resume Next
@@ -199,14 +206,9 @@ Sub Server_SendRequest(requestmethod)
 	strURL=APPCENTRE_URL & strURL
 	objXmlHttp.Open requestmethod,strURL
 	If requestmethod="POST" Then objXmlhttp.SetRequestHeader "Content-Type","application/x-www-form-urlencoded"
-	objXmlhttp.SetRequestHeader "User-Agent","AppCentre/"&app_version & " ZBlog/"&BlogVersion&" "&Request.ServerVariables("HTTP_USER_AGENT") &""
-	objXmlhttp.SetRequestHeader "Cookie","username="&Server.URLEncode(login_un)&"; password="&Server.URLEncode(login_pw)&"; shop_username="&Server.URLEncode(shop_un)&"; shop_password="&Server.URLEncode(shop_pw)&"; apptype="&Server.URLEncode(apptype) &"; app_guestver="&Server.URLEncode("3.0")&"; app_host="&BlogHost&"; app_email="&Server.URLEncode(BlogUser.Email)&"; app_user="&Server.URLEncode(BlogUser.Name)
-	'为一些有趣的活动的防作弊
+	objXmlhttp.SetRequestHeader "User-Agent","AppCentre/"&app_modified & " ZBlog/"&BlogVersion&" "&Request.ServerVariables("HTTP_USER_AGENT") &""
+	objXmlhttp.SetRequestHeader "Cookie","username="&Server.URLEncode(login_un)&"; password="&Server.URLEncode(login_pw)&"; shop_username="&Server.URLEncode(shop_un)&"; shop_password="&Server.URLEncode(shop_pw)
 	objXmlhttp.SetRequestHeader "Website",ZC_BLOG_HOST
-	'objXmlhttp.SetRequestHeader "AppCentre",app_version
-	objXmlhttp.SetRequestHeader "ZBlog",BlogVersion
-	objXmlhttp.SetRequestHeader "ClientIP",GetReallyIP()
-	
 	objXmlHttp.Send strPost
 	
 End Sub

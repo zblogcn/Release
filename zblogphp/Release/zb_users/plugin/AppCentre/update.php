@@ -12,7 +12,7 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
-$blogtitle = '应用中心-系统更新与校验';
+$blogtitle = '应用中心(客户端)-系统更新与校验';
 
 $checkbegin = false;
 $nowxml = '';
@@ -133,7 +133,12 @@ if ($zbp->version >= 150101 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
                   <th>最新版本</th>
                 </tr>
                 <tr>
-                  <td align='center' id='now'>Z-BlogPHP <?php echo ZC_BLOG_VERSION?></td>
+                  <td align='center' id='now'>Z-BlogPHP <?php
+if(defined('ZC_VERSION_FULL'))
+	echo ZC_VERSION_FULL;
+else
+	echo ZC_BLOG_VERSION;
+                   ?></td>
                   <td align='center' id='last'>Z-BlogPHP <?php echo $newversion;?></td>
                 </tr>
               </table>

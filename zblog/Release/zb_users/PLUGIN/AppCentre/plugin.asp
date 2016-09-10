@@ -19,7 +19,7 @@ If BlogUser.Level>1 Then Call ShowError(6)
 
 If CheckPluginState("AppCentre")=False Then Call ShowError(48)
 
-BlogTitle="应用中心"
+BlogTitle="应用中心(客户端)"
 
 
 

@@ -111,7 +111,7 @@ function Server_Open($method) {
 		$s = Server_SendRequest(APPCENTRE_URL . '?submitpre=' . urlencode(GetVars('id')));
 		return $s;
 	case 'submit':
-		$app = New App;
+		$app = new App;
 		$app->LoadInfoByXml($_GET['type'], $_GET['id']);
 		$data["zba"] = $app->Pack();
 		$s = Server_SendRequest(APPCENTRE_URL . '?submit=' . urlencode(GetVars('id')), $data);
@@ -142,29 +142,8 @@ function Server_Open($method) {
 function Server_SendRequest($url, $data = array(), $u = '', $c = '') {
 	global $zbp;
 
-	$un = $zbp->Config('AppCentre')->username;
-	$ps = $zbp->Config('AppCentre')->password;
-	$c .= ' apptype=' . urlencode($zbp->Config('AppCentre')->apptype) . '; ';
-	$c .= ' app_guestver=' . urlencode('2.0') . '; ';
-	$c .= ' app_host=' . urlencode($zbp->host) . '; ';
-	$c .= ' app_email=' . urlencode($zbp->user->Email) . '; ';
-	$c .= ' app_user=' . urlencode($zbp->user->Name) . '; ';
-	if ($un && $ps) {
-		$c .= "username=" . urlencode($un) . "; password=" . urlencode($ps);
-	}
-
-	$shopun = $zbp->Config('AppCentre')->shop_username;
-	$shopps = $zbp->Config('AppCentre')->shop_password;
-
-	if ($shopun && $shopps) {
-		if ($c !== '') {
-			$c .= '; ';
-		}
-
-		$c .= "shop_username=" . urlencode($shopun) . "; shop_password=" . urlencode($shopps);
-	}
-
-	$u = 'ZBlogPHP/' . substr(ZC_BLOG_VERSION, -6, 6) . ' ' . GetGuestAgent();
+	$c = AppCentre_Get_Cookies();
+	$u = AppCentre_Get_UserAgent();
 
 	if (!class_exists('NetworkFactory', false)) {
 		if (class_exists('Network')) {
@@ -265,6 +244,7 @@ function Server_SendRequest_Network($url, $data = array(), $u, $c) {
 		$ajax->setTimeOuts(120, 120, 0, 0);
 		$ajax->setRequestHeader('User-Agent', $u);
 		$ajax->setRequestHeader('Cookie', $c);
+		$ajax->setRequestHeader('Website',$zbp->host);
 		$ajax->send($data);
 	} else {
 		$ajax->open('GET', $url);
@@ -272,13 +252,14 @@ function Server_SendRequest_Network($url, $data = array(), $u, $c) {
 		$ajax->setTimeOuts(120, 120, 0, 0);
 		$ajax->setRequestHeader('User-Agent', $u);
 		$ajax->setRequestHeader('Cookie', $c);
+		$ajax->setRequestHeader('Website',$zbp->host);
 		$ajax->send();
 	}
 
 	return $ajax->responseText;
 }
 
-function AppCentre_CreateOptoinsOfVersion($default) {
+function AppCentre_CreateOptionsOfVersion($default) {
 	global $zbp;
 
 	$s = null;
@@ -287,7 +268,7 @@ function AppCentre_CreateOptoinsOfVersion($default) {
 	$i = 0;
 	foreach ($array as $key => $value) {
 		$i += 1;
-		if (($i == 1) or strpos($value, 'Beta') === False) {
+		if (($i == 1) or strpos($value, 'Beta') === false) {
 			$s .= '<option value="' . $key . '" ' . ($default == $key ? 'selected="selected"' : '') . ' >' . $value . '</option>';
 		}
 
@@ -367,99 +348,7 @@ function AppCentre_GetAllFileDir($dir) {
 
 function AppCentre_Pack($app, $gzip) {
 
-	global $zbp;
-	global $AppCentre_dirs;
-	global $AppCentre_files;
-
-	$AppCentre_dirs = array();
-	$AppCentre_files = array();
-
-	$dir = $app->GetDir();
-	AppCentre_GetAllFileDir($dir);
-
-	$s = '<?xml version="1.0" encoding="utf-8"?>';
-	$s .= '<app version="php" type="' . $app->type . '">';
-
-	$s .= '<id>' . htmlspecialchars($app->id) . '</id>';
-	$s .= '<name>' . htmlspecialchars($app->name) . '</name>';
-	$s .= '<url>' . htmlspecialchars($app->url) . '</url>';
-	$s .= '<note>' . htmlspecialchars($app->note) . '</note>';
-	$s .= '<description>' . htmlspecialchars($app->description) . '</description>';
-
-	$s .= '<path>' . htmlspecialchars($app->path) . '</path>';
-	$s .= '<include>' . htmlspecialchars($app->include) . '</include>';
-	$s .= '<level>' . htmlspecialchars($app->level) . '</level>';
-
-	$s .= '<author>';
-	$s .= '<name>' . htmlspecialchars($app->author_name) . '</name>';
-	$s .= '<email>' . htmlspecialchars($app->author_email) . '</email>';
-	$s .= '<url>' . htmlspecialchars($app->author_url) . '</url>';
-	$s .= '</author>';
-
-	$s .= '<source>';
-	$s .= '<name>' . htmlspecialchars($app->source_name) . '</name>';
-	$s .= '<email>' . htmlspecialchars($app->source_email) . '</email>';
-	$s .= '<url>' . htmlspecialchars($app->source_url) . '</url>';
-	$s .= '</source>';
-
-	$s .= '<adapted>' . htmlspecialchars($app->adapted) . '</adapted>';
-	$s .= '<version>' . htmlspecialchars($app->version) . '</version>';
-	$s .= '<pubdate>' . htmlspecialchars($app->pubdate) . '</pubdate>';
-	$s .= '<modified>' . htmlspecialchars($app->modified) . '</modified>';
-	$s .= '<price>' . htmlspecialchars($app->price) . '</price>';
-
-	$s .= '<advanced>';
-	$s .= '<dependency>' . htmlspecialchars($app->advanced_dependency) . '</dependency>';
-	$s .= '<rewritefunctions>' . htmlspecialchars($app->advanced_rewritefunctions) . '</rewritefunctions>';
-	$s .= '<conflict>' . htmlspecialchars($app->advanced_conflict) . '</conflict>';
-	$s .= '</advanced>';
-
-	$s .= '<sidebars>';
-	$s .= '<sidebar1>' . htmlspecialchars($app->sidebars_sidebar1) . '</sidebar1>';
-	$s .= '<sidebar2>' . htmlspecialchars($app->sidebars_sidebar2) . '</sidebar2>';
-	$s .= '<sidebar3>' . htmlspecialchars($app->sidebars_sidebar3) . '</sidebar3>';
-	$s .= '<sidebar4>' . htmlspecialchars($app->sidebars_sidebar4) . '</sidebar4>';
-	$s .= '<sidebar5>' . htmlspecialchars($app->sidebars_sidebar5) . '</sidebar5>';
-	$s .= '</sidebars>';
-
-	foreach ($AppCentre_dirs as $key => $value) {
-		$value = preg_replace('/[^(\x20-\x7F)]*/', '', $value);
-		$d = $app->id . '/' . str_replace($dir, '', $value);
-		$s .= '<folder><path>' . htmlspecialchars($d) . '</path></folder>';
-	}
-	foreach ($AppCentre_files as $key => $value) {
-		$d = $app->id . '/' . str_replace($dir, '', $value);
-		$ext = pathinfo($value, PATHINFO_EXTENSION);
-		if ($ext == 'php' || $ext == 'inc') {
-			$c = base64_encode(RemoveBOM(file_get_contents($value)));
-		} else {
-			if (strripos($d, '/plugin.xml') !== false) {
-				$x = file_get_contents($value);
-				$x1 = 'app_host:' . $zbp->host . ';';
-				$x2 = 'app_email:' . $zbp->user->Email . ';';
-				$x3 = 'app_user:' . $zbp->user->Name . ';';
-				$x = str_replace('</plugin>', '</plugin><!-- ' . $x1 . $x2 . $x3 . ' -->', $x);
-				$c = base64_encode($x);
-			} elseif (strripos($d, '/theme.xml') !== false) {
-				$x = file_get_contents($value);
-				$x1 = 'app_host:' . $zbp->host . ';';
-				$x2 = 'app_email:' . $zbp->user->Email . ';';
-				$x3 = 'app_user:' . $zbp->user->Name . ';';
-				$x = str_replace('</theme>', '</theme><!-- ' . $x1 . $x2 . $x3 . ' -->', $x);
-				$c = base64_encode($x);
-			} else {
-				$c = base64_encode(file_get_contents($value));
-			}
-
-		}
-		if (IS_WINDOWS) {
-			$d = iconv($zbp->lang['windows_character_set'], 'UTF-8//IGNORE', $d);
-		}
-
-		$s .= '<file><path>' . htmlspecialchars($d) . '</path><stream>' . $c . '</stream></file>';
-	}
-
-	$s .= '</app>';
+	$s = $app->Pack();
 
 	if ($gzip) {
 		return gzencode($s, 9, FORCE_GZIP);

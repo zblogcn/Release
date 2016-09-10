@@ -12,7 +12,7 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
-$blogtitle = '应用中心';
+$blogtitle = '应用中心(客户端)';
 
 if (!$zbp->Config('AppCentre')->HasKey('enabledcheck')) {
 	$zbp->Config('AppCentre')->enabledcheck = 1;

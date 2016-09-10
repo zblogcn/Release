@@ -21,9 +21,9 @@ Call LoadPluginXmlInfo("AppCentre")
 Call AppCentre_InitConfig
 
 If shop_un="" Or shop_pw="" Then
-	BlogTitle="应用中心-登录应用商城"
+	BlogTitle="应用中心(客户端)-登录应用商城"
 Else
-	BlogTitle="应用中心-我的应用仓库"
+	BlogTitle="应用中心(客户端)-我的应用仓库"
 End If
 
 intHighlight=0

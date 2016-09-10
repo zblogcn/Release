@@ -192,7 +192,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
       <td><p><b>· 适用的最低要求 Z-Blog 版本</b></p></td>
       <td><p>&nbsp;
           <select name="app_adapted" id="app_adapted" style="width:400px;">
-<?php echo AppCentre_CreateOptoinsOfVersion($app->adapted);?>
+<?php echo AppCentre_CreateOptionsOfVersion($app->adapted);?>
           </select>
         </p></td>
     </tr>
@@ -270,7 +270,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
       <td><p><b>· 内置插件管理权限</b> (可选)</p></td>
       <td><p>&nbsp;
           <select name="app_level" id="app_level" style="width:200px;">
-<?php echo CreateOptoinsOfMemberLevel(1)?>
+<?php if (function_exists('OutputOptionItemsOfMemberLevel')){echo OutputOptionItemsOfMemberLevel(1);}else{echo CreateOptoinsOfMemberLevel(1);}?>
           </select>
         </p></td>
     </tr>

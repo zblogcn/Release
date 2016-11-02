@@ -8,29 +8,19 @@
 	});
 });
 
-
-//重写了common.js里的同名函数
-function RevertComment(i) {
+zbp.plugin.unbind("comment.reply", "system");
+zbp.plugin.on("comment.reply", "default", function(id) {
+	var i = id;
 	$("#inpRevID").val(i);
 	var frm = $('#divCommentPost'),
-		cancel = $("#cancel-reply"),
-		temp = $('#temp-frm');
+		cancel = $("#cancel-reply");
 
-
-	var div = document.createElement('div');
-	div.id = 'temp-frm';
-	div.style.display = 'none';
-	frm.before(div);
-
+	frm.before($("<div id='temp-frm' style='display:none'>")).addClass("reply-frm");
 	$('#AjaxComment' + i).before(frm);
 
-	frm.addClass("reply-frm");
-
-	cancel.show();
-	cancel.click(function() {
+	cancel.show().click(function() {
+		var temp = $('#temp-frm');
 		$("#inpRevID").val(0);
-		var temp = $('#temp-frm'),
-			frm = $('#divCommentPost');
 		if (!temp.length || !frm.length) return;
 		temp.before(frm);
 		temp.remove();
@@ -42,19 +32,17 @@ function RevertComment(i) {
 		$('#txaArticle').focus();
 	} catch (e) {}
 	return false;
-}
+});
 
-//重写GetComments，防止评论框消失
-function GetComments(logid, page) {
+zbp.plugin.on("comment.get", "default", function (logid, page) {
 	$('span.commentspage').html("Waiting...");
 	$.get(bloghost + "zb_system/cmd.php?act=getcmt&postid=" + logid + "&page=" + page, function(data) {
 		$('#AjaxCommentBegin').nextUntil('#AjaxCommentEnd').remove();
 		$('#AjaxCommentEnd').before(data);
 		$("#cancel-reply").click();
 	});
-}
+})
 
-
-function CommentComplete() {
+zbp.plugin.on("comment.postsuccess", "default", function () {
 	$("#cancel-reply").click();
-}
+});

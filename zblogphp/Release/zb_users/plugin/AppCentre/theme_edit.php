@@ -65,6 +65,8 @@ if (count($_POST) > 0) {
 		@mkdir($zbp->usersdir . 'theme/' . $app->id . '/style');
 		@mkdir($zbp->usersdir . 'theme/' . $app->id . '/compile');
 		@mkdir($zbp->usersdir . 'theme/' . $app->id . '/template');
+    @mkdir($zbp->usersdir . 'theme/' . $app->id . '/include');
+    @mkdir($zbp->usersdir . 'theme/' . $app->id . '/script');
 		@copy($zbp->usersdir . 'plugin/AppCentre/images/theme.png', $zbp->usersdir . 'theme/' . $app->id . '/screenshot.png');
 		@file_put_contents($zbp->usersdir . 'theme/' . $app->id . '/style/style.css', '');
 

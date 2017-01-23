@@ -9,27 +9,17 @@
  *
  *****************************************************************************************************
  *    如果您看到了这个提示，那么我们很遗憾地通知您，您的空间不支持 PHP 。
- *    We regret to inform you that your web hosting not support PHP,
- *    and Z-BlogPHP CAN'T run on it if you see this prompt.
- *
  *    也就是说，您的空间可能是静态空间，或没有安装PHP，或没有为 Web 服务器打开 PHP 支持。
- *    It means that you may have a web hosting service supporting only static resources.
- *    Is PHP successfully installed on your server?
- *    Or, is HTTP Server configured correctly?
+ *    Sorry, PHP is not installed on your web hosting if you see this prompt.
+ *    Please check out the PHP configuration.
  *
  *    如您使用虚拟主机：
  *
  *        > 联系空间商，更换空间为支持 PHP 的空间。
  *        > Contact your service provider, and let them provice a new service which supports PHP.
  *
- *    如您使用 IIS，推荐您：
- *    Using IIS? Recommend:
- *
- *        > 下载并安装Z-Blog  > http://www.zblogcn.com/zblog/
- *        > Try Z-Blog > http://www.zblogcn.com/zblog/
- *
- *    如您使用其它 HTTP 服务器，推荐您：
- *    Using other HTTP Server? Recommend:
+ *    如您自行搭建服务器，推荐您：
+ *    Configuring manually? Recommend:
  *
  *        > 访问 PHP 官方网站获取安装帮助。
  *        > Visit PHP Official Website to get the documentation of installion and configuration.
@@ -71,7 +61,6 @@ if (($zbp->option['ZC_DATABASE_TYPE'] !== '') && ($zbp->option['ZC_YUN_SITE'] ==
     if ($zbp->Config('system')->CountItem() > 0) {
         $zblogstep = 0;
     }
-
 }
 ?>
 <!DOCTYPE HTML>
@@ -305,10 +294,20 @@ function Setup2() {
           <th colspan="3" scope="col"><?php echo $zbp->lang['zb_install']['lib_check'];?></th>
         </tr>
         <tr>
+          <td scope="row" style="width:200px">PCRE</td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['pcre'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['pcre'][1];?></td>
+        </tr>
+        <tr>
           <td scope="row" style="width:200px">gd2</td>
           <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['gd2'][0];?></td>
           <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['gd2'][1];?></td>
         </tr>
+        <tr>
+          <td scope="row" style="width:200px">mbstring</td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['mbstring'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['mbstring'][1];?></td>
+        </tr>        
 <?php if (version_compare(PHP_VERSION, '5.5.0', '<')) {?>
         <tr>
           <td scope="row">mysql</td>
@@ -389,19 +388,24 @@ function Setup2() {
           <th colspan="3" scope="row"><?php echo $zbp->lang['zb_install']['function_check'];?></th>
         </tr>
         <tr>
-          <td scope="row">curl</td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['curl'][0];?></td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['curl'][1];?></td>
+          <td scope="row"><?php echo $zbp->lang['zb_install']['environment_network']?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['network'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['network'][1];?></td>
         </tr>
         <tr>
-          <td scope="row">allow_url_fopen</td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['allow_url_fopen'][0];?></td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['allow_url_fopen'][1];?></td>
+          <td scope="row"><?php echo $zbp->lang['zb_install']['environment_xml']?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['simplexml_load_string'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['simplexml_load_string'][1];?></td>
         </tr>
         <tr>
-          <td scope="row">gethostbyname</td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['gethostbyname'][0];?></td>
-          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['gethostbyname'][1];?></td>
+          <td scope="row"><?php echo $zbp->lang['zb_install']['environment_json']?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['json_decode'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['json_decode'][1];?></td>
+        </tr>
+        <tr>
+          <td scope="row"><?php echo $zbp->lang['zb_install']['environment_iconv']?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['iconv'][0];?></td>
+          <td style="text-align:center"><?php echo $GLOBALS['CheckResult']['iconv'][1];?></td>
         </tr>
       </table>
     </div>
@@ -670,24 +674,39 @@ $isInstallFlag = true;
         break;
 
     }
+    $hasError = false;
     if ($isInstallFlag) {
 
         $zbp->OpenConnect();
         $zbp->ConvertTableAndDatainfo();
         if (CreateTable($cts)) {
-            InsertInfo();
-            SaveConfig();
+           if (InsertInfo()) {
+              if (SaveConfig()) {
+                //ok
+              }else{
+              	//$hasError = true;
+              }
+           } else {
+             $hasError = true;
+           }
+        } else {
+          $hasError = true;
         }
 
         $zbp->CloseConnect();
     } else {
-        echo '<p>还没有选择数据库类型，请后退重试。</p><p><a href="javascript:history.go(-1)">点击这里后退</a></p>';
+      $hasError = true;
     }
     ?>
 
     </div>
     <div id="bottom">
+      <?php
+      if ($hasError == true) {
+      echo '<p><a href="javascript:history.go(-1)">' . $zbp->lang['zb_install']['clicktoback']. '</a></p>';
+       }else{ ?>
       <input type="button" name="next" onClick="window.location.href='../'" id="netx" value="<?php echo $zbp->lang['zb_install']['ok'];?>" />
+      <?php }?>
     </div>
   </dd>
 </dl>
@@ -712,6 +731,7 @@ function CheckServer() {
         'phpver' => array(PHP_VERSION, ''),
         'zbppath' => array($zbp->path, bingo),
         //组件
+        'pcre' => array('', ''),        
         'gd2' => array('', ''),
         'mysql' => array('', ''),
         'mysqli' => array('', ''),
@@ -721,6 +741,7 @@ function CheckServer() {
         'pdo_sqlite' => array('', ''),
         'pgsql' => array('', ''),
         'pdo_pgsql' => array('', ''),
+        'mbstring' => array('', ''),
         //权限
         'zb_users' => array('', ''),
         'cache' => array('', ''),
@@ -743,6 +764,15 @@ function CheckServer() {
         $CheckResult['phpver'][1] = error;
     }
 
+    //针对PCRE老版本报错
+    $pv = explode(' ', PCRE_VERSION);
+    $CheckResult['pcre'][0] = PCRE_VERSION;
+    if (version_compare($pv[0], '6.6') <= 0) {
+        $CheckResult['pcre'][1] =error;
+    }else{
+        $CheckResult['pcre'][1] = bingo;
+    }
+
     if (function_exists("gd_info")) {
         $info = gd_info();
         $CheckResult['gd2'][0] = $info['GD Version'];
@@ -755,6 +785,10 @@ function CheckServer() {
     if (function_exists("mysqli_get_client_info")) {
         $CheckResult['mysqli'][0] = strtok(mysqli_get_client_info(), '$');
         $CheckResult['mysqli'][1] = $CheckResult['mysqli'][0] ? bingo : error;
+    }
+    if (function_exists("mb_language")) {
+        $CheckResult['mbstring'][0] = mb_language();
+        $CheckResult['mbstring'][1] = $CheckResult['mbstring'][0] ? bingo : error;
     }
     if (class_exists("PDO", false)) {
         if (extension_loaded('pdo_mysql')) {
@@ -802,10 +836,18 @@ function CheckServer() {
     getRightsAndExport('zb_users/', 'upload');
     //getRightsAndExport('zb_users/','c_option.php');
 
-    $CheckResult['curl'][1] = function_exists('curl_init') ? bingo : error;
-    $CheckResult['allow_url_fopen'][1] = (bool) ini_get('allow_url_fopen') ? bingo : error;
-    $CheckResult['gethostbyname'][1] = function_exists('gethostbyname') ? bingo : error;
-    $CheckResult['simplexml_import_dom'][1] = function_exists('simplexml_import_dom') ? bingo : error;
+    $CheckResult['network'][0] = $zbp->lang['zb_install']['environment_network_description'];
+    $CheckResult['simplexml_load_string'][0] = $zbp->lang['zb_install']['environment_xml_description'];
+    $CheckResult['json_decode'][0] = $zbp->lang['zb_install']['environment_json_description'];
+    $CheckResult['iconv'][0] = $zbp->lang['zb_install']['environment_iconv_description'];
+    $CheckResult['mb_strlen'][0] = $zbp->lang['zb_install']['environment_mb_description'];
+
+    $networkTest = Network::create();
+    $CheckResult['network'][1] = ($networkTest == false) ? error : bingo;
+    $CheckResult['simplexml_load_string'][1] = function_exists('simplexml_load_string') ? bingo : error;
+    $CheckResult['json_decode'][1] = function_exists('json_decode') ? bingo : error;
+    $CheckResult['iconv'][1] = function_exists('iconv') ? bingo : error;
+    $CheckResult['mb_strlen'][1] = function_exists('mb_strlen') ? bingo : error;
 
 }
 
@@ -834,6 +876,12 @@ function CreateTable($sql) {
     $sql = $zbp->db->sql->ReplacePre($sql);
     $zbp->db->QueryMulit($sql);
 
+    if ($zbp->db->ExistTable($GLOBALS['table']['Config']) == false) {
+        echo $zbp->lang['zb_install']['not_create_table'];
+
+        return false;
+    }
+
     echo $zbp->lang['zb_install']['create_table'] . "<br/>";
 
     return true;
@@ -854,6 +902,7 @@ function InsertInfo() {
     $mem->IP = GetGuestIP();
     $mem->PostTime = time();
 
+    FilterMember($mem);
     $mem->Save();
 
     $cate = new Category();
@@ -947,7 +996,7 @@ function InsertInfo() {
     $t->FileName = "favorite";
     $t->Source = "system";
     $t->SidebarID = 1;
-    $t->Content = '<li><a href="http://bbs.zblogcn.com/" target="_blank">ZBlogger社区</a></li><li><a href="http://app.zblogcn.com/" target="_blank">Z-Blog应用中心</a></li><li><a href="http://weibo.com/zblogcn" target="_blank">Z-Blog新浪官微</a></li>';
+    $t->Content = '<li><a href="http://app.zblogcn.com/" target="_blank">Z-Blog应用中心</a></li><li><a href="http://weibo.com/zblogcn" target="_blank">Z-Blog官方微博</a></li><li><a href="http://bbs.zblogcn.com/" target="_blank">ZBlogger社区</a></li>';
     $t->HtmlID = "divFavorites";
     $t->Type = "ul";
     $t->Save();
@@ -957,7 +1006,7 @@ function InsertInfo() {
     $t->FileName = "link";
     $t->Source = "system";
     $t->SidebarID = 1;
-    $t->Content = '<li><a href="http://www.dbshost.cn/" target="_blank" title="独立博客服务 Z-Blog官方主机">DBS主机</a></li>';
+    $t->Content = '<li><a href="https://github.com/zblogcn" target="_blank" title="Z-Blog on Github">Z-Blog on Github</a></li><li><a href="http://www.dbshost.cn/" target="_blank" title="独立博客服务 Z-Blog官方主机">DBS主机</a></li>';
     $t->HtmlID = "divLinkage";
     $t->Type = "ul";
     $t->Save();
@@ -1043,7 +1092,16 @@ function InsertInfo() {
     $a->Meta = '';
     $a->Save();
 
-    echo $zbp->lang['zb_install']['create_datainfo'] . "<br/>";
+    $zbp->LoadMembers(0);
+    if (count($zbp->members) == 0){
+        echo $zbp->lang['zb_install']['not_insert_data'] . "<br/>";
+
+        return false;
+    }else{
+        echo $zbp->lang['zb_install']['create_datainfo'] . "<br/>";
+
+        return true;
+    }
 
 }
 
@@ -1064,8 +1122,56 @@ function SaveConfig() {
     $zbp->option['ZC_LAST_VERSION'] = $zbp->version;
     $zbp->option['ZC_NOW_VERSION'] = $zbp->version;
     $zbp->SaveOption();
+
+    if(file_exists($zbp->path . 'zb_users/c_option.php') == false){
+        echo $zbp->lang['zb_install']['not_create_option_file'] . "<br/>";
+
+        $s = "<pre>&lt;" . "?" . "php\r\n";
+        $s .= "return ";
+        $option = array();
+        foreach ($zbp->option as $key => $value) {
+            if (
+                ($key == 'ZC_YUN_SITE') ||
+                ($key == 'ZC_DATABASE_TYPE') ||
+                ($key == 'ZC_SQLITE_NAME') ||
+                ($key == 'ZC_SQLITE_PRE') ||
+                ($key == 'ZC_MYSQL_SERVER') ||
+                ($key == 'ZC_MYSQL_USERNAME') ||
+                ($key == 'ZC_MYSQL_PASSWORD') ||
+                ($key == 'ZC_MYSQL_NAME') ||
+                ($key == 'ZC_MYSQL_CHARSET') ||
+                ($key == 'ZC_MYSQL_PRE') ||
+                ($key == 'ZC_MYSQL_ENGINE') ||
+                ($key == 'ZC_MYSQL_PORT') ||
+                ($key == 'ZC_MYSQL_PERSISTENT') ||
+                ($key == 'ZC_PGSQL_SERVER') ||
+                ($key == 'ZC_PGSQL_USERNAME') ||
+                ($key == 'ZC_PGSQL_PASSWORD') ||
+                ($key == 'ZC_PGSQL_NAME') ||
+                ($key == 'ZC_PGSQL_CHARSET') ||
+                ($key == 'ZC_PGSQL_PRE') ||
+                ($key == 'ZC_PGSQL_PORT') ||
+                ($key == 'ZC_PGSQL_PERSISTENT') ||
+                ($key == 'ZC_CLOSE_WHOLE_SITE')
+            ) {
+                $option[$key] = $value;
+            }
+
+        }
+        $s .= var_export($option, true);
+        $s .= ";\r\n</pre>";
+
+        echo $s;
+
+        return false;
+    }
+
     $zbp->template = $zbp->PrepareTemplate();
     $zbp->BuildTemplate();
+
+    if(file_exists($zbp->path . 'zb_users/cache/compiled/default/index.php') == false){
+        echo $zbp->lang['zb_install']['not_create_template_file'] . "<br/>";
+    }
 
     $zbp->Config('cache')->templates_md5 = '';
     $zbp->SaveCache();
@@ -1085,6 +1191,7 @@ function SaveConfig() {
 
     echo $zbp->lang['zb_install']['save_option'] . "<br/>";
 
+    return true;
 }
 
 RunTime();

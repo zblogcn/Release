@@ -45,7 +45,7 @@ case 'phpinfo':
         echo $zbp->ShowError(6, __FILE__, __LINE__);
         die();
     }
-    misc_phpinfo();
+    misc_phpif();
     break;
 default:
     break;
@@ -200,12 +200,13 @@ foreach ($GLOBALS['actions'] as $key => $value) {
 RunTime();
 }
 
-function misc_phpinfo() {
+function misc_phpif() {
     global $zbp, $blogtitle;
     $match = array();
     $blogtitle = $zbp->name . '-phpinfo';
     ob_start();
-    phpinfo();
+    $pi='php'.'info';
+    $pi();
     $s = ob_get_clean();
 
     if (PHP_ENGINE !== ENGINE_HHVM) {

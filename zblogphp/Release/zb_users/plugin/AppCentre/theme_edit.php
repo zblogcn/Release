@@ -12,6 +12,8 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
+if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')&&GetVars('id', 'GET')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+
 $blogtitle = '应用中心-主题编辑';
 
 if (GetVars('id')) {
@@ -55,6 +57,8 @@ if (GetVars('id')) {
 }
 
 if (count($_POST) > 0) {
+
+  if (!$zbp->ValidToken(GetVars('token', 'POST'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 
 	$app->id = trim($_POST['app_id']);
 	if (!CheckRegExp($app->id, "/^[A-Za-z0-9_]{3,30}/")) {$zbp->ShowError('ID名必须是字母数字和下划线组成,长度3-30字符.');die();}
@@ -149,7 +153,8 @@ if (count($_POST) > 0) {
 
 	$app->SaveInfoByXml();
 
-	$zbp->SetHint('good', '提交成功！<a href="submit.php?type=theme&id=' . $app->id . '">现在立刻上传到应用中心！</a>');
+  $t = '&token=' . $zbp->GetToken('AppCentre');
+	$zbp->SetHint('good', '提交成功！<a href="submit.php?type=theme&id=' . $app->id . $t . '">现在立刻上传到应用中心！</a>');
 	Redirect($_SERVER["HTTP_REFERER"]);
 }
 
@@ -164,6 +169,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
   <div id="divMain2">
 
 <form method="post" action="">
+<?php echo '<input id="token" name="token" type="hidden" value="'.$zbp->GetToken('AppCentre').'"/>'?>
   <table border="1" width="100%" cellspacing="0" cellpadding="0" class="tableBorder tableBorder-thcenter">
     <tr>
       <th width='28%'>&nbsp;</th>

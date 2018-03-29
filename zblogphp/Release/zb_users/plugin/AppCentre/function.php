@@ -40,14 +40,48 @@ function Server_Open($method) {
 
 	switch ($method) {
 	case 'down':
+		if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+		
 		Add_Filter_Plugin('Filter_Plugin_Zbp_ShowError', 'ScriptError', PLUGIN_EXITSIGNAL_RETURN);
 		header('Content-type: application/x-javascript; Charset=utf-8');
 		ob_clean();
+
+		if(version_compare(PHP_VERSION, '5.3.0') < 0 ){
+			define('APPCENTRE_CAN_NOT_HTTPS', true);
+		}
+
+		if(stripos(APPCENTRE_URL,'https://')===false && defined('APPCENTRE_CAN_NOT_HTTPS')===false){
+			$testhttps = Server_SendRequest(str_replace('http://', 'https://', APPCENTRE_URL) . 'testhttps.txt');
+			if(!$testhttps){
+				define('APPCENTRE_CAN_NOT_HTTPS', true);
+			}
+		}
+
 		$s = Server_SendRequest(APPCENTRE_URL . '?down=' . GetVars('id', 'GET'));
 		if (App::UnPack($s)) {
-			$zbp->SetHint('good', '下载APP并解压安装成功!');
+
+			$xml = $s;
+	        $charset = array();
+	        $charset[1] = substr($xml, 0, 1);
+	        $charset[2] = substr($xml, 1, 1);
+	        if (ord($charset[1]) == 31 && ord($charset[2]) == 139) {
+	            $xml = gzdecode($xml);
+	        }
+
+	        $xml = simplexml_load_string($xml);
+	        $type = $xml['type'];
+	        $id = $xml->id;
+	        $dir = $zbp->path . 'zb_users/' . $type . '/' . $id . '/';
+
+			if( is_readable($dir . $type . '.xml') ){
+				$c = file_get_contents($dir . $type . '.xml');
+				if( stripos($c,'<pubdate>'.$xml->pubdate.'</pubdate>')!==false ){
+					$zbp->SetHint('good', '下载APP并解压安装成功!');
+					die;
+				}
+			}
+			$zbp->SetHint('bad', '本地写入权限不足,App解压到安装目录失败!');
 		}
-		;
 		die();
 		break;
 	case 'search':
@@ -55,8 +89,9 @@ function Server_Open($method) {
 			continue;
 		}
 
-		$s = Server_SendRequest(APPCENTRE_URL . '?search=' . urlencode(GetVars('q', 'GET')));
-		echo str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		$s = Server_SendRequest(APPCENTRE_URL . '?search=' . urlencode(GetVars('q', 'GET'))  .'&'. GetVars('QUERY_STRING', 'SERVER') );
+		$s = str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		echo str_replace('%csrf_token%', $zbp->GetToken('AppCentre'), $s);
 		break;
 	case 'view':
 		$s = Server_SendRequest(APPCENTRE_URL . '?' . GetVars('QUERY_STRING', 'SERVER'));
@@ -78,11 +113,13 @@ function Server_Open($method) {
 			$zbp->ShowHint('bad', '后台访问应用中心故障，不能登录和下载应用，请检查主机空间是否能远程访问app.zblogcn.com。');
 		}
 
-		echo str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		$s = str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		echo str_replace('%csrf_token%', $zbp->GetToken('AppCentre'), $s);
 		break;
 	case 'check':
 		$s = Server_SendRequest(APPCENTRE_URL . '?check=' . urlencode(AppCentre_GetCheckQueryString())) . '';
-		echo str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		$s = str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		echo str_replace('%csrf_token%', $zbp->GetToken('AppCentre'), $s);
 		break;
 	case 'checksilent':
 		header('Content-type: application/x-javascript; Charset=utf-8');
@@ -125,7 +162,8 @@ function Server_Open($method) {
 		break;
 	case 'shoplist':
 		$s = Server_SendRequest(APPCENTRE_URL . '?shoplist');
-		echo str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		$s = str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
+		echo str_replace('%csrf_token%', $zbp->GetToken('AppCentre'), $s);
 		break;
 	case 'apptype':
 		$zbp->Config('AppCentre')->apptype = GetVars("type");
@@ -226,7 +264,26 @@ function Server_SendRequest_Network($url, $data = array(), $u, $c) {
 		$ajax->setRequestHeader('Website',$zbp->host);
 		if(isset($_SERVER['HTTP_ACCEPT']))
 			$ajax->setRequestHeader('Accept',$_SERVER['HTTP_ACCEPT']);
+		if(defined('APPCENTRE_CAN_NOT_HTTPS'))
+			$ajax->setRequestHeader('nohttps','true');
 		$ajax->send();
+
+		$i = 0;
+		while ($i < 3 && ($ajax->status == 301 || $ajax->status == 302) ) {
+			$i = $i + 1;
+			$ajax->open('GET', $ajax->getResponseHeader('location'));
+			$ajax->enableGzip();
+			$ajax->setTimeOuts(120, 120, 0, 0);
+			$ajax->setRequestHeader('User-Agent', $u);
+			$ajax->setRequestHeader('Cookie', $c);
+			$ajax->setRequestHeader('Website',$zbp->host);
+			if(isset($_SERVER['HTTP_ACCEPT']))
+				$ajax->setRequestHeader('Accept',$_SERVER['HTTP_ACCEPT']);
+			if(defined('APPCENTRE_CAN_NOT_HTTPS'))
+				$ajax->setRequestHeader('nohttps','true');
+			$ajax->send();
+		}
+
 	}
 
 	return $ajax->responseText;

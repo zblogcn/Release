@@ -37,6 +37,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <div class="SubMenu"><?php AppCentre_SubMenus(GetVars('method', 'GET') == 'check' ? 2 : 1);?></div>
   <div id="divMain2">
 
+
 <?php
 $method = GetVars('method', 'GET');
 if (!$method) {

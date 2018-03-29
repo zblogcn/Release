@@ -6,10 +6,12 @@ if(stripos($GLOBALS['bloghost'],'https://')!==false){
 	define('APPCENTRE_URL', 'https://app.zblogcn.com/client/');
 	define('APPCENTRE_SYSTEM_UPDATE', 'https://update.zblogcn.com/zblogphp/');
 	define('APPCENTRE_API_URL', 'https://app.zblogcn.com/api/index.php?api=');	
+	define('APPCENTRE_VERIFY', 'https://verify.app.zblogcn.com/release/v1/');
 }else{
 	define('APPCENTRE_URL', 'http://app.zblogcn.com/client/');
 	define('APPCENTRE_SYSTEM_UPDATE', 'http://update.zblogcn.com/zblogphp/');
 	define('APPCENTRE_API_URL', 'http://app.zblogcn.com/api/index.php?api=');
+	define('APPCENTRE_VERIFY', 'http://verify.app.zblogcn.com/release/v1/');
 }
 define('APPCENTRE_API_APP_ISBUY', 'isbuy');
 define('APPCENTRE_API_USER_INFO', 'userinfo');
@@ -97,14 +99,14 @@ function AppCentre_AddThemeMenu() {
 	global $zbp;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
-	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/theme.js' type='text/javascript'></script>";
+	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/theme.js.php' type='text/javascript'></script>";
 }
 
 function AppCentre_AddPluginMenu() {
 	global $zbp;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
-	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/plugin.js' type='text/javascript'></script>";
+	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/plugin.js.php' type='text/javascript'></script>";
 }
 
 //$appid是App在应用中心的发布后的文章ID数字号，非App的ID名称。
@@ -163,7 +165,8 @@ function AppCentre_Check_App_IsBuy($appid,$throwerror=true){
 	global $zbp;
 	$ajax = Network::Create();
 
-	$url = str_replace('http://','https://',APPCENTRE_URL) . '?checkbuy';
+	//$url = str_replace('http://','https://',APPCENTRE_URL) . '?checkbuy';
+	$url = APPCENTRE_VERIFY;
 	$c = AppCentre_Get_Cookies();
 	$u = AppCentre_Get_UserAgent();
 
@@ -199,8 +202,9 @@ function AppCentre_Check_App_IsBuy($appid,$throwerror=true){
 
 
 	$encrypted = $ajax->responseText;
+	$encrypted = str_replace('"', '', $encrypted);
 	openssl_public_decrypt(base64_decode($encrypted),$decrypted,$pu_key);//公钥解密
-
+	//die($decrypted);
 	if(md5($zbp->Config('AppCentre')->username . 'ok') == $decrypted){
 		return true;
 	}else{

@@ -15,6 +15,8 @@ require dirname(__FILE__) . '/function.php';
 
 $zbp->Load();
 
+$t = '&token=' . $zbp->GetToken('AppCentre');
+
 $action = 'root';
 if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 

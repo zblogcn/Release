@@ -15,7 +15,7 @@ if (!$zbp->Config('AppCentre')->username || !$zbp->Config('AppCentre')->password
 }
 
 if (GetVars('act') == 'login') {
-
+  if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 	$s = Server_Open('vaild');
 	if ($s) {
 
@@ -52,22 +52,25 @@ require $blogpath . 'zb_system/admin/admin_top.php';
   <div id="divMain2">
 <?php if (!$zbp->Config('AppCentre')->username) {?>
             <div class="divHeader2">应用中心账户登录</div>
-            <form action="?act=login" method="post">
+            <form action="?act=login&token=<?php echo $zbp->GetToken('AppCentre')?>" method="post">
               <table style="line-height:3em;" width="100%" border="0">
                 <tr height="32">
                   <th  align="center">账户登录
                     </td>
                 </tr>
                 <tr height="32">
-                  <td  align="center">用户名:
-                    <input type="text" name="app_username" value="" style="width:40%"/></td>
+                  <td  align="center">令牌:
+                    <input type="password" name="app_username" value="" style="width:40%"/></td>
                 </tr>
-                <tr height="32">
+                <tr height="32" style="display: none;">
                   <td  align="center">密&nbsp;&nbsp;&nbsp;&nbsp;码:
                     <input type="password" name="app_password" value="" style="width:40%" /></td>
                 </tr>
                 <tr height="32" align="center">
-                  <td align="center"><input type="submit" value="登陆" class="button" /></td>
+                  <td align="center"><input type="submit" value="登录" class="button" /></td>
+                </tr>
+                <tr height="32" align="center">
+                  <td align="center"><a href="https://uc.zblogcn.com/user/security/token" target="_blank">点击获取账户登录令牌</a></td>
                 </tr>
               </table>
             </form>

@@ -14,6 +14,8 @@ if (!$zbp->Config('AppCentre')->username || !$zbp->Config('AppCentre')->password
 	$blogtitle = '应用中心(客户端)-我的应用仓库';
 }
 
+Add_Filter_Plugin('Filter_Plugin_CSP_Backend', 'AppCentre_UpdateCSP');
+
 if (GetVars('act') == 'login') {
   if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 	$s = Server_Open('vaild');

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /zblog2/
+Disallow: /zblogphp/
+Disallow: /info/

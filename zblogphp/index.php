@@ -4,7 +4,7 @@ if($_SERVER['QUERY_STRING']=='install'){
 	echo file_get_contents(__DIR__ . '/Release.xml');
 }elseif($_SERVER['QUERY_STRING']=='beta'){
 	header('Content-Type: text/plain; charset=utf-8');
-	echo file_get_contents(__DIR__ . '/beta.html');
+	echo trim(file_get_contents(__DIR__ . '/beta.html'));
 }elseif($_SERVER['QUERY_STRING']!=''){
 	$s=__DIR__ . '/' . str_replace('\\','/',$_SERVER['QUERY_STRING']);
 	if(is_readable($s) && strpos($s,'./')===false){
@@ -43,5 +43,5 @@ if($_SERVER['QUERY_STRING']=='install'){
 	}
 }else{
 	header('Content-Type: text/plain; charset=utf-8');
-	echo file_get_contents(__DIR__ . '/now.html');
+	echo trim(file_get_contents(__DIR__ . '/now.html'));
 }

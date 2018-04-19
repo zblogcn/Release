@@ -7,11 +7,13 @@ if(stripos($GLOBALS['bloghost'],'https://')!==false){
 	define('APPCENTRE_SYSTEM_UPDATE', 'https://update.zblogcn.com/zblogphp/');
 	define('APPCENTRE_API_URL', 'https://app.zblogcn.com/api/index.php?api=');	
 	define('APPCENTRE_VERIFY', 'https://verify.app.zblogcn.com/release/v1/');
+	define('APPCENTRE_VERIFY_V2', 'https://verify.app.zblogcn.com/release/v2/');
 }else{
 	define('APPCENTRE_URL', 'http://app.zblogcn.com/client/');
 	define('APPCENTRE_SYSTEM_UPDATE', 'http://update.zblogcn.com/zblogphp/');
 	define('APPCENTRE_API_URL', 'http://app.zblogcn.com/api/index.php?api=');
 	define('APPCENTRE_VERIFY', 'http://verify.app.zblogcn.com/release/v1/');
+    define('APPCENTRE_VERIFY_V2', 'http://verify.app.zblogcn.com/release/v2/');
 }
 define('APPCENTRE_API_APP_ISBUY', 'isbuy');
 define('APPCENTRE_API_USER_INFO', 'userinfo');
@@ -153,10 +155,10 @@ function AppCentre_Get_UserAgent(){
     $app = $zbp->LoadApp('plugin', 'AppCentre');
     $pv = strpos(phpversion(), '-')===false? phpversion() : substr(phpversion(),0,strpos(phpversion(), '-'));
 	if(isset($GLOBALS['blogversion'])) {
-		$u = 'ZBlogPHP/' . $GLOBALS['blogversion'] . ' AppCentre/'. $app->modified . 'PhpVer/' . $pv . ' ' . GetGuestAgent();
+		$u = 'ZBlogPHP/' . $GLOBALS['blogversion'] . ' AppCentre/'. $app->modified . ' PhpVer/' . $pv . ' ' . GetGuestAgent();
 	}
 	else {
-		$u = 'ZBlogPHP/' . substr(ZC_BLOG_VERSION, -6, 6) . ' AppCentre/'. $app->modified . 'PhpVer/' . $pv . ' ' . GetGuestAgent();
+		$u = 'ZBlogPHP/' . substr(ZC_BLOG_VERSION, -6, 6) . ' AppCentre/'. $app->modified . ' PhpVer/' . $pv . ' ' . GetGuestAgent();
 	}
 	return $u;
 }
@@ -182,7 +184,6 @@ function AppCentre_Check_App_IsBuy($appid,$throwerror=true){
 
 	$data['includefilehash'] = file_get_contents($zbp->path . 'zb_users/plugin/AppCentre/include.php');
 	$data['includefilehash'] = md5(str_replace(array('\r','\n'), '', $data['includefilehash']));
-
 
 	$pu_key = openssl_pkey_get_public(APPCENTRE_PUBLIC_KEY);
 
@@ -216,6 +217,100 @@ function AppCentre_Check_App_IsBuy($appid,$throwerror=true){
 		}
 	}
 
-	return false;
 
+}
+
+
+function AppCentre_VerifyV2($appid, $type = 'plugin') {
+    try {
+        global $zbp;
+        $app = new App();
+        $app->LoadInfoByXml($type, $appid);
+        $ajax = Network::Create();
+
+        $url = APPCENTRE_VERIFY_V2;
+        $cookies = AppCentre_Get_Cookies();
+        $userAgent = AppCentre_Get_UserAgent();
+        $host = $zbp->host;
+        $rsaPublicKey = openssl_pkey_get_public(APPCENTRE_PUBLIC_KEY);
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            $aesKey = openssl_random_pseudo_bytes(32);
+            $aesIv = openssl_random_pseudo_bytes(16);
+        } else {
+            $aesKey = md5(uniqid());
+            $aesIv = substr(md5(uniqid()), 0, 16);
+        }
+        $encryptedAesKey = '';
+        openssl_public_encrypt(base64_encode($aesKey) . '.' . base64_encode($aesIv), $encryptedAesKey, $rsaPublicKey);
+        $encryptedAesKey = base64_encode($encryptedAesKey);
+
+        $licensePath = $zbp->path . 'zb_users/' . $type . '/' . $appid . '/zb-app-license.php';
+
+        $data = array(
+            'appId' => $appid,
+            'cookie' => $cookies,
+            'userAgent' => $userAgent,
+            'host' => $host,
+            'license' => file_exists($licensePath) ? file_get_contents($licensePath) : '',
+            'modified' => strtotime($app->modified)
+        );
+        $data['includefilehash'] = file_get_contents($zbp->path . 'zb_users/plugin/AppCentre/include.php');
+        $data['includefilehash'] = md5(str_replace(array('\r', '\n'), '', $data['includefilehash']));
+
+        $stringifierData = json_encode($data);
+
+        if (function_exists('openssl_encrypt')) {
+            $encryptedText = 'O' . base64_encode(openssl_encrypt($stringifierData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $aesIv));
+        } else { // Fuck PHP 5.2
+            $encryptedText = 'M' . base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $aesKey, $stringifierData, MCRYPT_MODE_CBC, $aesIv));
+        }
+
+        $sendData = $encryptedAesKey . '.' . $encryptedText;
+
+        $ajax->open('POST', $url);
+        //$ajax->enableGzip();
+        $ajax->setTimeOuts(120, 120, 0, 0);
+        $ajax->setRequestHeader('Content-Type', 'application/zblogphp-verify');
+        $ajax->setRequestHeader('User-Agent', $userAgent);
+        $ajax->setRequestHeader('Website', $zbp->host);
+        $ajax->send($sendData);
+
+        $returnData = str_replace('"', '', $ajax->responseText);
+        if (substr($returnData, 0, 3) === 'AES') {
+          $contents = explode('|', $returnData);
+          $hash = $contents[1];
+          if (hash_hmac('sha256', $contents[2], 'zblogverification') !== $hash) {
+              return 'Result Hash Error!';
+          }
+          $encryptedData = base64_decode($contents[2]);
+          if (function_exists('openssl_decrypt')) {
+              $decryptedText = openssl_decrypt($encryptedData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $aesIv);
+          } else {
+              $decryptedText = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $aesKey, $encryptedData, MCRYPT_MODE_CBC, $aesIv);
+              $textLength = strlen($decryptedText); 
+              $padding = ord($decryptedText[$textLength - 1]);
+              $decryptedText = substr($decryptedText, 0, -$padding); 
+          }
+        } else {
+            $decryptedText = $returnData;
+        }
+
+        $return = trim($decryptedText);
+        return $return;
+
+    } catch (Exception $e) {
+        return '无法验证应用，请联系我们。';
+    }
+
+}
+
+function AppCentre_UpdateCSP(&$csp)
+{
+    $urls = " *.zblogcn.com";
+    $items = array('default-src', 'img-src', 'script-src', 'style-src');
+    foreach ($items as $item) {
+        if (isset($csp[$item])) {
+            $csp[$item] .= $urls;
+        }
+    }
 }

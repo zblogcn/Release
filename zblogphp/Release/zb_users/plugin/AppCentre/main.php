@@ -27,6 +27,8 @@ if (count($_POST) > 0) {
 	Redirect('./main.php');
 }
 
+Add_Filter_Plugin('Filter_Plugin_CSP_Backend', 'AppCentre_UpdateCSP');
+
 require $blogpath . 'zb_system/admin/admin_header.php';
 require $blogpath . 'zb_system/admin/admin_top.php';
 

@@ -92,15 +92,18 @@ AppCentre_SubMenu(intHighlight)
                     </td>
                 </tr>
                 <tr height="32">
-                  <td  align="center">用户名:
+                  <td  align="center">令牌:
                     <input type="text" name="app_username" value="" style="width:40%"/></td>
                 </tr>
-                <tr height="32">
+                <tr height="32" style="display: none;">
                   <td  align="center">密&nbsp;&nbsp;&nbsp;&nbsp;码:
                     <input type="password" name="app_password" value="" style="width:40%" /></td>
                 </tr>
                 <tr height="32" align="center">
                   <td align="center"><input type="submit" value="登陆" class="button" /></td>
+                </tr>
+<tr height="32" align="center">
+                  <td align="center"><a href="https://uc.zblogcn.com/user/security/token" target="_blank">点击获取账户登录令牌</a></td>
                 </tr>
               </table>
             </form>

@@ -143,7 +143,7 @@ Function Server_Open(method)
 			End If
 			Response.End
 		Case "search"
-			strURL="?search=" & Server.URLEncode(Request.QueryString("q"))
+			strURL="?search=" & Server.URLEncode(Request.QueryString("q")) & "&" & Request.QueryString
 			Call Server_SendRequest("GET")
 			Call Server_FormatResponse(true)
 			Response.Write strResponse
@@ -209,6 +209,7 @@ Sub Server_SendRequest(requestmethod)
 	objXmlhttp.SetRequestHeader "User-Agent","AppCentre/"&app_modified & " ZBlog/"&BlogVersion&" "&Request.ServerVariables("HTTP_USER_AGENT") &""
 	objXmlhttp.SetRequestHeader "Cookie","username="&Server.URLEncode(login_un)&"; password="&Server.URLEncode(login_pw)&"; shop_username="&Server.URLEncode(shop_un)&"; shop_password="&Server.URLEncode(shop_pw)
 	objXmlhttp.SetRequestHeader "Website",ZC_BLOG_HOST
+	objXmlhttp.SetRequestHeader "Accept",Request.ServerVariables("HTTP_ACCEPT")
 	objXmlHttp.Send strPost
 	
 End Sub

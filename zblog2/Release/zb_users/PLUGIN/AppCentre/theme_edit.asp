@@ -39,6 +39,8 @@ If Request.Form.Count>0 Then
 
 	Call SaveThemeXmlInfo(Request.Form("app_id"))
 
+  Response.Redirect "theme_edit.asp?id="&Request.Form("app_id")
+
 End If
 
 
@@ -277,6 +279,8 @@ Next
       <p> 提示:主题的缩略图是名为<u>screenshot.png</u>的<b>300x240px</b>大小的png文件,放在插件的目录下.</p>
       <p><br/>
         <input type="submit" class="button" value="提交" id="btnPost" onclick='' />
+                &nbsp;&nbsp;&nbsp;&nbsp;<% If (login_un<>"" AND ID<>"" AND login_pw <>"") Then %>
+                <input type="submit" class="button" value="发布到应用中心" id="btnPost" onclick="window.location='submit.asp?type=theme&id=<%=ID%>';return false;" /><% End If %>
       </p>
       <p>&nbsp;</p>
     </form>

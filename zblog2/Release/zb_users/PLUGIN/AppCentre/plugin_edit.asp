@@ -36,6 +36,8 @@ If Request.Form.Count>0 Then
 
 	Call SavePluginXmlInfo(Request.Form("app_id"))
 
+  Response.Redirect "plugin_edit.asp?id="&Request.Form("app_id")
+
 End If
 
 
@@ -205,6 +207,8 @@ End If
               <p> 提示:插件的图标是名为<u>logo.png</u>的<b>128x128px</b>大小的png文件,推荐使用<a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">Metro Studio</a>软件创建logo,插件的缩略图(可选)是名为<u>screenshot.png</u>的<b>300x240px</b>大小的png文件,放在插件的目录下.</p>
               <p><br/>
                 <input type="submit" class="button" value="提交" id="btnPost" onclick='' />
+                &nbsp;&nbsp;&nbsp;&nbsp;<% If (login_un<>"" AND ID<>"" AND login_pw <>"") Then %>
+                <input type="submit" class="button" value="发布到应用中心" id="btnPost" onclick="window.location='submit.asp?type=plugin&id=<%=ID%>';return false;" /><% End If %>
               </p>
               <p>&nbsp;</p>
             </form>

@@ -912,7 +912,7 @@ t.IsHidden=False
 t.Source="system"
 t.SidebarID=1
 t.Order=9
-t.Content="<li><a href=""http://bbs.zblogcn.com/"" target=""_blank"">ZBlogger社区</a></li><li><a href=""http://app.rainbowsoft.org/"" target=""_blank"">应用中心</a></li><li><a href=""http://t.qq.com/zblogcn"" target=""_blank"">Z-Blog微博</a></li>"
+t.Content="<li><a href=""https://bbs.zblogcn.com/"" target=""_blank"">ZBlogger社区</a></li><li><a href=""https://app.zblogcn.com/"" target=""_blank"">应用中心</a></li>"
 t.HtmlID="divFavorites"
 t.Ftype="ul"
 t.post
@@ -927,7 +927,7 @@ t.IsHidden=False
 t.Source="system"
 t.SidebarID=1
 t.Order=10
-t.Content="<li><a href=""https://zbloghost.cn/"" target=""_blank"" title=""Z-Blog官方主机"">ZBlog官方主机</a></li><li><a href=""http://blog.zblogcn.com/"" target=""_blank"">Z-Blog官方博客</a></li>"
+t.Content="<li><a href=""https://zbloghost.cn/"" target=""_blank"" title=""Z-Blog官方主机"">ZBlog官方主机</a></li><li><a href=""https://blog.zblogcn.com/"" target=""_blank"">Z-Blog官方博客</a></li>"
 t.HtmlID="divLinkage"
 t.Ftype="ul"
 t.post

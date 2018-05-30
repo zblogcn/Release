@@ -4,7 +4,7 @@
 '********************************************************
 '   uEditor ASP涂鸦上传
 '   By ZSX(http://www.zsxsoft.com)
-'   Z-Blog (http://www.zblogcn.com)
+'   Z-Blog (http://www.zblogcn.com/)
 '********************************************************
 uEditor_i
 Dim Ext

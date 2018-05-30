@@ -130,6 +130,7 @@ ZC_BLOG_PRODUCT_FULLHTML=""
 
 Dim BlogVersions
 Set BlogVersions = New TMeta
+BlogVersions.SetValue "180518","Z-Blog 2.3 Avengers Build 180518"
 BlogVersions.SetValue "140101","Z-Blog 2.2 Prism Build 140101"
 BlogVersions.SetValue "130801","Z-Blog 2.2 Prism Build 130801"
 BlogVersions.SetValue "130722","Z-Blog 2.2 Prism Build 130722"
@@ -142,13 +143,17 @@ ZC_BLOG_VERSION=Replace(BlogVersions.GetValue(BlogVersions.Names(1)),"Z-Blog ","
 
 Response.AddHeader "Product","Z-Blog " & ZC_BLOG_VERSION
 
+
+'定义了一个布尔信号，为了解决Server 2016下的Execute问题，真是日了狗了
+Dim Boolean_Delay_Plugin_Signal
+Boolean_Delay_Plugin_Signal = False
+
 '*********************************************************
 ' 目的：    System 初始化
 '*********************************************************
 Sub System_Initialize()
 
 	'Call ActivePlugin()
-
 	If OpenConnect()=False Then
 		Call ShowError(4)
 	End If
@@ -165,22 +170,31 @@ Sub System_Initialize()
 	'Call GetFunction()
 
 	ZC_BLOG_PRODUCT_FULL=ZC_BLOG_PRODUCT & " " & ZC_BLOG_VERSION
-	
+
 	ZC_BLOG_PRODUCT_FULLHTML="<a href=""http://www.zblogcn.com/"" title=""RainbowSoft Z-Blog"">" & ZC_BLOG_PRODUCT_FULL & "</a>"
 
 	TemplateTagsDic.Item("ZC_BLOG_HOST")=BlogHost
+
+	Boolean_Delay_Plugin_Signal = True
 
 	Call LoadGlobeCache()
 	Call CreateAdminLeftMenu()
 	Call CreateAdminTopMenu()
 	Call ActivePlugin()
+
+	Boolean_Delay_Plugin_Signal = False
+
+	Call Execute_Action_Plugin()
+	Call Execute_Filter_Plugin()
+	Call Execute_Response_Plugin()
+
 	'plugin node
 	bAction_Plugin_System_Initialize=False
 	For Each sAction_Plugin_System_Initialize in Action_Plugin_System_Initialize
 		If Not IsEmpty(sAction_Plugin_System_Initialize) Then Call Execute(sAction_Plugin_System_Initialize)
 		If bAction_Plugin_System_Initialize=True Then Exit Sub
 	Next
-	
+
 	If ZC_POST_STATIC_MODE<>"STATIC" Then
 		Dim bolRebuildFiles
 		Application.Lock
@@ -193,8 +207,8 @@ Sub System_Initialize()
 		End If
 	End If
 
-	
-	
+
+
 	Dim bolRebuildIndex
 	Application.Lock
 	bolRebuildIndex=Application(ZC_BLOG_CLSID & "SIGNAL_REBUILDINDEX")
@@ -1112,7 +1126,11 @@ Function MakeCalendar(dtmYearMonth)
 		objRS.LockType = adLockReadOnly
 		objRS.ActiveConnection=objConn
 		objRS.Source=""
+	If ZC_MSSQL_ENABLE Then
 		objRS.Open("select [log_ID],[log_Tag],[log_CateID],[log_Title],[log_Intro],[log_Content],[log_Level],[log_AuthorID],[log_PostTime],[log_CommNums],[log_ViewNums],[log_TrackBackNums],[log_Url],[log_Istop],[log_Template],[log_FullUrl],[log_Type],[log_Meta] from [blog_Article] where ([log_Type]=0) And ([log_Level]>2) And ([log_PostTime] BETWEEN "& ZC_SQL_POUND_KEY &y&"-"&m&"-1"& ZC_SQL_POUND_KEY &" AND "& ZC_SQL_POUND_KEY &ny&"-"&nm&"-1"& ZC_SQL_POUND_KEY &") AND log_ID in(SELECT max(log_ID) from [blog_Article] group by Month(log_posttime),Day(log_posttime))")
+	Else
+		objRS.Open("select [log_ID],[log_Tag],[log_CateID],[log_Title],[log_Intro],[log_Content],[log_Level],[log_AuthorID],[log_PostTime],[log_CommNums],[log_ViewNums],[log_TrackBackNums],[log_Url],[log_Istop],[log_Template],[log_FullUrl],[log_Type],[log_Meta] from [blog_Article] where ([log_Type]=0) And ([log_Level]>2) And ([log_PostTime] BETWEEN "& ZC_SQL_POUND_KEY &y&"-"&m&"-1"& ZC_SQL_POUND_KEY &" AND "& ZC_SQL_POUND_KEY &ny&"-"&nm&"-1"& ZC_SQL_POUND_KEY &") ")
+	End If
 
 		If (Not objRS.bof) And (Not objRS.eof) Then
 			For i=1 To objRS.RecordCount
@@ -1130,31 +1148,32 @@ Function MakeCalendar(dtmYearMonth)
 	'//////////////////////////////////////////////////////////
 
 	s=UrlbyDateAuto(y,m-1,"")
-	t=UrlbyDateAuto(y,m+1,"")
+	t=IIf(m=month(Date()),UrlbyDateAuto(y,m,""),UrlbyDateAuto(y,m+1,""))
 	If m=1 Then s=UrlbyDateAuto(y-1,12,"")
 	If m=12 Then t=UrlbyDateAuto(y+1,1,"")
 
 		strCalendar="<table id=""tbCalendar""><caption><a href="""&s&""">&#00171;</a>  <a href="""&UrlbyDateAuto(y,m,"")&""">"&Replace(ZC_MSG233,"%y",y)& " " & ZVA_Month_Abbr(m)&"</a>  <a href="""&t&""">&#00187;</a></caption>"
-		
-	'thead	
+
+	'thead
 		strCalendar=strCalendar & "	<thead>	<tr> <th title="""&ZVA_Week(1)&""" scope=""col"" abbr="""&ZVA_Week(1)&"""><small>"&ZVA_Week_Abbr(1)&"</small></th> <th title="""&ZVA_Week(2)&""" scope=""col"" abbr="""&ZVA_Week(2)&"""><small>"&ZVA_Week_Abbr(2)&"</small></th> <th title="""&ZVA_Week(3)&""" scope=""col"" abbr="""&ZVA_Week(3)&"""><small>"&ZVA_Week_Abbr(3)&"</small></th>	<th title="""&ZVA_Week(4)&""" scope=""col"" abbr="""&ZVA_Week(4)&"""><small>"&ZVA_Week_Abbr(4)&"</small></th> <th title="""&ZVA_Week(5)&""" scope=""col"" abbr="""&ZVA_Week(5)&"""><small>"&ZVA_Week_Abbr(5)&"</small></th>	<th title="""&ZVA_Week(6)&""" scope=""col"" abbr="""&ZVA_Week(6)&"""><small>"&ZVA_Week_Abbr(6)&"</small></th> <th title="""&ZVA_Week(7)&""" scope=""col"" abbr="""&ZVA_Week(7)&"""><small>"&ZVA_Week_Abbr(7)&"</small></th>	</tr>	</thead>"
-		
-	'tfoot	
-		
-	'tbody	
+
+	'tfoot
+
+	'tbody
 	strCalendar=strCalendar & "	<tbody>"
-	
+
 	j=0
 	Dim b1,b2
+	Dim strDay
 	For i=1 to b
 
 		If (j Mod 7)=0 Then strCalendar=strCalendar & "<tr>"
 		If (j/7)<=0 and firw<>1 then strCalendar=strCalendar & "<td class=""pad"" colspan="""& (firw-1) &"""> </td>"
 
 		If (j=>firw-1) and (k=<d) Then
-		
+
 			strCalendar=strCalendar & "<td "
-			
+
 			If 	Cdate(y&"-"&m&"-"&k) = Date() Then
 				strCalendar=strCalendar & " id =""today"" "
 				b1="<b>"
@@ -1163,17 +1182,22 @@ Function MakeCalendar(dtmYearMonth)
 				b1=""
 				b2=""
 			End If
-			
+
 			If aryDateLink(k) Then
-				strCalendar=strCalendar & "><a href="""& ZC_BLOG_HOST &"catalog.asp?date="&Year(aryDateArticle(k).PostTime)&"-"&Month(aryDateArticle(k).PostTime)&"-"&Day(aryDateArticle(k).PostTime)& """>"&b1&(k)&b2&"</a></td>"
+				strDay = Year(aryDateArticle(k).PostTime)&"-"&Month(aryDateArticle(k).PostTime)&"-"&Day(aryDateArticle(k).PostTime)
+				If ZC_POST_STATIC_MODE="REWRITE" Then
+					strCalendar=strCalendar & "><a title=""" & strDay & """ href=""" & Replace(ZC_DATE_REGEX,"{%date%}",strDay) & """>"&b1&(k)&b2&"</a></td>"
+				Else
+					strCalendar=strCalendar & "><a title=""" & strDay & """ href="""& ZC_BLOG_HOST &"catalog.asp?date=" & strDay & """>"&b1&(k)&b2&"</a></td>"
+				End If
 			Else
 				strCalendar=strCalendar &">"&b1&(k)&b2&"</td>"
 			End If
 
 			k=k+1
 		End If
-			
-		if j=b-1 AND lasw<>7 then strCalendar=strCalendar & "<td class=""pad"" colspan="""& (7-lasw) &"""> </td>"		
+
+		if j=b-1 AND lasw<>7 then strCalendar=strCalendar & "<td class=""pad"" colspan="""& (7-lasw) &"""> </td>"
 
 		If (j Mod 7)=6 Then strCalendar=strCalendar & "</tr>"
 
@@ -1181,8 +1205,10 @@ Function MakeCalendar(dtmYearMonth)
 	Next
 
 	strCalendar=strCalendar & "	</tbody></table>"
+	strCalendar = Replace(strCalendar,"{%host%}/",ZC_BLOG_HOST)
+	strCalendar = Replace(strCalendar,"/default.html","/")
 	MakeCalendar=strCalendar
-	
+
 End Function
 '*********************************************************
 
@@ -1258,7 +1284,7 @@ Function LoadIncludeFiles(strDir)
 	Dim f, f1, fc, s, i
 
 	If Not IsObject(PublicObjFSO) Then Set PublicObjFSO=Server.CreateObject("Scripting.FileSystemObject")
-	
+
 	If PublicObjFSO.FolderExists(BlogPath & strDir)=False Then
 		LoadIncludeFiles=Array()
 		Exit Function
@@ -1377,15 +1403,15 @@ Function CheckTemplateModified()
 	Dim d,nd
 
 	If Not IsObject(PublicObjFSO) Then Set PublicObjFSO=Server.CreateObject("Scripting.FileSystemObject")
-	
+
 	If PublicObjFSO.FolderExists(BlogPath & "zb_users\" & "theme" & "\" & ZC_BLOG_THEME & "\" & ZC_TEMPLATE_DIRECTORY)=False Then Exit Function
 	Set f = PublicObjFSO.GetFolder(BlogPath & "zb_users\" & "theme" & "\" & ZC_BLOG_THEME & "\" & ZC_TEMPLATE_DIRECTORY)
 	Set fc = f.Files
 
 	For Each f1 in fc
-	  d=f1.DateLastModified
-	  If nd="" Then nd=d
-	  If DateDiff("s",nd,d)>0 Then nd=d
+		d=f1.DateLastModified
+		If nd="" Then nd=d
+		If DateDiff("s",nd,d)>0 Then nd=d
 	Next
 
 	CheckTemplateModified=nd
@@ -1598,7 +1624,7 @@ Function LoadGlobeCache()
 	If IsArray(aryFileList) Then
 
 		a=UBound(aryFileList)
-		
+
 		If a>0 Then
 
 			ReDim aryFileNameInclude(a)
@@ -1644,12 +1670,14 @@ Function LoadGlobeCache()
 
 				Set functionstype=New TMeta
 				functionstype.LoadString=LoadFromFile(BlogPath & "zb_users\cache\functionstype.asp","utf-8")
-				
-				
+
+
 				If functionstype.GetValue(modname)="div" Then
-					aryTemplateTagsValue(e+i+a)="<div id=""mod_"+modname+""" style=""display:none;""><script type=""text/javascript"">LoadFunction('"&modname&"');</script></div>"
+					' aryTemplateTagsValue(e+i+a)="<div id=""mod_"+modname+""" style=""display:none;""><script type=""text/javascript"">LoadFunction('"&modname&"');</script></div>"
+					aryTemplateTagsValue(e+i+a)="<div class=""LoadMod"" data-mod=""" & modname & """ id=""mod_" & modname & """ style=""display:none;""></div>"
 				Else
-					aryTemplateTagsValue(e+i+a)="<li id=""mod_"+modname+""" style=""display:none;""><script type=""text/javascript"">LoadFunction('"&modname&"');</script></li>"
+					' aryTemplateTagsValue(e+i+a)="<li id=""mod_"+modname+""" style=""display:none;""><script type=""text/javascript"">LoadFunction('"&modname&"');</script></li>"
+					aryTemplateTagsValue(e+i+a)="<li class=""LoadMod"" data-mod=""" & modname & """ id=""mod_" & modname & """ style=""display:none;""></li>"
 				End If
 
 			Next
@@ -1705,7 +1733,7 @@ Function LoadGlobeCache()
 	t(23)="ZC_BLOG_PRODUCT_FULL"
 	t(24)="ZC_BLOG_PRODUCT_FULLHTML"
 
-	
+
 	ReDim Preserve aryTemplateTagsName(a+a2+a3+e+d+b)
 	ReDim Preserve aryTemplateTagsValue(a+a2+a3+e+d+b)
 	For j=1 to b
@@ -1894,7 +1922,7 @@ Function GetReallyDirectory()
 
 	If Not IsObject(PublicObjFSO) Then Set PublicObjFSO=Server.CreateObject("Scripting.FileSystemObject")
 
-	Dim p	
+	Dim p
 	p=Server.MapPath(".") & "\"
 
 	If PublicObjFSO.FolderExists(p & "ZB_SYSTEM\") Then
@@ -2106,6 +2134,8 @@ Function ParseCustomDirectory(strRegex,strPost,strCategory,strUser,strYear,strMo
 	s=Replace(s,"{%alias%}",strAlias)
 	s=Replace(s,"{%name%}",strName)
 	s=Replace(s,"{%date%}",d)
+	' s=Replace(s,"{%page%}",Request.QueryString("page"))
+	' s=Replace(s,"//default.html","/default.html")
 
 	ParseCustomDirectory=s
 
@@ -2125,7 +2155,7 @@ Sub CreatDirectoryByCustomDirectoryWithFullBlogPath(ByVal strCustomDirectory)
 	On Error Resume Next
 
 	If Not IsObject(PublicObjFSO) Then Set PublicObjFSO=Server.CreateObject("Scripting.FileSystemObject")
-	
+
 	Dim s
 	Dim t
 	Dim i
@@ -2167,7 +2197,7 @@ Sub CreatDirectoryByCustomDirectory(ByVal strCustomDirectory)
 	On Error Resume Next
 
 	If Not IsObject(PublicObjFSO) Then Set PublicObjFSO=Server.CreateObject("Scripting.FileSystemObject")
-	
+
 	Dim s
 	Dim t
 	Dim i
@@ -2190,7 +2220,7 @@ Sub CreatDirectoryByCustomDirectory(ByVal strCustomDirectory)
 		End If
 	Next
 
-	
+
 
 	Err.Clear
 
@@ -2217,7 +2247,7 @@ Function MakeLeftMenu(requireLevel,strName,strUrl,strLiId,strAId,strImgUrl)
 		tmp="<li id="""&strLiId&"""><a id="""&strAId&""" href="""&strUrl&"""><span>"&strName&"</span></a></li>"
 	End If
 	MakeLeftMenu=tmp
-	
+
 End Function
 '*********************************************************
 
@@ -2385,6 +2415,10 @@ End Function
 		'actioncode:要执行的语句，要转义为Execute可执行语句
 '*********************************************************
 Function Add_Action_Plugin(plugname,actioncode)
+	If Boolean_Delay_Plugin_Signal = True Then
+		Call DelayAdd_Action_Plugin(plugname,actioncode)
+		Exit Function
+	End If
 	On Error Resume Next
 	actioncode=Replace(actioncode,"Exit Function","b" & plugname & "=True")
 	actioncode=Replace(actioncode,"Exit Sub","b" & plugname & "=True")
@@ -2399,13 +2433,61 @@ End Function
 
 
 '*********************************************************
+Dim String_Action_Plugin_ByOnce
+String_Action_Plugin_ByOnce = ""
+Function DelayAdd_Action_Plugin(plugname,actioncode)
+	On Error Resume Next
+	String_Action_Plugin_ByOnce = String_Action_Plugin_ByOnce & vbCrLf & "ReDim Preserve " & plugname & "(UBound("& plugname &")+1)"
+	actioncode=Replace(actioncode,"Exit Function","b" & plugname & "=True")
+	actioncode=Replace(actioncode,"Exit Sub","b" & plugname & "=True")
+	actioncode=Replace(actioncode,"Exit Property","b" & plugname & "=True")
+	String_Action_Plugin_ByOnce = String_Action_Plugin_ByOnce & vbCrLf & plugname & "(UBound("& plugname &"))=" & plugname & "(UBound("& plugname &"))&""" & Replace(actioncode,"""","""""") & """" & ":"
+	Err.Clear
+End Function
+Function Execute_Action_Plugin()
+	On Error Resume Next
+	If String_Action_Plugin_ByOnce ="" Then Exit Function
+	Call Execute(String_Action_Plugin_ByOnce)
+	String_Action_Plugin_ByOnce = ""
+	Err.Clear
+End Function
+'*********************************************************
+
+
+
+
+'*********************************************************
 ' 目的：挂上Filter接口
 ' 参数：'plugname:接口名称
 		'functionname:要挂接的函数名
 '*********************************************************
 Function Add_Filter_Plugin(plugname,functionname)
+	If Boolean_Delay_Plugin_Signal = True Then
+		Call DelayAdd_Filter_Plugin(plugname,functionname)
+		Exit Function
+	End If
 	On Error Resume Next
 	Call Execute("s" & plugname & "=" & "s" & plugname & "&""" & functionname & """" & "& ""|""")
+	Err.Clear
+End Function
+'*********************************************************
+
+
+
+
+'*********************************************************
+Dim String_Filter_Plugin_ByOnce
+String_Filter_Plugin_ByOnce = ""
+Function DelayAdd_Filter_Plugin(plugname,functionname)
+	On Error Resume Next
+	String_Filter_Plugin_ByOnce = String_Filter_Plugin_ByOnce & vbCrLf & "s" & plugname & "=" & "s" & plugname & "&""" & functionname & """" & "& ""|"""
+	Err.Clear
+End Function
+Function Execute_Filter_Plugin()
+	On Error Resume Next
+	If String_Filter_Plugin_ByOnce ="" Then Exit Function
+	Call Execute(String_Filter_Plugin_ByOnce)
+	String_Filter_Plugin_ByOnce = ""
 	Err.Clear
 End Function
 '*********************************************************
@@ -2419,12 +2501,34 @@ End Function
 		'parameter:要写入的内容
 '*********************************************************
 Function Add_Response_Plugin(plugname,parameter)
+	If Boolean_Delay_Plugin_Signal = True Then
+		Call DelayAdd_Response_Plugin(plugname,parameter)
+		Exit Function
+	End If
 	On Error Resume Next
 	Call Execute(plugname & "=" & plugname & "&""" & Replace(Replace(Replace(Replace(parameter,"""",""""""),vbCrlf,"""&vbCrlf&"""),vbLf,"""&vbLf&"""),vbCr,"""&vbCr&""") & """")
 	Err.Clear
 End Function
 '*********************************************************
 
+
+
+'*********************************************************
+Dim String_Response_Plugin_ByOnce
+String_Response_Plugin_ByOnce = ""
+Function DelayAdd_Response_Plugin(plugname,parameter)
+	On Error Resume Next
+	String_Response_Plugin_ByOnce = String_Response_Plugin_ByOnce & vbCrLf & plugname & "=" & plugname & "&""" & Replace(Replace(Replace(Replace(parameter,"""",""""""),vbCrlf,"""&vbCrlf&"""),vbLf,"""&vbLf&"""),vbCr,"""&vbCr&""") & """"
+	Err.Clear
+End Function
+Function Execute_Response_Plugin()
+	On Error Resume Next
+	If String_Response_Plugin_ByOnce ="" Then Exit Function
+	Call Execute(String_Response_Plugin_ByOnce)
+	String_Response_Plugin_ByOnce = ""
+	Err.Clear
+End Function
+'*********************************************************
 
 
 
@@ -2591,7 +2695,7 @@ Function BlogReBuild_Calendar()
 	Dim objRS
 	Dim k,l,m,n
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("calendar")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("calendar")).IsHidden=True Then
 
 		Exit Function
 	End If
@@ -2602,7 +2706,7 @@ Function BlogReBuild_Calendar()
 	strCalendar=TransferHTML(strCalendar,"[no-asp]")
 
 
-	
+
 	Functions(FunctionMetas.GetValue("calendar")).Content=strCalendar
 	Functions(FunctionMetas.GetValue("calendar")).Post()
 	BlogReBuild_Calendar=True
@@ -2636,7 +2740,7 @@ Function BlogReBuild_Archives()
 	Dim ArtList
 
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("archives")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("archives")).IsHidden=True Then
 
 		Exit Function
 	End If
@@ -2699,7 +2803,7 @@ Else
 
 			If (Not objRS.bof) And (Not objRS.eof) Then
 				If InStr(s,"<!-- year -->"&Replace(ZC_MSG233,"%y",Year(dtmYM(i)))&"<!-- year -->")=0 Then s=s & "</li><li><!-- year -->"&Replace(ZC_MSG233,"%y",Year(dtmYM(i)))&"<!-- year --><br/>"
-				
+
 				s=s & "<a href="""& UrlbyDateAuto(Year(dtmYM(i)),Month(dtmYM(i)),"") &""">" &  ZVA_Month_Abbr(Month(dtmYM(i)))  & "<span class=""article-nums"">(" & objRS(0) & ")</span>" +"</a>&nbsp; "
 				If j>0 Then
 					If i=j Then Exit For
@@ -2741,12 +2845,12 @@ Function BlogReBuild_Catalogs()
 
 	IsRunGetCategory=False
 	Call GetFunction
-	If Functions(FunctionMetas.GetValue("catalog")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("catalog")).IsHidden=True Then
 
 		Exit Function
 	End If
 	Call GetCategory()
-	
+
 	Dim objRS
 	Dim objStream
 
@@ -2755,7 +2859,7 @@ Function BlogReBuild_Catalogs()
 	'Catalogs
 	Dim strCatalog,bolHasSubCate
 
-	Dim aryCateInOrder 
+	Dim aryCateInOrder
 	aryCateInOrder=GetCategoryOrder()
 
 
@@ -2839,11 +2943,11 @@ Function BlogReBuild_Authors()
 
 	Call GetUser()
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("authors")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("authors")).IsHidden=True Then
 
 		Exit Function
 	End If
-	
+
 	Dim objRS
 	Dim objStream
 
@@ -2860,7 +2964,7 @@ Function BlogReBuild_Authors()
 
 	strAuthor=TransferHTML(strAuthor,"[no-asp]")
 
-	
+
 	Functions(FunctionMetas.GetValue("authors")).Content=strAuthor
 	Functions(FunctionMetas.GetValue("authors")).Post()
 
@@ -2885,17 +2989,17 @@ Function BlogReBuild_Tags()
 	Next
 
 	Call GetFunction()
-	
-	If Functions(FunctionMetas.GetValue("tags")).IsHidden=True Then 
+
+	If Functions(FunctionMetas.GetValue("tags")).IsHidden=True Then
 
 		Exit Function
 	End If
-	
+
 	Dim objRS
 	Dim objStream
 
 	Dim i,j,s,t,h
-	
+
 	i=Functions(FunctionMetas.GetValue("tags")).MaxLi
 	If i=0 Then i=25
 	j=0
@@ -2968,12 +3072,12 @@ Function BlogReBuild_Previous()
 	Dim objArticle
 	Call GetFunction()
 	j=Functions(FunctionMetas.GetValue("previous")).MaxLi
-	
-	If Functions(FunctionMetas.GetValue("previous")).IsHidden=True Then 
+
+	If Functions(FunctionMetas.GetValue("previous")).IsHidden=True Then
 
 		Exit Function
 	End If
-	
+
 	If j=0 Then j=10
 
 	'Previous
@@ -3020,11 +3124,11 @@ Function BlogReBuild_Comments()
 	Next
 
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("comments")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("comments")).IsHidden=True Then
 
 		Exit Function
 	End If
-	
+
 	Dim objRS
 	Dim objStream
 	Dim objArticle
@@ -3038,7 +3142,7 @@ Function BlogReBuild_Comments()
 	j=Functions(FunctionMetas.GetValue("comments")).MaxLi
 	If j=0 Then j=10
 
-	Set objRS=objConn.Execute("SELECT TOP "&j&" [log_ID],[comm_ID],[comm_Content],[comm_PostTime],[comm_AuthorID],[comm_Author] FROM [blog_Comment] WHERE [log_ID]>0 AND [comm_IsCheck]=0 ORDER BY [comm_PostTime] DESC,[comm_ID] DESC")
+	Set objRS=objConn.Execute("SELECT TOP "&j&" [log_ID],[comm_ID],[comm_Content],[comm_PostTime],[comm_AuthorID],[comm_Author] FROM [blog_Comment] WHERE [log_ID]>0 AND [comm_IsCheck]=0 ORDER BY [comm_PostTime] DESC")
 	If (Not objRS.bof) And (Not objRS.eof) Then
 		For i=1 to j
 			Call GetUsersbyUserIDList(objRS("comm_AuthorID"))
@@ -3053,7 +3157,7 @@ Function BlogReBuild_Comments()
 			s=Replace(s,vbCrlf,"")
 			s=Left(s,ZC_COMMENT_EXCERPT_MAX)
 			s=TransferHTML(s,"[nohtml]")
-			
+
 			strComments=strComments & "<li style=""text-overflow:ellipsis;""><a href="""& t & "#cmt" & objRS("comm_ID") & """ title=""" & objRS("comm_PostTime") & " post by " & IIf(Users(objRS("comm_AuthorID")).Level=5,objRS("comm_Author"),Users(objRS("comm_AuthorID")).FirstName) & """>"+s+"</a></li>"
 			Set objArticle=Nothing
 			objRS.MoveNext
@@ -3133,7 +3237,7 @@ Function BlogReBuild_Statistics()
 	Dim objRS
 	Dim objStream
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("statistics")).IsHidden=True Then 
+	If Functions(FunctionMetas.GetValue("statistics")).IsHidden=True Then
 
 		Exit Function
 	End If
@@ -3161,7 +3265,7 @@ Function BlogReBuild_Statistics()
 
 	strStatistics=TransferHTML(strStatistics,"[no-asp]")
 
-	
+
 	Functions(FunctionMetas.GetValue("statistics")).Content=strStatistics
 	Functions(FunctionMetas.GetValue("statistics")).Post()
 
@@ -3197,7 +3301,7 @@ Function BlogReBuild_Functions
 			If f.id>0 And f.SourceType<>"other" Then
 				f.SaveFile
 			End If
-		End If 
+		End If
 	Next
 
 
@@ -3298,7 +3402,7 @@ Function BlogReBuild_Default
 
 		ArtList.Build
 
-		Call SaveToFile(BlogPath & "zb_users/CACHE/default.asp",ArtList.html,"utf-8",False) 
+		Call SaveToFile(BlogPath & "zb_users/CACHE/default.asp",ArtList.html,"utf-8",False)
 
 	End If
 
@@ -3343,7 +3447,7 @@ Function ExportRSS()
 
 			Dim i
 			Dim objRS
-			Set objRS=objConn.Execute("SELECT TOP "&ZC_RSS2_COUNT&" [log_ID],[log_Tag],[log_CateID],[log_Title],[log_Intro],[log_Content],[log_Level],[log_AuthorID],[log_PostTime],[log_CommNums],[log_ViewNums],[log_TrackBackNums],[log_Url],[log_Istop],[log_Template],[log_FullUrl],[log_Type],[log_Meta] FROM [blog_Article] WHERE ([log_Type]=0) And ([log_ID]>0) AND ([log_Level]>2) ORDER BY [log_PostTime] DESC")
+			Set objRS=objConn.Execute("SELECT TOP "&ZC_RSS2_COUNT&" [log_ID],[log_Tag],[log_CateID],[log_Title],[log_Intro],[log_Content],[log_Level],[log_AuthorID],[log_PostTime],[log_CommNums],[log_ViewNums],[log_TrackBackNums],[log_Url],[log_Istop],[log_Template],[log_FullUrl],[log_Type],[log_Meta] FROM [blog_Article] WHERE ([log_Type]=0) AND ([log_Level]>2) ORDER BY [log_PostTime] DESC")
 
 			If (Not objRS.bof) And (Not objRS.eof) Then
 				For i=1 to ZC_RSS2_COUNT
@@ -3480,7 +3584,7 @@ t = d.Keys
 For i = 0 To d.Count -1
 
 	If UBound(Users)>=CLng(t(i)) Then
-		If IsObject(Users(t(i)))=False Then 
+		If IsObject(Users(t(i)))=False Then
 			j=j+1
 			s=s & "([mem_ID]="&CLng(t(i))&") Or"
 		End If
@@ -3512,7 +3616,7 @@ End Function
 '*********************************************************
 Sub GetUsers_Sub(s)
 
-If Len(s)>2 Then 
+If Len(s)>2 Then
 	s=Left(s,Len(s)-2)
 Else
 	Exit Sub
@@ -3584,7 +3688,7 @@ t = d.Keys
 For i = 0 To d.Count -1
 
 	If UBound(Tags)>=CLng(t(i)) Then
-		If IsObject(Tags(t(i)))=False Then 
+		If IsObject(Tags(t(i)))=False Then
 			j=j+1
 			s=s & "([tag_ID]="&CLng(t(i))&") Or"
 		End If
@@ -3614,7 +3718,7 @@ End Function
 '*********************************************************
 Sub GetTags_Sub(s)
 
-If Len(s)>2 Then 
+If Len(s)>2 Then
 	s=Left(s,Len(s)-2)
 Else
 	Exit Sub
@@ -3684,7 +3788,7 @@ End Function
 
 
 '*********************************************************
-' 目的：    
+' 目的：
 '*********************************************************
 Function GetCommentFloor(ID)
 
@@ -3762,7 +3866,7 @@ Function SaveFunctionType()
 
 	Call GetFunction()
 
-	Dim t 
+	Dim t
 
 	Set t=New TMeta
 
@@ -3813,7 +3917,6 @@ Call Add_Response_Plugin("Response_Plugin_Admin_Left",MakeLeftMenu(GetRights("Th
 Call Add_Response_Plugin("Response_Plugin_Admin_Left",MakeLeftMenu(GetRights("FunctionMng"),ZC_MSG007,BlogHost&"zb_system/cmd.asp?act=FunctionMng","nav_function","aFunctionMng",""))
 Call Add_Response_Plugin("Response_Plugin_Admin_Left",MakeLeftMenu(GetRights("PlugInMng"),ZC_MSG107,BlogHost&"zb_system/cmd.asp?act=PlugInMng","nav_plugin","aPlugInMng",""))
 
-
 End Function
 '*********************************************************
 
@@ -3829,10 +3932,9 @@ Response_Plugin_Admin_Top=""
 
 Call Add_Response_Plugin("Response_Plugin_Admin_Top",MakeTopMenu(GetRights("admin"),ZC_MSG245,BlogHost&"zb_system/cmd.asp?act=admin","",""))
 Call Add_Response_Plugin("Response_Plugin_Admin_Top",MakeTopMenu(GetRights("SettingMng"),ZC_MSG247,BlogHost&"zb_system/cmd.asp?act=SettingMng","",""))
-If Not ZC_POST_STATIC_MODE<>"STATIC" Then 
+If Not ZC_POST_STATIC_MODE<>"STATIC" Then
 	Call Add_Response_Plugin("Response_Plugin_Admin_Top",MakeTopMenu(GetRights("AskFileReBuild"),ZC_MSG073,BlogHost&"zb_system/cmd.asp?act=AskFileReBuild","",""))
 End If
-
 
 End Function
 '*********************************************************
@@ -3895,7 +3997,7 @@ End Function
 
 
 '*********************************************************
-' 目的：    Add Batch 
+' 目的：    Add Batch
 '*********************************************************
 Function AddBatch(name,actioncode)
 
@@ -3945,7 +4047,12 @@ Function SaveConfig2Option()
 		strContent=Replace(strContent,"<#ZC_BLOG_LANGUAGEPACK#>","SimpChinese")
 		Call BlogConfig.Write("ZC_BLOG_LANGUAGEPACK","SimpChinese")
 	End If
-	
+
+	If Instr(strContent,"<#ZC_COMMENT_EXCERPT_MAX#>")>0 Then
+		strContent=Replace(strContent,"<#ZC_COMMENT_EXCERPT_MAX#>","20")
+		Call BlogConfig.Write("ZC_COMMENT_EXCERPT_MAX","20")
+	End If
+
 	Call BlogConfig.Save()
 
 	Call SaveToFile(BlogPath & "zb_users\c_option.asp",strContent,"utf-8",False)
@@ -4000,13 +4107,13 @@ End Function
 
 
 '*********************************************************
-' 目的：  刷新c_option.asp至数据库  
+' 目的：  刷新c_option.asp至数据库
 '*********************************************************
 Function RefreshOptionFormFileToDB()
 	On Error Resume Next
 
 	If Not CheckUpdateDB("[fn_Source]","[blog_Function]") Then
-		IF ZC_MSSQL_ENABLE=True Then	
+		IF ZC_MSSQL_ENABLE=True Then
 			objConn.execute("ALTER TABLE [blog_Function] ADD fn_Source nvarchar(50) default ''")
 			objConn.execute("ALTER TABLE [blog_Function] ADD fn_ViewType nvarchar(50) default ''")
 			objConn.execute("ALTER TABLE [blog_Function] ADD fn_IsHidden bit default 0")
@@ -4022,13 +4129,13 @@ Function RefreshOptionFormFileToDB()
 		objConn.execute("UPDATE [blog_Function] SET [fn_ViewType]=''")
 		objConn.execute("UPDATE [blog_Function] SET [fn_Meta]=''")
 
-		IF ZC_MSSQL_ENABLE=True Then	
+		IF ZC_MSSQL_ENABLE=True Then
 			objConn.execute("ALTER TABLE [blog_Function] DROP COLUMN fn_IsSystem")
 		Else
 			objConn.execute("ALTER TABLE [blog_Function] DROP COLUMN fn_IsSystem")
 		End If
 
-		IF ZC_MSSQL_ENABLE=True Then	
+		IF ZC_MSSQL_ENABLE=True Then
 			objConn.execute("ALTER TABLE [blog_Function] ADD fn_IsHideTitle bit default 0")
 		Else
 			objConn.execute("ALTER TABLE [blog_Function] ADD COLUMN fn_IsHideTitle YESNO DEFAULT 0")
@@ -4050,7 +4157,7 @@ Function RefreshOptionFormFileToDB()
 
 
 	Call GetFunction()
-	If Functions(FunctionMetas.GetValue("controlpanel")).Content="<span class=""cp-login""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=login"">[<#ZC_MSG009#>]</a></span>&nbsp;&nbsp;<span class=""cp-vrs""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=vrs"">[<#ZC_MSG021#>]</a></span>" Then 
+	If Functions(FunctionMetas.GetValue("controlpanel")).Content="<span class=""cp-login""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=login"">[<#ZC_MSG009#>]</a></span>&nbsp;&nbsp;<span class=""cp-vrs""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=vrs"">[<#ZC_MSG021#>]</a></span>" Then
 		Functions(FunctionMetas.GetValue("controlpanel")).Content="<span class=""cp-hello"">您好,欢迎到访网站!</span><br/><span class=""cp-login""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=login"">[<#ZC_MSG009#>]</a></span>&nbsp;&nbsp;<span class=""cp-vrs""><a href=""<#ZC_BLOG_HOST#>zb_system/cmd.asp?act=vrs"">[<#ZC_MSG021#>]</a></span>"
 		Functions(FunctionMetas.GetValue("controlpanel")).Post()
 	End If
@@ -4094,7 +4201,7 @@ Function CheckUpdateDB(a,b)
 	Else
 	Err.Clear
 	CheckUpdateDB=False
-	End If	
+	End If
 End Function
 '*********************************************************
 
@@ -4102,13 +4209,13 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function GetMetaValueWithForm(obj)
 
 	Dim a,b
 
-	For Each a In Request.Form 
+	For Each a In Request.Form
 		If Left(a,5)="meta_" Then
 			b=Mid(a,6,Len(a))
 			Call obj.Meta.SetValue( b,Request.Form(a) )
@@ -4122,7 +4229,7 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function GetFunctionByFileName(fn)
 
@@ -4144,7 +4251,7 @@ End Function
 
 
 '*********************************************************
-' 目的： 
+' 目的：
 ' mode={[add][modif][del]}
 ' itemtype={page,cate,tags,等等}
 '*********************************************************
@@ -4220,7 +4327,7 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function GetCateIDByNameAndAlias(Name,Alias)
 	Dim aryCateInOrder : aryCateInOrder=GetCategoryOrder()
@@ -4243,7 +4350,7 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function CookiesPath()
 
@@ -4262,7 +4369,7 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function CheckUndefined()
 
@@ -4287,7 +4394,7 @@ Function CheckUndefined()
 	If InStr(a,"DIM ZC_POST_STATIC_MODE")=0 Then
 		Call ExecuteGlobal("ZC_POST_STATIC_MODE=""STATIC""")
 	End If
-	
+
 	If InStr(a,"DIM ZC_HTTP_LASTMODIFIED")=0 Then
 		Call ExecuteGlobal("ZC_HTTP_LASTMODIFIED=False")
 	End If
@@ -4319,7 +4426,7 @@ Function CheckUndefined()
 	If InStr(a,"DIM ZC_SIDEBAR_ORDER5")=0 Then
 		Call ExecuteGlobal("ZC_SIDEBAR_ORDER5=""""")
 	End If
-	
+
 	If InStr(a,"DIM ZC_BLOG_LANGUAGEPACK")=0 Then
 		Call ExecuteGlobal("ZC_BLOG_LANGUAGEPACK=""SimpChinese""")
 	End If
@@ -4337,7 +4444,7 @@ End Function
 
 
 '*********************************************************
-' 目的：  
+' 目的：
 '*********************************************************
 Function GetBlogVersion()
 	Dim s
@@ -4382,7 +4489,7 @@ End Function
 
 
 '*********************************************************
-' 目的：为插件... 
+' 目的：为插件...
 ' 参数:插件ID,模块名,模块ID(文件名),模块HtmlID,模块类型(div/ul),模块Maxli(默认0),模块内容
 '*********************************************************
 Function AddPluginFunction(PluginID,FunctionName,FunctionFileName,FunctionHtmlID,FunctionType,FunctionMaxLi,FunctionHideTitle,FunctionContent)

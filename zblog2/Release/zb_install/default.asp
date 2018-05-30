@@ -3,6 +3,33 @@
 '///////////////////////////////////////////////////////////////////////////////
 '//              Z-Blog
 '///////////////////////////////////////////////////////////////////////////////
+
+' ***********************************************************************************
+'    如果您看到了这个提示，那么我们很遗憾地通知您，您的空间不支持 ASP 。
+'    If you see this notice, we regret to inform you that 
+'    your web hosting service doesn't support ASP so Z-Blog can't run on it.
+
+'    也就是说，您的空间可能是静态空间或 PHP 空间，或未在 IIS 内安装 ASP 组件。
+'    It means that you may have a web hosting service supporting only static resources or installed PHP.
+'    If you're using IIS, maybe you don’t have ASP Extension installed.
+
+'    推荐您：
+'    Recommend you:
+
+'            > 下载并安装Z-BlogPHP  > http://www.zblogcn.com/zblogphp/
+'            > Try Z-BlogPHP > http://www.zblogcn.com/zblogphp/
+
+'    如果您仍然需要使用Z-BlogASP：
+'    Still need Z-BlogASP?
+
+'            > 联系空间商，更换空间为支持ASP的空间
+'            > Contact your provider, and let them provice a new hosting which supports ASP.
+
+'            > 打开 IIS 的 ASP 组件
+'            > Install ASP Extension on IIS
+'
+' ***********************************************************************************
+
 %>
 <% Option Explicit %>
 <% On Error Resume Next %>
@@ -543,7 +570,7 @@ Function Setup3()
 <input type="hidden" name="dbtype" id="dbtype" value="access" />
 <p><b>类型选择</b>:&nbsp;&nbsp;<label onClick="$('#mssql').hide();$('#access').show();$('#dbtype').val('access');"><input type="radio" name="db" checked="checked" />Access</label>&nbsp;&nbsp;&nbsp;&nbsp;<label onClick="$('#access').hide();$('#mssql').show();$('#dbtype').val('mssql');"><input type="radio" name="db" />MSSQL</label></p>
 <div id="access">
-<p><b>数据库:&nbsp;</b>&nbsp;&nbsp;<input type="text" name="dbpath" id="dbpath" value="#%20<%=LCase(Replace(RndGuid(),"-",""))%>.mdb" readonly style="width:350px;" /></p>
+<p><b>数&nbsp;据&nbsp;库:</b>&nbsp;&nbsp;<input type="text" name="dbpath" id="dbpath" value="#%20<%=LCase(Replace(RndGuid(),"-",""))%>.mdb" readonly style="width:350px;" /></p>
 </div>
 <div id="mssql" style="display:none;">
 <p><b>数据库主机:</b><input type="text" name="dbserver" id="dbserver" value="(local)" style="width:350px;" /></p>
@@ -553,8 +580,8 @@ Function Setup3()
 </div>
 <p class="title">网站设置</p>
 <p><b>网站名称:</b>&nbsp;&nbsp;<input type="text" name="blogtitle" id="blogtitle" value="" style="width:250px;" /></p>
-<p><b>用户名:&nbsp;</b>&nbsp;&nbsp;<input type="text" name="username" id="username" value="" style="width:250px;" />&nbsp;(英文,数字,汉字和._的组合)</p>
-<p><b>密码:&nbsp;&nbsp;</b>&nbsp;&nbsp;<input type="password" name="password" id="password" value="" style="width:250px;" />&nbsp;(8位或更长的数字和字母,字符组合)</p>
+<p><b>用&nbsp;户&nbsp;名:</b>&nbsp;&nbsp;<input type="text" name="username" id="username" value="" style="width:250px;" />&nbsp;(英文,数字,汉字和._的组合)</p>
+<p><b>密&nbsp;&nbsp;&nbsp;&nbsp;码:</b>&nbsp;&nbsp;<input type="password" name="password" id="password" value="" style="width:250px;" />&nbsp;(8位或更长的数字和字母,字符组合)</p>
 <p><b>确认密码:</b>&nbsp;&nbsp;<input type="password" name="repassword" id="repassword" value="" style="width:250px;" /></p>
 </div>
 <div id="bottom">
@@ -900,7 +927,7 @@ t.IsHidden=False
 t.Source="system"
 t.SidebarID=1
 t.Order=10
-t.Content="<li><a href=""http://www.dbshost.cn/"" target=""_blank"" title=""独立博客服务 Z-Blog官方主机"">DBS主机</a></li><li><a href=""http://www.dutory.com/blog/"" target=""_blank"">Dutory官方博客</a></li>"
+t.Content="<li><a href=""https://zbloghost.cn/"" target=""_blank"" title=""Z-Blog官方主机"">ZBlog官方主机</a></li><li><a href=""http://blog.zblogcn.com/"" target=""_blank"">Z-Blog官方博客</a></li>"
 t.HtmlID="divLinkage"
 t.Ftype="ul"
 t.post
@@ -1017,7 +1044,7 @@ Call BlogConfig.Write("ZC_USING_PLUGIN_LIST","AppCentre|FileManage|GuestBook|Tot
 Call BlogConfig.Write("ZC_BLOG_CLSID","BB1C5669-6E37-460C-F415-D287D7BBB59E")
 Call BlogConfig.Write("ZC_TIME_ZONE","+0800")
 Call BlogConfig.Write("ZC_HOST_TIME_ZONE","+0800")
-Call BlogConfig.Write("ZC_UPDATE_INFO_URL","http://update.rainbowsoft.org/info/")
+Call BlogConfig.Write("ZC_UPDATE_INFO_URL","http://update.zblogcn.com/info/")
 Call BlogConfig.Write("ZC_MULTI_DOMAIN_SUPPORT",False)
 Call BlogConfig.Write("ZC_PERMANENT_DOMAIN_ENABLE",False)
 

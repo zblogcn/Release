@@ -307,7 +307,13 @@ End Function
 
 Function AppCentre_Update_Restore(build,file,crc32_)
 
-	'On Error Resume Next
+	Dim d
+	If(InStrRev(file,"\")>0)Then
+		On Error Resume Next
+		d=Left(file,InStrRev(file,"\")-1)
+		CreatDirectoryByCustomDirectory(d)
+		Err.Clear 
+	End If
 
 	Dim objPing
 	Set objPing = Server.CreateObject("Microsoft.XMLHTTP")

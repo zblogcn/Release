@@ -14,6 +14,8 @@ if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
 if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 
+AppCentre_CheckInSecurityMode();
+
 $type = $_GET['type'];
 
 $id = $_GET['id'];

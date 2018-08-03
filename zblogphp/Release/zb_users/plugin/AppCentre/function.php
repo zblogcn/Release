@@ -4,7 +4,10 @@ function AppCentre_SubMenus($id) {
 	//m-now
 	global $zbp;
 
-	echo '<a href="main.php"><span class="m-left ' . ($id == 1 ? 'm-now' : '') . '">浏览在线应用</span></a>';
+	if (!AppCentre_InSecurityMode()) {
+		echo '<a href="main.php"><span class="m-left ' . ($id == 1 ? 'm-now' : '') . '">浏览在线应用</span></a>';
+	}
+	
 	echo '<a href="main.php?method=check"><span class="m-left ' . ($id == 2 ? 'm-now' : '') . '">检查应用更新</span></a>';
 	echo '<a href="update.php"><span class="m-left ' . ($id == 3 ? 'm-now' : '') . '">系统更新与校验</span></a>';
 
@@ -14,9 +17,14 @@ function AppCentre_SubMenus($id) {
 		echo '<a href="client.php"><span class="m-left ' . ($id == 9 ? 'm-now' : '') . '">登录应用商城</span></a>';
 	}
 
-	echo '<a href="setting.php"><span class="m-right ' . ($id == 4 ? 'm-now' : '') . '">设置</span></a>';
-	echo '<a href="plugin_edit.php"><span class="m-right ' . ($id == 5 ? 'm-now' : '') . '">新建插件</span></a>';
-	echo '<a href="theme_edit.php"><span class="m-right ' . ($id == 6 ? 'm-now' : '') . '">新建主题</span></a>';
+	if (!AppCentre_InSecurityMode()) {
+		echo '<a href="setting.php"><span class="m-right ' . ($id == 4 ? 'm-now' : '') . '">设置</span></a>';
+		echo '<a href="plugin_edit.php"><span class="m-right ' . ($id == 5 ? 'm-now' : '') . '">新建插件</span></a>';
+		echo '<a href="theme_edit.php"><span class="m-right ' . ($id == 6 ? 'm-now' : '') . '">新建主题</span></a>';
+	}
+
+	echo '<a href="security.php"><span class="m-right ' . ($id == 7 ? 'm-now' : '') . '">安全模式</span></a>';
+
 }
 
 function AppCentre_GetCheckQueryString() {
@@ -58,20 +66,35 @@ function Server_Open($method) {
 		}
 
 		$s = Server_SendRequest(APPCENTRE_URL . '?down=' . GetVars('id', 'GET'));
-		if (App::UnPack($s)) {
-
+		try {
 			$xml = $s;
-	        $charset = array();
-	        $charset[1] = substr($xml, 0, 1);
-	        $charset[2] = substr($xml, 1, 1);
-	        if (ord($charset[1]) == 31 && ord($charset[2]) == 139) {
-	            $xml = gzdecode($xml);
-	        }
+			$charset = array();
+			$charset[1] = substr($xml, 0, 1);
+			$charset[2] = substr($xml, 1, 1);
+			if (ord($charset[1]) == 31 && ord($charset[2]) == 139) {
+				$xml = gzdecode($xml);
+			}
 
-	        $xml = simplexml_load_string($xml);
-	        $type = $xml['type'];
-	        $id = $xml->id;
-	        $dir = $zbp->path . 'zb_users/' . $type . '/' . $id . '/';
+			$xml = simplexml_load_string($xml);
+			if ($xml === false) {
+				throw new Exception('XML Error');
+			}
+		} catch (Exception $e) {
+			$zbp->SetHint('bad', 'App下载失败！');
+			throw $e;
+		}
+
+		$id = $xml->id;
+
+		if (!$zbp->CheckApp($id)) {
+			AppCentre_CheckInSecurityMode();
+		}
+
+		if (App::UnPack($s)) {
+			
+			$type = $xml['type'];
+			
+			$dir = $zbp->path . 'zb_users/' . $type . '/' . $id . '/';
 
 			if( is_readable($dir . $type . '.xml') ){
 				$c = file_get_contents($dir . $type . '.xml');
@@ -208,8 +231,8 @@ function Server_SendRequest_CUrl($url, $data = array(), $u, $c) {
 	curl_setopt($ch, CURLOPT_TIMEOUT, 120);
 	if(isset($_SERVER['HTTP_ACCEPT'])){
 		curl_setopt($ch,CURLOPT_HTTPHEADER,array (
-	         'Accept: ' . $_SERVER['HTTP_ACCEPT']
-	    ));
+			 'Accept: ' . $_SERVER['HTTP_ACCEPT']
+		));
 	}
 	curl_setopt($ch, CURLOPT_USERAGENT, $u);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

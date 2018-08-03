@@ -16,6 +16,8 @@ if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')&&GetVars('id', 'GET')
 
 $blogtitle = '应用中心-插件编辑';
 
+AppCentre_CheckInSecurityMode();
+
 if (GetVars('id')) {
 	$app = $zbp->LoadApp('plugin', GetVars('id'));
 	$mt = array();

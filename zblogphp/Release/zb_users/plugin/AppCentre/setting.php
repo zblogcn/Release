@@ -11,10 +11,14 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
+AppCentre_CheckInSecurityMode();
+
 $blogtitle = '应用中心-设置';
+
 
 if (GetVars('act') == 'save') {
 
+  if (!$zbp->ValidToken(GetVars('token', 'POST'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 	$zbp->Config('AppCentre')->enabledcheck = (int) GetVars("app_enabledcheck");
 	$zbp->Config('AppCentre')->checkbeta = (int) GetVars("app_checkbeta");
 	$zbp->Config('AppCentre')->enabledevelop = (int) GetVars("app_enabledevelop");
@@ -36,6 +40,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
   <div id="divMain2">
 
             <form action="?act=save" method="post">
+            <?php echo '<input id="token" name="token" type="hidden" value="'.$zbp->GetToken('AppCentre').'"/>'?>
               <table width="100%" border="0">
                 <tr height="32">
                   <th colspan="2" align="center">设置

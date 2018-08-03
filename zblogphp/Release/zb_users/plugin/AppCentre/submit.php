@@ -13,11 +13,13 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
 if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
-  
+
+AppCentre_CheckInSecurityMode();
+
 $blogtitle = '应用中心-提交应用';
 
 $s = '';
-$w = [];
+$w = array();
 
 $app = new App;
 $app->LoadInfoByXml($_GET['type'], $_GET['id']);

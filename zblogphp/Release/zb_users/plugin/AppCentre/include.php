@@ -41,6 +41,8 @@ $zbpvers['150101']='1.4 Deeplue Build 150101';
 $zbpvers['151626']='1.5 Zero Build 151626';
 $zbpvers['151740']='1.5.1 Zero Build 151740';
 
+$appcentre_verified = array();
+
 if(!isset($zbpvers[$GLOBALS['blogversion']])){
     if(defined('ZC_VERSION_FULL'))
     	$zbpvers[$GLOBALS['blogversion']] = ZC_VERSION_FULL;
@@ -54,6 +56,7 @@ function ActivePlugin_AppCentre() {
 	Add_Filter_Plugin('Filter_Plugin_Admin_ThemeMng_SubMenu', 'AppCentre_AddThemeMenu');
 	Add_Filter_Plugin('Filter_Plugin_Admin_PluginMng_SubMenu', 'AppCentre_AddPluginMenu');
 	Add_Filter_Plugin('Filter_Plugin_Admin_SiteInfo_SubMenu', 'AppCentre_AddSiteInfoMenu');
+	Add_Filter_Plugin('Filter_Plugin_Cmd_Begin', 'AppCentre_Cmd_Begin');
 
 	if (method_exists('ZBlogPHP', 'LoadLanguage')) {
 		$zbp->LoadLanguage('plugin', 'AppCentre');
@@ -97,8 +100,41 @@ function AppCentre_AddSiteInfoMenu() {
 
 }
 
+
+function AppCentre_Cmd_Begin () 
+{
+	global $zbp;
+	$action = GetVars('act', 'GET');
+	$type = '';
+	$name = '';
+	if ($action == 'PluginEnb') {
+		$name = GetVars('name', 'GET');
+		$type = 'plugin';
+	} else if ($action == 'ThemeSet') {
+		$name = GetVars('theme', 'POST');
+		$type = 'theme';
+	}
+
+	if ($type != '') {
+		$app = $zbp->LoadApp($type, $name);
+
+        $path = $zbp->usersdir . TransferHTML($type, '[filename]');
+        $path .= '/' . TransferHTML($name, '[filename]') . '/' . TransferHTML($type, '[filename]') . '.xml';
+        $content = file_get_contents($path);
+
+		if ($app->price > 0 && preg_match('/<downloader>/', $content)) {
+			$s = AppCentre_VerifyV2($app->id, $type);
+			if (strlen($s) % 32 > 0 && !preg_match('/^[0-9a-f]*$/', $s)) {
+				$zbp->ShowError($s);
+			}
+		}
+	}
+}
+
+
 function AppCentre_AddThemeMenu() {
 	global $zbp;
+    if (AppCentre_InSecurityMode()) return;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
 	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/theme.js.php' type='text/javascript'></script>";
@@ -106,6 +142,7 @@ function AppCentre_AddThemeMenu() {
 
 function AppCentre_AddPluginMenu() {
 	global $zbp;
+    if (AppCentre_InSecurityMode()) return;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
 	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/plugin.js.php' type='text/javascript'></script>";
@@ -131,8 +168,8 @@ function AppCentre_App_Check_ISBUY($appid) {
 function AppCentre_Get_Cookies(){
 	global $zbp;
 	$c = '';
-	$un = $zbp->Config('AppCentre')->username;
-	$ps = $zbp->Config('AppCentre')->password;
+	$un = substr($zbp->Config('AppCentre')->username,0,100);
+	$ps = substr($zbp->Config('AppCentre')->password,0,100);
 	$c .= ' apptype=' . urlencode($zbp->Config('AppCentre')->apptype) . '; ';
 	$c .= ' app_guestver=' . urlencode('2.0') . '; ';
 	$c .= ' app_host=' . urlencode($zbp->host) . '; ';
@@ -142,8 +179,8 @@ function AppCentre_Get_Cookies(){
 		$c .= "username=" . urlencode($un) . "; password=" . urlencode($ps);
 	}
 
-	$shopun = $zbp->Config('AppCentre')->shop_username;
-	$shopps = $zbp->Config('AppCentre')->shop_password;
+	$shopun = substr($zbp->Config('AppCentre')->shop_username,0,100);
+	$shopps = substr($zbp->Config('AppCentre')->shop_password,0,100);
 	if ($shopun && $shopps) {
 		$c .= "; shop_username=" . urlencode($shopun) . "; shop_password=" . urlencode($shopps);
 	}
@@ -222,6 +259,11 @@ function AppCentre_Check_App_IsBuy($appid,$throwerror=true){
 
 
 function AppCentre_VerifyV2($appid, $type = 'plugin') {
+	global $appcentre_verified;
+	$verifyHash = md5($appid . '-' . $type);
+	if (isset($appcentre_verified[$verifyHash])) {
+		return $appcentre_verified[$verifyHash];
+	}
     try {
         global $zbp;
         $app = new App();
@@ -296,6 +338,7 @@ function AppCentre_VerifyV2($appid, $type = 'plugin') {
         }
 
         $return = trim($decryptedText);
+        $appcentre_verified[$verifyHash] = $return;
         return $return;
 
     } catch (Exception $e) {
@@ -312,5 +355,25 @@ function AppCentre_UpdateCSP(&$csp)
         if (isset($csp[$item])) {
             $csp[$item] .= $urls;
         }
+    }
+    if (isset($csp['object-src'])) {
+    	$csp['object-src'] .= " 'none'";
+    } else {
+    	$csp['object-src'] = "'none'";
+    }
+}
+
+
+function AppCentre_InSecurityMode () 
+{
+    global $zbp;
+    return file_exists($zbp->path . 'zb_users/data/appcentre_security_mode.php');
+}
+
+function AppCentre_CheckInSecurityMode () 
+{
+	global $zbp;
+    if (AppCentre_InSecurityMode()) {
+        $zbp->ShowError('安全模式下禁止执行此操作');
     }
 }

@@ -14,6 +14,8 @@ if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
 if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 
+AppCentre_CheckInSecurityMode();
+
 if($blogversion>=151525){
 
 	$app=$zbp->LoadApp($_GET['type'], $_GET['id']);

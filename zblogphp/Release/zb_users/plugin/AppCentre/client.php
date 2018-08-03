@@ -18,6 +18,7 @@ Add_Filter_Plugin('Filter_Plugin_CSP_Backend', 'AppCentre_UpdateCSP');
 
 if (GetVars('act') == 'login') {
   if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+  AppCentre_CheckInSecurityMode();
 	$s = Server_Open('vaild');
 	if ($s) {
 
@@ -36,6 +37,10 @@ if (GetVars('act') == 'login') {
 }
 
 if (GetVars('act') == 'logout') {
+  if (function_exists('CheckHTTPRefererValid')) {
+    CheckHTTPRefererValid();
+  }
+  AppCentre_CheckInSecurityMode();
 	$zbp->Config('AppCentre')->username = '';
 	$zbp->Config('AppCentre')->password = '';
 	$zbp->SaveConfig('AppCentre');

@@ -14,6 +14,8 @@ if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
 if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')&&GetVars('id', 'GET')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 
+AppCentre_CheckInSecurityMode();
+
 $blogtitle = '应用中心-主题编辑';
 
 if (GetVars('id')) {

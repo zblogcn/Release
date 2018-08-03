@@ -12,6 +12,10 @@ if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 
 if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
 
+if (!$zbp->ValidToken(GetVars('token', 'POST'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+
+AppCentre_CheckInSecurityMode();
+
 foreach ($_FILES as $key => $value) {
 	if ($_FILES[$key]['error'] == 0) {
 		if (is_uploaded_file($_FILES[$key]['tmp_name'])) {

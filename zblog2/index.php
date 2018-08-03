@@ -10,8 +10,10 @@ if($_SERVER['QUERY_STRING']=='install'){
 	if(is_readable($s) && strpos($s, './')===false){
 		header('Content-Type: application/octet-stream');
 		$t=file_get_contents($s);
-		$t=str_replace("\r\n", "\n", $t);
-		$t=str_replace("\n", "\r\n", $t);
+		if(substr($s,-4)=='.asp'||substr($s,-4)=='.inc'||substr($s,-4)=='.js'||substr($s,-4)=='.xml'||substr($s,-4)=='.css'){
+			$t=str_replace("\r\n", "\n", $t);
+			$t=str_replace("\n", "\r\n", $t);
+		}
 		echo $t;
 	}
 }else{

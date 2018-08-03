@@ -70,7 +70,12 @@ if (isset($_GET['updatedb'])) {
 	if ($zbp->version >= 150101 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
 		updatedb_14();
 	}
-
+	if (ZC_VERSION_MAJOR === '1' && ZC_VERSION_MINOR === '5') {
+		if (is_dir($zbp->path . '/zb_system/api')) {
+			@rrmdir($zbp->path . '/zb_system/api'); // Fix bug!!!
+	           	}
+	 }
+	$zbp->SaveOption();
 }
 if (GetVars('update', 'GET') != '') {
 	$url = APPCENTRE_SYSTEM_UPDATE . '?' . GetVars('update', 'GET') . '.xml';
@@ -157,7 +162,6 @@ else
 
 $nowbuild = (int) $blogversion;
 $newbuild = (int) substr($newversion, -6, 6);
-
 if ($newbuild - $nowbuild > 0) {
 	echo '<input id="updatenow" type="button" onclick="location.href=\'?update=' . $nowbuild . '-' . $newbuild . '\'" value="升级新版程序" />';
 }

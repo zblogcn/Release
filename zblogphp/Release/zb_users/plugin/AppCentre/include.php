@@ -117,12 +117,7 @@ function AppCentre_Cmd_Begin ()
 
 	if ($type != '') {
 		$app = $zbp->LoadApp($type, $name);
-
-        $path = $zbp->usersdir . TransferHTML($type, '[filename]');
-        $path .= '/' . TransferHTML($name, '[filename]') . '/' . TransferHTML($type, '[filename]') . '.xml';
-        $content = file_get_contents($path);
-
-		if ($app->price > 0 && preg_match('/<downloader>/', $content)) {
+		if ($app->price > 0) {
 			$s = AppCentre_VerifyV2($app->id, $type);
 			if (strlen($s) % 32 > 0 && !preg_match('/^[0-9a-f]*$/', $s)) {
 				$zbp->ShowError($s);
@@ -137,7 +132,7 @@ function AppCentre_AddThemeMenu() {
     if (AppCentre_InSecurityMode()) return;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
-	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/theme.js.php' type='text/javascript'></script>";
+	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/theme.js.php?token={$zbp->GetToken('AppCentre_JS')}' type='text/javascript'></script>";
 }
 
 function AppCentre_AddPluginMenu() {
@@ -145,7 +140,7 @@ function AppCentre_AddPluginMenu() {
     if (AppCentre_InSecurityMode()) return;
 	echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
 	echo "<script type='text/javascript'>var app_username='" . $zbp->Config('AppCentre')->username . "';</script>";
-	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/plugin.js.php' type='text/javascript'></script>";
+	echo "<script src='{$zbp->host}zb_users/plugin/AppCentre/plugin.js.php?token={$zbp->GetToken('AppCentre_JS')}' type='text/javascript'></script>";
 }
 
 //$appid是App在应用中心的发布后的文章ID数字号，非App的ID名称。

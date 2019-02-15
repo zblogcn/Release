@@ -74,7 +74,6 @@ function Server_Open($method) {
 			if (ord($charset[1]) == 31 && ord($charset[2]) == 139) {
 				$xml = gzdecode($xml);
 			}
-
 			$xml = simplexml_load_string($xml);
 			if ($xml === false) {
 				throw new Exception('XML Error');
@@ -109,7 +108,7 @@ function Server_Open($method) {
 		break;
 	case 'search':
 		if (trim(GetVars('q', 'GET')) == '') {
-			continue;
+			return;
 		}
 
 		$s = Server_SendRequest(APPCENTRE_URL . '?search=' . urlencode(GetVars('q', 'GET'))  .'&'. GetVars('QUERY_STRING', 'SERVER') );

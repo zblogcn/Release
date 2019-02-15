@@ -4,6 +4,7 @@ $zbp->Load();
 ob_clean();
 header('Content-Type: application/x-javascript; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate');
+if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre_JS')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 $t = '&token=' . $zbp->GetToken('AppCentre');
 ?>
 

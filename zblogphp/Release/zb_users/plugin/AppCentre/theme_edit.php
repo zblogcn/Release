@@ -63,7 +63,7 @@ if (count($_POST) > 0) {
   if (!$zbp->ValidToken(GetVars('token', 'POST'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
 
 	$app->id = trim($_POST['app_id']);
-	if (!CheckRegExp($app->id, "/^[A-Za-z0-9_]{3,30}/")) {$zbp->ShowError('ID名必须是字母数字和下划线组成,长度3-30字符.');die();}
+	if (!CheckRegExp($app->id, "/^[A-Za-z0-9_]{3,30}$/")) {$zbp->ShowError('ID名必须是字母数字和下划线组成,长度3-30字符.');die();}
 	if (!GetVars('id')) {
 		$app2 = $zbp->LoadApp('theme', $app->id);
 		if ($app2->id) {$zbp->ShowError('已存在同名的APP应用.');die();}

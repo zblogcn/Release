@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $url = Server_Open('submit');
+    $url = trim($url);
     if (substr($url, 0, 4) == 'http') {
         Redirect($url);
     } else {

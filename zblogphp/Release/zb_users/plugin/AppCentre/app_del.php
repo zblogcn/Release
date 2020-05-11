@@ -8,44 +8,51 @@ require dirname(__FILE__) . '/function.php';
 $zbp->Load();
 
 $action = 'root';
-if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
+if (!$zbp->CheckRights($action)) {
+    $zbp->ShowError(6);
+    die();
+}
 
-if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
+if (!$zbp->CheckPlugin('AppCentre')) {
+    $zbp->ShowError(48);
+    die();
+}
 
-if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+if (!$zbp->ValidToken(GetVars('token', 'GET'), 'AppCentre')) {
+    $zbp->ShowError(5, __FILE__, __LINE__);
+    die();
+}
 
 AppCentre_CheckInSecurityMode();
 
-if($blogversion>=151525){
+if ($blogversion >= 151525) {
+    $app = $zbp->LoadApp($_GET['type'], $_GET['id']);
+    if ($app->type == $_GET['type']) {
+        if ($app->CanDel()) {
+            $app->Del();
+        }
+    }
+} else {
 
-	$app=$zbp->LoadApp($_GET['type'], $_GET['id']);
-	if($app->type == $_GET['type']){
-		if($app->CanDel()){
-			$app->Del();
-		}
-	}
+    function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != '.' && $object != '..') {
+                    if (filetype($dir . '/' . $object) == 'dir') {
+                        rrmdir($dir . '/' . $object);
+                    } else {
+                        unlink($dir . '/' . $object);
+                    }
+                }
+            }
+            reset($objects);
+            rmdir($dir);
+        }
+    }
 
-}else{
-
-	function rrmdir($dir) {
-		if (is_dir($dir)) {
-			$objects = scandir($dir);
-			foreach ($objects as $object) {
-				if ($object != '.' && $object != '..') {
-					if (filetype($dir . '/' . $object) == 'dir') {
-						rrmdir($dir . '/' . $object);
-					} else {
-						unlink($dir . '/' . $object);
-					}
-
-				}
-			}
-			reset($objects);
-			rmdir($dir);
-		}
-	}
-
-	rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
+    rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
 }
 
 Redirect($_SERVER["HTTP_REFERER"]);

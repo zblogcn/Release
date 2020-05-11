@@ -1,0 +1,54 @@
+{
+    "builds": [
+        {
+            "version": 130707,
+            "name": "1.0 Beta",
+            "beta": false
+        },
+        {
+            "version": 151935,
+            "name": "1.5 Zero",
+            "beta": false
+        },
+        {
+            "version": 162090,
+            "name": "1.6.0 Valyria",
+            "beta": false
+        },
+        {
+            "version": 162100,
+            "name": "1.6.0 Valyria",
+            "beta": false
+        },
+        {
+            "version": 162105,
+            "name": "1.6.0 Valyria",
+            "beta": false
+        },
+        {
+            "version": 162110,
+            "name": "1.6.0 Valyria",
+            "beta": false
+        },
+        {
+            "version": 162090,
+            "name": "1.6.0 Valyria",
+            "beta": true
+        },
+        {
+            "version": 162100,
+            "name": "1.6.0 Valyria",
+            "beta": true
+        },
+        {
+            "version": 162105,
+            "name": "1.6.0 Valyria",
+            "beta": true
+        },
+        {
+            "version": 162110,
+            "name": "1.6.0 Valyria",
+            "beta": true
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin version="php">
 <id>AppCentre</id>
 <name>应用中心客户端</name>
@@ -11,17 +11,17 @@
 <author>
   <name>zx.asd</name>
   <email>rainbowsoft@gmail.com</email>
-  <url>http://www.zblogcn.com/</url>
+  <url>https://www.zblogcn.com/</url>
 </author>
 <source>
   <name></name>
   <email></email>
   <url></url>
 </source>
-<adapted>131221</adapted>
-<version>2.21</version>
+<adapted>150101</adapted>
+<version>2.45</version>
 <pubdate>2013-07-07</pubdate>
-<modified>2018-12-20</modified>
+<modified>2020-04-29</modified>
 <price>0</price>
 <phpver>5.2</phpver>
 <advanced>
@@ -36,5 +36,9 @@
   <sidebar3></sidebar3>
   <sidebar4></sidebar4>
   <sidebar5></sidebar5>
+  <sidebar6></sidebar6>
+  <sidebar7></sidebar7>
+  <sidebar8></sidebar8>
+  <sidebar9></sidebar9>
 </sidebars>
 </plugin>

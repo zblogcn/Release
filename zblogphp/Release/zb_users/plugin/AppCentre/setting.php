@@ -1,33 +1,41 @@
 <?php
 require '../../../zb_system/function/c_system_base.php';
-
 require '../../../zb_system/function/c_system_admin.php';
-
 require dirname(__FILE__) . '/function.php';
+
 $zbp->Load();
 
 $action = 'root';
-if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
+if (!$zbp->CheckRights($action)) {
+    $zbp->ShowError(6);
+    die();
+}
 
-if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
+if (!$zbp->CheckPlugin('AppCentre')) {
+    $zbp->ShowError(48);
+    die();
+}
 
 AppCentre_CheckInSecurityMode();
 
-$blogtitle = '应用中心-设置';
+$blogtitle = $zbp->lang['AppCentre']['name'] . '-' . $zbp->lang['AppCentre']['settings'];
 
 
 if (GetVars('act') == 'save') {
+    if (!$zbp->ValidToken(GetVars('token', 'POST'), 'AppCentre')) {
+        $zbp->ShowError(5, __FILE__, __LINE__);
+        die();
+    }
+    $zbp->Config('AppCentre')->enabledcheck = (int) GetVars("app_enabledcheck");
+    $zbp->Config('AppCentre')->checkbeta = (int) GetVars("app_checkbeta");
+    $zbp->Config('AppCentre')->enabledevelop = (int) GetVars("app_enabledevelop");
+    $zbp->Config('AppCentre')->enablegzipapp = (int) GetVars("app_enablegzipapp");
+    $zbp->Config('AppCentre')->networktype = trim(GetVars("app_networktype"));
+    $zbp->Config('AppCentre')->firstdomain = trim(GetVars("app_firstdomain"));
+    $zbp->SaveConfig('AppCentre');
 
-  if (!$zbp->ValidToken(GetVars('token', 'POST'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
-	$zbp->Config('AppCentre')->enabledcheck = (int) GetVars("app_enabledcheck");
-	$zbp->Config('AppCentre')->checkbeta = (int) GetVars("app_checkbeta");
-	$zbp->Config('AppCentre')->enabledevelop = (int) GetVars("app_enabledevelop");
-	$zbp->Config('AppCentre')->enablegzipapp = (int) GetVars("app_enablegzipapp");
-	$zbp->SaveConfig('AppCentre');
-
-	$zbp->SetHint('good');
-	Redirect('./setting.php');
-
+    $zbp->SetHint('good');
+    Redirect('./setting.php');
 }
 
 require $blogpath . 'zb_system/admin/admin_header.php';
@@ -35,48 +43,65 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 ?>
 <div id="divMain">
 
-  <div class="divHeader"><?php echo $blogtitle;?></div>
-<div class="SubMenu"><?php AppCentre_SubMenus(4);?></div>
+  <div class="divHeader"><?php echo $blogtitle; ?></div>
+<div class="SubMenu"><?php AppCentre_SubMenus(4); ?></div>
   <div id="divMain2">
 
             <form action="?act=save" method="post">
-            <?php echo '<input id="token" name="token" type="hidden" value="'.$zbp->GetToken('AppCentre').'"/>'?>
+            <?php echo '<input id="token" name="token" type="hidden" value="' . $zbp->GetToken('AppCentre') . '"/>'; ?>
               <table width="100%" border="0">
                 <tr height="32">
-                  <th colspan="2" align="center">设置
+                  <th colspan="2" align="center"><?php echo $zbp->lang['AppCentre']['settings']; ?>
                     </td>
                 </tr>
                 <tr height="32">
-                  <td width="30%" align="left"><p><b>· 启用自动检查更新</b><br/>
-                      <span class="note">&nbsp;&nbsp;在进入后台时会检查应用更新和系统更新 </span></p></td>
-                  <td><input id="app_enabledcheck" name="app_enabledcheck" type="text" value="<?php echo $zbp->Config('AppCentre')->enabledcheck;?>" class="checkbox"/></td>
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['enable_automatic_updates']; ?></b><br/>
+                      <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['enable_automatic_updates_note']; ?></span></p></td>
+                  <td><input id="app_enabledcheck" name="app_enabledcheck" type="text" value="<?php echo $zbp->Config('AppCentre')->enabledcheck; ?>" class="checkbox"/></td>
                 </tr>
                 <tr height="32">
-                  <td width="30%" align="left"><p><b>· 检查Beta版程序</b><br/>
-                      <span class="note">&nbsp;&nbsp;若打开，则系统将检查最新测试版的Z-Blog更新</span></p></td>
-                  <td><input id="app_checkbeta" name="app_checkbeta" type="text" value="<?php echo $zbp->Config('AppCentre')->checkbeta;?>" class="checkbox"/></td>
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['check_the_beta_version']; ?></b><br/>
+                      <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['check_the_beta_version_note']; ?></span></p></td>
+                  <td><input id="app_checkbeta" name="app_checkbeta" type="text" value="<?php echo $zbp->Config('AppCentre')->checkbeta; ?>" class="checkbox"/></td>
                 </tr>
                 <tr height="32">
-                  <td width="30%" align="left"><p><b>· 启用开发者模式</b><br/>
-                      <span class="note">&nbsp;&nbsp;启用开发者模式可以修改应用信息、导出应用和远程提交应用</span></p></td>
-                  <td><input id="app_enabledevelop" name="app_enabledevelop" type="text" value="<?php echo $zbp->Config('AppCentre')->enabledevelop;?>" class="checkbox"/></td>
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['enable_developer_mode']; ?></b><br/>
+                      <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['enable_developer_mode_note']; ?></span></p></td>
+                  <td><input id="app_enabledevelop" name="app_enabledevelop" type="text" value="<?php echo $zbp->Config('AppCentre')->enabledevelop; ?>" class="checkbox"/></td>
                 </tr>
                 <tr height="32">
-                  <td width="30%" align="left"><p><b>· 导出经过GZip压缩的应用包</b><br/>
-                      <span class="note">&nbsp;&nbsp;1.4以下版本不支持应用压缩包导入及导出</span></p></td>
-                  <td><input id="app_enablegzipapp" name="app_enablegzipapp" type="text" value="<?php echo $zbp->Config('AppCentre')->enablegzipapp;?>" class="checkbox"/></td>
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['export_gzip_compressed']; ?></b><br/>
+                      <span class="note"></span></p></td>
+                  <td><input id="app_enablegzipapp" name="app_enablegzipapp" type="text" value="<?php echo $zbp->Config('AppCentre')->enablegzipapp; ?>" class="checkbox"/></td>
+                </tr>
+                <tr height="32">
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['connect_type_background']; ?></b><br/>
+                      <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['connect_type_background_note']; ?></span></p></td>
+                  <td>
+<label><input name="app_networktype" type="radio" value="curl" <?php echo $zbp->Config('AppCentre')->networktype == 'curl' ? 'checked="checked"' : ''; ?> />curl(<?php echo $zbp->lang['msg']['default']; ?>)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+<label><input name="app_networktype" type="radio" value="fsockopen" <?php echo $zbp->Config('AppCentre')->networktype == 'fsockopen' ? 'checked="checked"' : ''; ?> />fsockopen</label>&nbsp;&nbsp;&nbsp;&nbsp;
+<label><input name="app_networktype" type="radio" value="filegetcontents" <?php echo $zbp->Config('AppCentre')->networktype == 'filegetcontents' ? 'checked="checked"' : ''; ?> />filegetcontents</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                  </td>
+                </tr>
+                <tr height="32">
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['domain_of_appcentre']; ?></b><br/>
+                      <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['domain_of_appcentre_note']; ?></span></p></td>
+                  <td>
+<label><input name="app_firstdomain" type="radio" value="zblogcn.com" <?php echo $zbp->Config('AppCentre')->firstdomain == 'zblogcn.com' ? 'checked="checked"' : ''; ?> />app.zblogcn.com(<?php echo $zbp->lang['msg']['default']; ?>)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+<label><input name="app_firstdomain" type="radio" value="zblogcn.net" <?php echo $zbp->Config('AppCentre')->firstdomain == 'zblogcn.net' ? 'checked="checked"' : ''; ?> />app.zblogcn.net</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                  </td>
                 </tr>
               </table>
               <hr/>
               <p>
-                <input type="submit" value="提交" class="button" />
+                <input type="submit" value="<?php echo $zbp->lang['msg']['submit']; ?>" class="button" />
               </p>
               <hr/>
             </form>
 
 
-	<script type="text/javascript">ActiveLeftMenu("aAppCentre");</script>
-	<script type="text/javascript">AddHeaderIcon("<?php echo $bloghost . 'zb_users/plugin/AppCentre/logo.png';?>");</script>
+    <script type="text/javascript">ActiveLeftMenu("aAppCentre");</script>
+    <script type="text/javascript">AddHeaderIcon("<?php echo $bloghost . 'zb_users/plugin/AppCentre/logo.png'; ?>");</script>
   </div>
 </div>
 
@@ -85,4 +110,4 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 require $blogpath . 'zb_system/admin/admin_footer.php';
 
 RunTime();
-?>
+

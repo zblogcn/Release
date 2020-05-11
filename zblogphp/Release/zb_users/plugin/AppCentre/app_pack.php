@@ -8,11 +8,20 @@ require dirname(__FILE__) . '/function.php';
 $zbp->Load();
 
 $action = 'root';
-if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
+if (!$zbp->CheckRights($action)) {
+    $zbp->ShowError(6);
+    die();
+}
 
-if (!$zbp->CheckPlugin('AppCentre')) {$zbp->ShowError(48);die();}
+if (!$zbp->CheckPlugin('AppCentre')) {
+    $zbp->ShowError(48);
+    die();
+}
 
-if (!$zbp->ValidToken(GetVars('token', 'GET'),'AppCentre')) {$zbp->ShowError(5, __FILE__, __LINE__);die();}
+if (!$zbp->ValidToken(GetVars('token', 'GET'), 'AppCentre')) {
+    $zbp->ShowError(5, __FILE__, __LINE__);
+    die();
+}
 
 AppCentre_CheckInSecurityMode();
 
@@ -23,19 +32,20 @@ $id = $_GET['id'];
 $app = new App;
 
 if (!$app->LoadInfoByXml($type, $id)) {
-	exit;
+    exit;
 }
 
 ob_clean();
 
-if (
-	function_exists('gzencode') &&
-	$zbp->Config('AppCentre')->enablegzipapp &&
-	$app->adapted > 140614// 1.3和之前版本不打包为gzba
+if (function_exists('gzencode')
+    && $zbp->Config('AppCentre')->enablegzipapp
+    && $app->adapted > 140614// 1.3和之前版本不打包为gzba
 ) {
-	header('Content-Disposition:attachment;filename=' . $id . '.gzba');
-	echo AppCentre_Pack($app, true);
+    //header('Content-type:text/xml');
+    header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.gzba');
+    echo AppCentre_Pack($app, true);
 } else {
-	header('Content-Disposition:attachment;filename=' . $id . '.zba');
-	echo AppCentre_Pack($app, false);
+    //header('Content-type:text/xml');
+    header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.zba');
+    echo AppCentre_Pack($app, false);
 }

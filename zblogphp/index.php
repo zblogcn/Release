@@ -1,47 +1,61 @@
 <?php
+
+$beta = array(
+    '2020-3-26' => '1.6.0 Build 162090',
+    '2000-1-1' => '1.5.2 Build 151935',
+);
+$now = array(
+    '2020-3-26' => '1.6.0 Build 162090',
+    '2000-1-1' => '1.5.2 Build 151935',
+);
+
 if($_SERVER['QUERY_STRING']=='install'){
-	header("Content-type:text/xml; Charset=utf-8");
-	echo file_get_contents(__DIR__ . '/Release.xml');
-}elseif($_SERVER['QUERY_STRING']=='beta'){
-	header('Content-Type: text/plain; charset=utf-8');
-	echo trim(file_get_contents(__DIR__ . '/beta.html'));
-}elseif($_SERVER['QUERY_STRING']!=''){
-	$s=__DIR__ . '/' . str_replace('\\','/',$_SERVER['QUERY_STRING']);
-	if(is_readable($s) && strpos($s,'./')===false){
-		//如果是？
-		$regex_otherver= '/^([0-9]{6})-([0-9]{6})\.xml$/i';
-        if(preg_match( $regex_otherver, str_replace('\\','/',$_SERVER['QUERY_STRING']) ) != 0 ){
+    header('Location: https://update.zblogcn.com/zblogphp/Release.xml');die();
 
+    header("Content-type:text/xml; Charset=utf-8");
+    echo file_get_contents(__DIR__ . '/Release.xml');
+}elseif($_SERVER['QUERY_STRING']!='' && $_SERVER['QUERY_STRING']!='beta'){
+    $s=__DIR__ . '/' . str_replace('\\','/',$_SERVER['QUERY_STRING']);
+    if(is_readable($s) && strpos($s,'./')===false){
+        //如果是xml文件
+        if(substr($s, -4) == '.xml'){
+            header('Location: https://update.zblogcn.com/zblogphp/' . str_replace('\\','/',$_SERVER['QUERY_STRING']));die();
         }
-		header('Content-Type: application/octet-stream');
-		echo file_get_contents($s);
-	}elseif(is_readable($s)==false){
-		$regex_otherver= '/^([0-9]{6})-([0-9]{6})\.xml$/i';
-        if(preg_match( $regex_otherver, str_replace('\\','/',$_SERVER['QUERY_STRING']) ) != 0 ){
 
-			$a = array();
-			preg_match_all($regex_otherver,str_replace('\\','/',$_SERVER['QUERY_STRING']),$a);
-
-			$v0 = (int) $a[1][0];
-			$v1 = '';
-			$v2 = (int) $a[2][0];
-
-			$xml = __DIR__ . '/' . 'builds.xml';
-			$xml = file_get_contents($xml);
-			$xml = @simplexml_load_string($xml);
-
-			foreach ($xml->xpath('//builds/build') as $key => $value) {
-				if ((int)$value > $v0){
-					break;
-				}
-				$v1 = (int)$value;
-			}
-
-			header('Content-Type: application/octet-stream');
-			echo file_get_contents(__DIR__ . '/' . $v1 . '-' . $v2 . '.xml');
-        }
-	}
+        header('Content-Type: application/octet-stream');
+        $s = file_get_contents($s);
+        echo $s;
+        die;
+    }
 }else{
-	header('Content-Type: text/plain; charset=utf-8');
-	echo trim(file_get_contents(__DIR__ . '/now.html'));
+    header('Content-Type: text/plain; charset=utf-8');
+
+    if (is_readable('../../build.json')) {
+      $json = json_decode(file_get_contents('../../build.json'));
+    }
+    if (is_readable('../build.json')) {
+      $json = json_decode(file_get_contents('../build.json'));
+    }
+    if (is_readable('./build.json')) {
+      $json = json_decode(file_get_contents('./build.json'));
+    }
+
+    if(array_key_exists('beta', $_GET)==true){
+      $version = '';
+      foreach ($json->builds as $key => $value) {
+        if($value->beta == true)
+            $version = $value->name . ' Build ' . $value->version;
+      }
+      echo $version;
+    }
+
+    if(array_key_exists('beta', $_GET)==false){
+      $version = '';
+      foreach ($json->builds as $key => $value) {
+        if($value->beta == false)
+            $version = $value->name . ' Build ' . $value->version;
+      }
+      echo $version;
+    }
+
 }

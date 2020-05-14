@@ -73,8 +73,11 @@ function Server_Open($method)
                     define('APPCENTRE_CAN_NOT_HTTPS', true);
                 }
             }
-
-            $s = Server_SendRequest(APPCENTRE_URL . '?down=' . GetVars('id', 'GET'));
+            if ($zbp->Config('AppCentre')->enablemultidownload == true) {
+                $s = Server_SendRequest_CUrl_Multi_Step_Download(APPCENTRE_URL . '?down=' . GetVars('id', 'GET'), array(), AppCentre_Get_UserAgent(), AppCentre_Get_Cookies());
+            } else {
+                $s = Server_SendRequest(APPCENTRE_URL . '?down=' . GetVars('id', 'GET'));
+            }
 
             $xml = $s;
             $charset = array();
@@ -176,8 +179,8 @@ function Server_Open($method)
             //break;
         case 'login':
             $data = array();
-            $data["token"] = GetVars("app_token");
-            $data["sign"] = AppCentre_Get_Sign(GetVars("app_token"));
+            $data["token"] = GetVars("app_token", "POST");
+            $data["sign"] = AppCentre_Get_Sign(GetVars("app_token", "POST"));
             $s = Server_SendRequest(APPCENTRE_URL . '?login', $data);
             return $s;
             //break;
@@ -244,6 +247,61 @@ function Server_SendRequest($url, $data = array(), $u2 = '', $c2 = '')
     return "";
 }
 
+function Server_SendRequest_CUrl_Multi_Step_Download($url, $data = array(), $u = null, $c = null)
+{
+    global $zbp;
+
+    if (function_exists('set_time_limit')) {
+        set_time_limit(600);
+    }
+
+    $ch = curl_init($url);
+    //if (extension_loaded('zlib')) {
+        //curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
+    //}
+
+    $buffer = (1024 * 1024);//每个切片大小 单位字节
+    //$buffer = 10;
+    $files = array();
+    if (isset($_SERVER['HTTP_ACCEPT'])) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: ' . $_SERVER['HTTP_ACCEPT']));
+    }
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_USERAGENT, $u);
+    if ($c) {
+        curl_setopt($ch, CURLOPT_COOKIE, $c);
+    }
+
+    $begin = 0;
+    do {
+        $end = ($begin + $buffer);
+        if (ini_get("safe_mode") == false && ini_get("open_basedir") == false) {
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        }
+        curl_setopt($ch, CURLOPT_RANGE, $begin . '-' . $end);
+        $content = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        $begin = ($end + 1);
+        $files[] = $content;
+        unset($content);
+        if ($info['http_code'] >= 300 || $info['http_code'] < 200) {
+            break;
+        }
+        //logs_dump(curl_getinfo($ch));
+        //die;
+    } while ($info['size_download'] != 0);
+
+    curl_close($ch);
+    $r = implode('', $files);
+
+    return $r;
+}
+
 function Server_SendRequest_CUrl($url, $data = array(), $u = null, $c = null)
 {
     global $zbp;
@@ -255,13 +313,7 @@ function Server_SendRequest_CUrl($url, $data = array(), $u = null, $c = null)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_TIMEOUT, 120);
     if (isset($_SERVER['HTTP_ACCEPT'])) {
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array (
-                'Accept: ' . $_SERVER['HTTP_ACCEPT']
-            )
-        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: ' . $_SERVER['HTTP_ACCEPT']));
     }
     curl_setopt($ch, CURLOPT_USERAGENT, $u);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

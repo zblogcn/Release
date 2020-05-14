@@ -30,7 +30,7 @@ if (GetVars('act') == 'login') {
     AppCentre_CheckInSecurityMode();
     $s = trim(Server_Open('login'));
     if ($s !== '') {
-        $zbp->Config('AppCentre')->token = GetVars("app_token");
+        $zbp->Config('AppCentre')->token = GetVars("app_token", "POST");
         $zbp->Config('AppCentre')->uniq_id = trim($s);
         $zbp->Config('AppCentre')->old_token = 'false';
         unset($zbp->Config('AppCentre')->old_token);

@@ -122,7 +122,7 @@ if (count($_POST) > 0) {
         }
     }
 
-    if ($app->version == 1) {
+    if ($app->version === 1) {
         $app->version = '1.0';
     }
 

@@ -234,7 +234,7 @@ class Config
         $del = array_diff_key($this->origkvdata, $this->kvdata);
         $mod = array();
         foreach ($this->kvdata as $key => $value) {
-            if (isset($this->origkvdata[$key]) == true && $this->kvdata[$key] !== $this->origkvdata[$key]) {
+            if (array_key_exists($key, $this->origkvdata) == true && $this->kvdata[$key] !== $this->origkvdata[$key]) {
                 $mod[$key] = $value;
             }
         }

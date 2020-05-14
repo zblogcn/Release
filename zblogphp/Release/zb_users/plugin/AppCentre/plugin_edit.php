@@ -103,7 +103,8 @@ if (count($_POST) > 0) {
             $app->version .= '.' . trim((int) $_POST['app_version3']);
         }
     }
-    if ($app->version == 1) {
+
+    if ($app->version === 1) {
         $app->version = '1.0';
     }
 

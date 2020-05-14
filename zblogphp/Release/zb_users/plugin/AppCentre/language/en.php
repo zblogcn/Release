@@ -115,4 +115,5 @@ return array(
 'submitted successfully'=>'Submitted successfully, upload it to the application center now!',
 'app_with_same_name'=>'An APP with the same name already exists',
 'app_id_name_rule'=>'The App ID name must consist of alphanumeric characters and underscores, and the length is 3-30 characters.'
+'enable_multi_download'=>'Start CUrl large file split download',
 );

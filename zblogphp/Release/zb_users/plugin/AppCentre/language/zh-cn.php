@@ -114,4 +114,5 @@ return array(
 'submitted successfully'=>'提交成功，现在立刻上传到应用中心！',
 'app_with_same_name'=>'已存在同名的APP应用',
 'app_id_name_rule'=>'应用ID名必须是字母数字和下划线组成,长度3-30字符.',
+'enable_multi_download'=>'启动CUrl大文件分割下载',
 );

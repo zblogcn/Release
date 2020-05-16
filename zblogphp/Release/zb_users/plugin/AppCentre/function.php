@@ -86,7 +86,7 @@ function Server_Open($method)
             if (ord($charset[1]) == 31 && ord($charset[2]) == 139) {
                 $xml = gzdecode($xml);
             }
-            $xml = @simplexml_load_string($xml);
+            $xml = @simplexml_load_string($xml, 'SimpleXMLElement', (LIBXML_COMPACT | LIBXML_PARSEHUGE));
             if ($xml === false) {
                 $zbp->SetHint('bad', $zbp->lang['AppCentre']['app_download_failed']);
                 $zbp->ShowError($zbp->lang['AppCentre']['app_download_failed'], __FILE__, __LINE__);
@@ -279,7 +279,7 @@ function Server_SendRequest_CUrl_Multi_Step_Download($url, $data = array(), $u =
     $begin = 0;
     do {
         $end = ($begin + $buffer);
-        if (ini_get("safe_mode") == false && ini_get("open_basedir") == false) {
+        if (ini_get("safe_mode") == false) {
             curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         }
@@ -287,18 +287,18 @@ function Server_SendRequest_CUrl_Multi_Step_Download($url, $data = array(), $u =
         $content = curl_exec($ch);
         $info = curl_getinfo($ch);
         $begin = ($end + 1);
-        $files[] = $content;
-        unset($content);
         if ($info['http_code'] >= 300 || $info['http_code'] < 200) {
             break;
         }
+        $files[] = $content;
         //logs_dump(curl_getinfo($ch));
+        //logs_dump($content);
+        unset($content);
         //die;
     } while ($info['size_download'] != 0);
 
     curl_close($ch);
     $r = implode('', $files);
-
     return $r;
 }
 
@@ -318,7 +318,7 @@ function Server_SendRequest_CUrl($url, $data = array(), $u = null, $c = null)
     curl_setopt($ch, CURLOPT_USERAGENT, $u);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    if (ini_get("safe_mode") == false && ini_get("open_basedir") == false) {
+    if (ini_get("safe_mode") == false) {
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     }

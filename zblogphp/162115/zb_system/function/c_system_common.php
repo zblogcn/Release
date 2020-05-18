@@ -15,6 +15,7 @@
  */
 function GetScheme($array)
 {
+    $array = array_change_key_case($array, CASE_UPPER);
     if (
         (array_key_exists('REQUEST_SCHEME', $array)
             &&
@@ -30,13 +31,46 @@ function GetScheme($array)
         ||
         (array_key_exists('SERVER_PORT', $array)
             &&
-            (strtolower($array['SERVER_PORT']) == '443'))
+            (strtolower($array['SERVER_PORT']) == 443))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PORT', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PORT']) == 443))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PROTO', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PROTO']) == 'https'))
+        ||
+        (array_key_exists('HTTP_FRONT_END_HTTPS', $array)
+            &&
+            (strtolower($array['HTTP_FRONT_END_HTTPS']) == 'on'))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PROTOCOL', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PROTOCOL']) == 'https'))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_SSL', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_SSL']) == 'on'))
+        ||
+        (array_key_exists('HTTP_X_URL_SCHEME', $array)
+            &&
+            (strtolower($array['HTTP_X_URL_SCHEME']) == 'https'))
+        ||
+        (array_key_exists('HTTP_CF_VISITOR', $array)
+            &&
+            (stripos($array['HTTP_CF_VISITOR'], 'https') !== false))
+        ||
+        (array_key_exists('SERVER_PORT_SECURE', $array)
+            &&
+            (strtolower($array['SERVER_PORT_SECURE']) == 1))
     ) {
         return 'https://';
     }
 
     return 'http://';
 }
+
 /**
  * 获取服务器.
  *
@@ -391,9 +425,9 @@ function RemoveMoreSpaces($s)
  */
 function GetGuid()
 {
-    $s = str_replace('.', '', trim(uniqid('zbp', true), 'zbp'));
+    $charid = strtolower(md5(uniqid(mt_rand(), true)));
 
-    return $s;
+    return $charid;
 }
 
 /**

@@ -969,12 +969,6 @@ class ZBlogPHP
         unset($this->option['ZC_PERMANENT_DOMAIN_WHOLE_DISABLE']);
         unset($this->option['ZC_PERMANENT_DOMAIN_FORCED_URL']);
 
-        if (ZC_VERSION_MAJOR === '1' && ZC_VERSION_MINOR === '5') {
-            if (is_dir($this->path . 'zb_system/api')) {
-                @rrmdir($this->path . 'zb_system/api'); // Fix bug!!!
-            }
-        }
-
         if (file_exists($this->usersdir . 'c_option.php') == false) {
             $s = "<" . "?" . "php\r\n";
             $s .= "return ";

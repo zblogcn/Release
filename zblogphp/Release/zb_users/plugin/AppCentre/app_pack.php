@@ -41,11 +41,11 @@ if (function_exists('gzencode')
     && $zbp->Config('AppCentre')->enablegzipapp
     && $app->adapted > 140614// 1.3和之前版本不打包为gzba
 ) {
-    //header('Content-type:text/xml');
-    header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.gzba');
-    echo AppCentre_Pack($app, true);
+    $b = true;
 } else {
-    //header('Content-type:text/xml');
-    header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.zba');
-    echo AppCentre_Pack($app, false);
+    $b = false;
 }
+//header('Content-type:text/xml');
+header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.zba');
+echo AppCentre_Pack($app, $b);
+logs("{$zbp->user->Name} export app [{$id}] ({$_SERVER['HTTP_USER_AGENT']})");

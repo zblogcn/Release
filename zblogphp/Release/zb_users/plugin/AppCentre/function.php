@@ -261,13 +261,13 @@ function Server_SendRequest_CUrl_Multi_Step_Download($url, $data = array(), $u =
     //}
 
     $buffer = (1024 * 1024);//每个切片大小 单位字节
-    //$buffer = 10;
     $files = array();
     if (isset($_SERVER['HTTP_ACCEPT'])) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: ' . $_SERVER['HTTP_ACCEPT']));
     }
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -280,12 +280,28 @@ function Server_SendRequest_CUrl_Multi_Step_Download($url, $data = array(), $u =
     do {
         $end = ($begin + $buffer);
         if (ini_get("safe_mode") == false) {
-            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            if (version_compare(PHP_VERSION, '5.6.0', '<') && ini_get("open_basedir")) {
+                $i = 0;
+            } else {
+                curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            }
         }
         curl_setopt($ch, CURLOPT_RANGE, $begin . '-' . $end);
         $content = curl_exec($ch);
         $info = curl_getinfo($ch);
+        if (version_compare(PHP_VERSION, '5.6.0', '<') && ini_get("open_basedir")) {
+            if (stripos($info['redirect_url'], '.zblogcn.') !== false) {
+                return Server_SendRequest_CUrl_Multi_Step_Download($info['redirect_url'], $data, $u, $c);
+            }
+        }
+        //fix
+        if (stripos($info['url'], 'client/?down=') !== false) {
+            return Server_SendRequest($info['url'], $data, $u, $c);
+        }
+        if (stripos($info['url'], '.zblogcn.') === false) {
+            return null;
+        }
         $begin = ($end + 1);
         if ($info['http_code'] >= 300 || $info['http_code'] < 200) {
             break;

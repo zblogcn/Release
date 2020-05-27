@@ -17,17 +17,17 @@
         },
         {
             "version": 162100,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.1 Valyria",
             "beta": false
         },
         {
             "version": 162105,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.2 Valyria",
             "beta": false
         },
         {
             "version": 162110,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.3 Valyria",
             "beta": false
         },
         {
@@ -37,17 +37,17 @@
         },
         {
             "version": 162100,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.1 Valyria",
             "beta": true
         },
         {
             "version": 162105,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.2 Valyria",
             "beta": true
         },
         {
             "version": 162110,
-            "name": "1.6.0 Valyria",
+            "name": "1.6.3 Valyria",
             "beta": true
         }
     ]

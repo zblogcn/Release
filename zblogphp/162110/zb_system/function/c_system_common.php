@@ -1031,6 +1031,13 @@ function JsonError4ShowErrorHook($errorCode, $errorString, $file, $line)
  */
 function JsonError($errorCode, $errorString, $data)
 {
+    $exit = true;
+    if ($errorCode === 0) {
+        $errorCode = 1;
+    } elseif ($errorCode === '0') {
+        $errorCode = 0;
+        $exit = false;
+    }
     $result = array(
         'data' => $data,
         'err'  => array(
@@ -1042,7 +1049,7 @@ function JsonError($errorCode, $errorString, $data)
     );
     @ob_clean();
     echo json_encode($result);
-    if ($errorCode != 0) {
+    if ($exit) {
         exit;
     }
 }
@@ -1054,7 +1061,7 @@ function JsonError($errorCode, $errorString, $data)
  */
 function JsonReturn($data)
 {
-    JsonError(0, "", $data);
+    JsonError('0', '', $data);
 }
 
 /**

@@ -54,6 +54,11 @@
             "version": 162110,
             "name": "1.6.3 Valyria",
             "beta": true
+        },
+        {
+            "version": 162115,
+            "name": "1.6.4 Valyria",
+            "beta": true
         }
     ]
 }

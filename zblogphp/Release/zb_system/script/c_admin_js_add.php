@@ -198,9 +198,11 @@ function AddHeaderIcon(s){
 
 
 function AutoHideTips(){
-    if($("p.hint:visible").length>0){
-        $("p.hint:visible").delay(10000).hide(1500,function(){});
-    }
+    $("p.hint:visible").each(function(i){
+        if ( !$(this).hasClass("hint_always") ){
+            $(this).delay(10000).hide(1500,function(){});
+        }
+    });
 }
 
 function ShowCSRFHint() {
@@ -297,7 +299,7 @@ header('Content-Type: application/x-javascript; charset=utf-8');
 header('Etag: ' . $m);
 
 if (isset($_SERVER["HTTP_IF_NONE_MATCH"]) && $_SERVER["HTTP_IF_NONE_MATCH"] == $m) {
-    if (PHP_VERSION_ID > 50400 && IS_IIS) {
+    if (isset($zbp->option['ZC_JS_304_ENABLE']) && $zbp->option['ZC_JS_304_ENABLE']) {
         SetHttpStatusCode(304);
         die;
     }

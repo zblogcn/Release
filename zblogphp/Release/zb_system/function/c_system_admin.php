@@ -75,6 +75,33 @@ function Include_Admin_Addcmtsubmenu()
     }
 }
 
+function Include_Admin_CheckHttp304OK()
+{
+    global $zbp, $action;
+    if ($action != 'admin') {
+        return;
+    }
+    if (!$zbp->CheckRights('root')) {
+        return;
+    }
+    if (GetVars('http304ok', 'COOKIE') !== '1') {
+        echo '<script>$(function () { $.ajax({type: "GET",url: "' . $zbp->host . 'zb_system/cmd.php?act=checkhttp304ok",success: function(msg){zbp.cookie.set(\'http304ok\',\'0\',365);},statusCode: {500: function() {zbp.cookie.set(\'http304ok\',\'1\',365);}}}); });</script>';
+    }
+    if (GetVars('http304ok', 'COOKIE') === '0') {
+        if ($zbp->option['ZC_JS_304_ENABLE'] == true) {
+            $zbp->option['ZC_JS_304_ENABLE'] = false;
+            $zbp->SaveOption();
+        }
+    } elseif (GetVars('http304ok', 'COOKIE') === '1') {
+        if ($zbp->option['ZC_JS_304_ENABLE'] == false) {
+            $zbp->option['ZC_JS_304_ENABLE'] = true;
+            $zbp->SaveOption();
+        }
+    }
+}
+
+Add_Filter_Plugin('Filter_Plugin_Admin_End', 'Include_Admin_CheckHttp304OK');
+
 $topmenus = array();
 
 $leftmenus = array();

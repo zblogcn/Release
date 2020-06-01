@@ -516,7 +516,12 @@ class ZBlogPHP
         }
 
         $parsedHost = parse_url($this->host);
-        $this->fullcurrenturl = $parsedHost['scheme'] . '://' . $parsedHost['host'] . $this->currenturl;
+        $this->fullcurrenturl = $parsedHost['scheme'] . '://' . $parsedHost['host'];
+        if (isset($parsedHost['port'])) {
+            $this->fullcurrenturl .= ':' . $parsedHost['port'];
+        }
+        $this->fullcurrenturl .= $this->currenturl;
+
         if (substr($this->host, 0, 8) == 'https://') {
             $this->isHttps = true;
         }
@@ -968,12 +973,6 @@ class ZBlogPHP
 
         unset($this->option['ZC_PERMANENT_DOMAIN_WHOLE_DISABLE']);
         unset($this->option['ZC_PERMANENT_DOMAIN_FORCED_URL']);
-
-        if (ZC_VERSION_MAJOR === '1' && ZC_VERSION_MINOR === '5') {
-            if (is_dir($this->path . 'zb_system/api')) {
-                @rrmdir($this->path . 'zb_system/api'); // Fix bug!!!
-            }
-        }
 
         if (file_exists($this->usersdir . 'c_option.php') == false) {
             $s = "<" . "?" . "php\r\n";
@@ -3029,11 +3028,11 @@ class ZBlogPHP
     public function SetHint($signal, $content = '')
     {
         if ($content == '') {
-            if ($signal == 'good') {
+            if (substr($signal, 0, 4) == 'good') {
                 $content = $this->lang['msg']['operation_succeed'];
             }
 
-            if ($signal == 'bad') {
+            if (substr($signal, 0, 3) == 'bad') {
                 $content = $this->lang['msg']['operation_failed'];
             }
         }
@@ -3089,11 +3088,11 @@ class ZBlogPHP
     public function ShowHint($signal, $content = '')
     {
         if ($content == '') {
-            if ($signal == 'good') {
+            if (substr($signal, 0, 4) == 'good') {
                 $content = $this->lang['msg']['operation_succeed'];
             }
 
-            if ($signal == 'bad') {
+            if (substr($signal, 0, 3) == 'bad') {
                 $content = $this->lang['msg']['operation_failed'];
             }
         }

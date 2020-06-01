@@ -640,7 +640,7 @@ class App
             $xml = gzdecode($xml);
         }
 
-        $xml = simplexml_load_string($xml);
+        $xml = @simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_PARSEHUGE);
         if (!$xml) {
             return false;
         }

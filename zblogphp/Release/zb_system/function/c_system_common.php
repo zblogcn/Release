@@ -15,6 +15,7 @@
  */
 function GetScheme($array)
 {
+    $array = array_change_key_case($array, CASE_UPPER);
     if (
         (array_key_exists('REQUEST_SCHEME', $array)
             &&
@@ -30,13 +31,46 @@ function GetScheme($array)
         ||
         (array_key_exists('SERVER_PORT', $array)
             &&
-            (strtolower($array['SERVER_PORT']) == '443'))
+            (strtolower($array['SERVER_PORT']) == 443))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PORT', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PORT']) == 443))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PROTO', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PROTO']) == 'https'))
+        ||
+        (array_key_exists('HTTP_FRONT_END_HTTPS', $array)
+            &&
+            (strtolower($array['HTTP_FRONT_END_HTTPS']) == 'on'))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_PROTOCOL', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_PROTOCOL']) == 'https'))
+        ||
+        (array_key_exists('HTTP_X_FORWARDED_SSL', $array)
+            &&
+            (strtolower($array['HTTP_X_FORWARDED_SSL']) == 'on'))
+        ||
+        (array_key_exists('HTTP_X_URL_SCHEME', $array)
+            &&
+            (strtolower($array['HTTP_X_URL_SCHEME']) == 'https'))
+        ||
+        (array_key_exists('HTTP_CF_VISITOR', $array)
+            &&
+            (stripos($array['HTTP_CF_VISITOR'], 'https') !== false))
+        ||
+        (array_key_exists('SERVER_PORT_SECURE', $array)
+            &&
+            (strtolower($array['SERVER_PORT_SECURE']) == 1))
     ) {
         return 'https://';
     }
 
     return 'http://';
 }
+
 /**
  * 获取服务器.
  *
@@ -243,6 +277,13 @@ function GetEnvironment()
     if ($ajax) {
         $ajax = substr(get_class($ajax), 9);
     }
+    if ($ajax == 'curl') {
+        if (ini_get("safe_mode") || (version_compare(PHP_VERSION, '5.6.0', '<') && ini_get("open_basedir"))) {
+            $ajax .= '-safemode';
+        }
+        $array = curl_version();
+        $ajax .= $array['version'];
+    }
     if (function_exists('php_uname') == true) {
         $uname = SplitAndGet(php_uname('r'), '-', 0);
     } else {
@@ -391,9 +432,9 @@ function RemoveMoreSpaces($s)
  */
 function GetGuid()
 {
-    $s = str_replace('.', '', trim(uniqid('zbp', true), 'zbp'));
+    $charid = strtolower(md5(uniqid(mt_rand(), true)));
 
-    return $s;
+    return $charid;
 }
 
 /**
@@ -1027,10 +1068,14 @@ function JsonError4ShowErrorHook($errorCode, $errorString, $file, $line)
  *
  * @param string $errorCode   错误编号
  * @param string $errorString 错误内容
- * @param object
+ * @param object $data 具体内容
+ * @param boolean $exit 是否exit退出
  */
-function JsonError($errorCode, $errorString, $data)
+function JsonError($errorCode, $errorString, $data, $exit = true)
 {
+    if ($errorCode == 0 && $exit) {
+        $errorCode = 1;
+    }
     $result = array(
         'data' => $data,
         'err'  => array(
@@ -1042,7 +1087,7 @@ function JsonError($errorCode, $errorString, $data)
     );
     @ob_clean();
     echo json_encode($result);
-    if ($errorCode != 0) {
+    if ($exit) {
         exit;
     }
 }
@@ -1054,7 +1099,7 @@ function JsonError($errorCode, $errorString, $data)
  */
 function JsonReturn($data)
 {
-    JsonError(0, "", $data);
+    JsonError(0, "", $data, false);
 }
 
 /**
@@ -1183,43 +1228,22 @@ function TransferHTML($source, $param)
  */
 function CloseTags($html)
 {
-
-    // strip fraction of open or close tag from end (e.g. if we take first x characters, we might cut off a tag at the end!)
-    $html = preg_replace('/<[^>]*$/', '', $html); // ending with fraction of open tag
-
-    // put open tags into an array
-    preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
-    $opentags = $result[1];
-
-    // put all closed tags into an array
+    preg_match_all('#<(?!meta|img|br|hr|input\b)\b([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+    $openedtags = $result[1];
     preg_match_all('#</([a-z]+)>#iU', $html, $result);
-    $closetags = $result[1];
-
-    $len_opened = count($opentags);
-
-    // if all tags are closed, we can return
-    if (count($closetags) == $len_opened) {
+    $closedtags = $result[1];
+    $len_opened = count($openedtags);
+    if (count($closedtags) == $len_opened) {
         return $html;
     }
-
-    // close tags in reverse order that they were opened
-    $opentags = array_reverse($opentags);
-
-    // self closing tags
-    $sc = array('br', 'input', 'img', 'hr', 'meta', 'link');
-    // ,'frame','iframe','param','area','base','basefont','col'
-    // should not skip tags that can have content inside!
-
+    $openedtags = array_reverse($openedtags);
     for ($i = 0; $i < $len_opened; $i++) {
-        $ot = strtolower($opentags[$i]);
-
-        if (!in_array($opentags[$i], $closetags) && !in_array($ot, $sc)) {
-            $html .= '</' . $opentags[$i] . '>';
+        if (!in_array($openedtags[$i], $closedtags)) {
+            $html .= '</' . $openedtags[$i] . '>';
         } else {
-            unset($closetags[array_search($opentags[$i], $closetags)]);
+            unset($closedtags[array_search($openedtags[$i], $closedtags)]);
         }
     }
-
     return $html;
 }
 

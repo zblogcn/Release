@@ -41,6 +41,11 @@
             "beta": false
         },
         {
+            "version": 162125,
+            "name": "1.6.4 Valyria",
+            "beta": false
+        },
+        {
             "version": 130707,
             "name": "1.0 Beta",
             "beta": true
@@ -72,6 +77,11 @@
         },
         {
             "version": 162120,
+            "name": "1.6.4 Valyria",
+            "beta": true
+        },
+        {
+            "version": 162125,
             "name": "1.6.4 Valyria",
             "beta": true
         }

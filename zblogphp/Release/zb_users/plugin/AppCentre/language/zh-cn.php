@@ -115,4 +115,5 @@ return array(
     'app_with_same_name' => '已存在同名的APP应用',
     'app_id_name_rule' => '应用ID名必须是字母数字和下划线组成,长度3-30字符.',
     'enable_multi_download' => '启动CUrl大文件分割下载',
+    'ignore_updated_apps' => '检查更新时忽略的应用',
 );

@@ -27,25 +27,49 @@ function AppCentre_SubMenus($id)
     echo '<a href="security.php"><span class="m-right ' . ($id == 7 ? 'm-now' : '') . '">' . $zbp->lang['AppCentre']['safe_mode'] . '</span></a>';
 }
 
-function AppCentre_GetCheckQueryString()
+function AppCentre_GetCheckQueryString($with_ignores = false)
 {
     global $zbp;
+
+    if(!is_array($zbp->Config('AppCentre')->app_ignores)) {
+        $zbp->Config('AppCentre')->app_ignores = array();
+    }
+    $ia = $zbp->Config('AppCentre')->app_ignores;
+    foreach($ia as $k=>$v){
+        if($v == 'AppCentre'){
+            unset($ia[$k]);
+        }
+    }
+    if ($with_ignores == false) {
+        $ia = array();
+    }
+
     $check = '';
     $app = new app;
-    if ($app->LoadInfoByXml('theme', $zbp->theme) == true) {
+    if ($app->LoadInfoByXml('theme', $zbp->theme) == true && !in_array($zbp->theme, $ia)) {
         $app->modified = str_replace(array(':',';'), '', $app->modified);
         $app->version  = str_replace(array(':',';'), '', $app->version);
         $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
+
     }
     foreach (explode('|', $zbp->option['ZC_USING_PLUGIN_LIST']) as $id) {
         $app = new app;
-        if ($app->LoadInfoByXml('plugin', $id) == true) {
+        if ($app->LoadInfoByXml('plugin', $id) == true && !in_array($id, $ia)) {
             $app->modified = str_replace(array(':',';'), '', $app->modified);
             $app->version  = str_replace(array(':',';'), '', $app->version);
             $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
         }
     }
-    return $check;
+    return urlencode($check);
+}
+
+function AppCentre_GetAppsIgnoresString() {
+    global $zbp;
+    $c = '';
+    if (is_array($zbp->Config('AppCentre')->app_ignores) && count($zbp->Config('AppCentre')->app_ignores) > 0) {
+        $c = implode('|', $zbp->Config('AppCentre')->app_ignores);
+    }
+    return urlencode($c);
 }
 
 function Server_Open($method)
@@ -154,14 +178,14 @@ function Server_Open($method)
             die;
             //break;
         case 'check':
-            $s = Server_SendRequest(APPCENTRE_URL . '?check=' . urlencode(AppCentre_GetCheckQueryString())) . '';
+            $s = Server_SendRequest(APPCENTRE_URL . '?check=' . AppCentre_GetCheckQueryString() . '&ignores=' . AppCentre_GetAppsIgnoresString());
             $s = str_replace('%bloghost%', $zbp->host . 'zb_users/plugin/AppCentre/main.php', $s);
             echo str_replace('%csrf_token%', $zbp->GetToken('AppCentre'), $s);
             break;
         case 'checksilent':
             header('Content-type: application/x-javascript; Charset=utf-8');
             ob_clean();
-            $s = Server_SendRequest(APPCENTRE_URL . '?blogsilent=1' . ($zbp->Config('AppCentre')->checkbeta ? '&betablog=1' : '') . '&check=' . urlencode(AppCentre_GetCheckQueryString())) . '';
+            $s = Server_SendRequest(APPCENTRE_URL . '?blogsilent=1' . ($zbp->Config('AppCentre')->checkbeta ? '&betablog=1' : '') . '&check=' . AppCentre_GetCheckQueryString(true) . '&ignores=' . AppCentre_GetAppsIgnoresString());
             if (strpos($s, ';') !== false) {
                 $newversion = SplitAndGet($s, ';', 0);
                 $s = str_replace(($newversion . ';'), '', $s);

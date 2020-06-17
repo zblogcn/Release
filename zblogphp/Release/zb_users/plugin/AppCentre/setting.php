@@ -33,6 +33,7 @@ if (GetVars('act') == 'save') {
     $zbp->Config('AppCentre')->networktype = trim(GetVars("app_networktype"));
     $zbp->Config('AppCentre')->firstdomain = trim(GetVars("app_firstdomain"));
     $zbp->Config('AppCentre')->enablemultidownload = trim(GetVars("app_enablemultidownload"));
+    $zbp->Config('AppCentre')->app_ignores = GetVars("app_ignores");
     $zbp->SaveConfig('AppCentre');
 
     $zbp->SetHint('good');
@@ -84,6 +85,29 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <label><input name="app_networktype" type="radio" value="filegetcontents" <?php echo $zbp->Config('AppCentre')->networktype == 'filegetcontents' ? 'checked="checked"' : ''; ?> />filegetcontents</label>&nbsp;&nbsp;&nbsp;&nbsp;
                   </td>
                 </tr>
+                <tr height="32">
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['ignore_updated_apps']; ?></b></p></td>
+                  <td>
+<?php
+if(!is_array($zbp->Config('AppCentre')->app_ignores)) {
+    $zbp->Config('AppCentre')->app_ignores = array();
+}
+foreach ($zbp->Config('AppCentre')->app_ignores as $key => $value) {
+    echo "<label><input type=\"checkbox\" name=\"app_ignores[]\" checked=\"checked\" value=\"{$value}\">&nbsp;{$value}</label>&nbsp;&nbsp;&nbsp;";
+}
+
+$aps = array($zbp->theme) + $GLOBALS['zbp']->GetPreActivePlugin();
+foreach ($aps as $key => $value) {
+    if (in_array($value, $zbp->Config('AppCentre')->app_ignores) || $value == 'AppCentre') {
+        continue;
+    }
+    echo "<label><input type=\"checkbox\" name=\"app_ignores[]\" value=\"{$value}\">&nbsp;{$value}</label>&nbsp;&nbsp;&nbsp;";
+}
+
+?>
+                  </td>
+                </tr>
+
                 <tr height="32" style="display:none;">
                   <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['domain_of_appcentre']; ?></b><br/>
                       <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['domain_of_appcentre_note']; ?></span></p></td>
@@ -92,6 +116,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <label><input name="app_firstdomain" type="radio" value="zblogcn.net" <?php echo $zbp->Config('AppCentre')->firstdomain == 'zblogcn.net' ? 'checked="checked"' : ''; ?> />app.zblogcn.net</label>&nbsp;&nbsp;&nbsp;&nbsp;
                   </td>
                 </tr>
+
               </table>
               <hr/>
               <p>

@@ -91,7 +91,12 @@ function misc_statistic()
     $r = str_replace('{$zbp->user->Name}', $zbp->user->Name, $r);
     $r = str_replace('{$zbp->theme}', $zbp->theme, $r);
     $r = str_replace('{$zbp->style}', $zbp->style, $r);
-    $r = str_replace('{$zbp->version}', ZC_VERSION_FULL, $r);
+    $app = $zbp->LoadApp('plugin','AppCentre');
+    $sv = ZC_VERSION_FULL;
+    if ($app->isloaded == true) {
+        $sv .= '; AppCentre' . $app->version;
+    }
+    $r = str_replace('{$zbp->version}', $sv, $r);
     $r = str_replace('{$system_environment}', $zbp->cache->system_environment, $r);
     $r = str_replace('{$theme_version}', '(v' . $zbp->themeapp->version . ')', $r);
 

@@ -307,10 +307,6 @@ function GetEnvironment()
         $a = explode(' ', OPENSSL_VERSION_TEXT);
         $system_environment .= '; ' . GetValueInArray($a,0) . GetValueInArray($a,1);
     }
-    $app = $zbp->LoadApp('plugin','AppCentre');
-    if ($app->isloaded == true) {
-    	$system_environment .= '; AppCentre' . $app->version;
-    }
 
     return $system_environment;
 }

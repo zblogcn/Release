@@ -1023,7 +1023,8 @@ function DelNameInString($s, $name)
     $pl = $s;
     $name = (string) $name;
     $apl = explode('|', $pl);
-    for ($i = 0; $i <= count($apl) - 1; $i++) {
+    $count = count($apl);
+    for ($i = 0; $i < $count; $i++) {
         if ($apl[$i] == $name) {
             unset($apl[$i]);
         }

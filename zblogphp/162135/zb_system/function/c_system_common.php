@@ -278,11 +278,8 @@ function GetEnvironment()
         $ajax = substr(get_class($ajax), 9);
     }
     if ($ajax == 'curl') {
-        if (ini_get("safe_mode")) {
-            $ajax .= '-s';
-        }
-        if (ini_get("open_basedir")) {
-            $ajax .= '-o';
+        if (ini_get("safe_mode") || (version_compare(PHP_VERSION, '5.6.0', '<') && ini_get("open_basedir"))) {
+            $ajax .= '-safemode';
         }
         $array = curl_version();
         $ajax .= $array['version'];
@@ -304,8 +301,7 @@ function GetEnvironment()
     $zbp->option['ZC_DATABASE_TYPE'] . $zbp->db->version . '; ' . $ajax;
 
     if (defined('OPENSSL_VERSION_TEXT')) {
-        $a = explode(' ', OPENSSL_VERSION_TEXT);
-        $system_environment .= '; ' . GetValueInArray($a,0) . GetValueInArray($a,1);
+        $system_environment .= '; ' . str_replace(' ', '', OPENSSL_VERSION_TEXT);
     }
 
     return $system_environment;
@@ -1027,7 +1023,8 @@ function DelNameInString($s, $name)
     $pl = $s;
     $name = (string) $name;
     $apl = explode('|', $pl);
-    for ($i = 0; $i <= count($apl) - 1; $i++) {
+    $count = count($apl);
+    for ($i = 0; $i < $count; $i++) {
         if ($apl[$i] == $name) {
             unset($apl[$i]);
         }

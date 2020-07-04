@@ -141,7 +141,10 @@ class Upload extends Base
         } else {
             $fn = $this->Name;
         }
-        file_put_contents($zbp->usersdir . $this->Dir . $fn, $s);
+        if ($this->CheckExtName()) {
+            file_put_contents($zbp->usersdir . $this->Dir . $fn, $s);
+            return true;
+        }
 
         return true;
     }

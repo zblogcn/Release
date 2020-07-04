@@ -105,7 +105,10 @@ class Upload extends Base
         } else {
             $fn = $this->Name;
         }
-        @move_uploaded_file($tmp, $zbp->usersdir . $this->Dir . $fn);
+        if ($this->CheckExtName()) {
+            @move_uploaded_file($tmp, $zbp->usersdir . $this->Dir . $fn);
+            return true;
+        }
 
         return true;
     }
@@ -138,7 +141,10 @@ class Upload extends Base
         } else {
             $fn = $this->Name;
         }
-        file_put_contents($zbp->usersdir . $this->Dir . $fn, $s);
+        if ($this->CheckExtName()) {
+            file_put_contents($zbp->usersdir . $this->Dir . $fn, $s);
+            return true;
+        }
 
         return true;
     }

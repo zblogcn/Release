@@ -1,6 +1,6 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
 
-<p><a href="https://blog.zblogcn.com/2020/08/14/111/" target="_blank"><b>宝塔面板粗大BUG了💣，大家快快快快快快更新吧，配合ZBP漏洞补丁食用效果更佳！！! (2020-8-24)</b></a></p>
+<p><a href="https://blog.zblogcn.com/2020/08/24/112/" target="_blank"><b>宝塔面板出现漏洞，大家快更新吧，配合ZBP漏洞补丁食用效果更佳！ (2020-8-24)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/06/01/110/" target="_blank"><b>滴滴滴，发车了！Z-BlogPHP 1.6.4 Valyria发布了! (2020-6-1)</b></a></p>
 

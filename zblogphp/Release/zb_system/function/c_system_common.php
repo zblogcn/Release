@@ -278,8 +278,11 @@ function GetEnvironment()
         $ajax = substr(get_class($ajax), 9);
     }
     if ($ajax == 'curl') {
-        if (ini_get("safe_mode") || (version_compare(PHP_VERSION, '5.6.0', '<') && ini_get("open_basedir"))) {
-            $ajax .= '-safemode';
+        if (ini_get("safe_mode")) {
+            $ajax .= '-s';
+        }
+        if (ini_get("open_basedir")) {
+            $ajax .= '-o';
         }
         $array = curl_version();
         $ajax .= $array['version'];
@@ -301,7 +304,8 @@ function GetEnvironment()
     $zbp->option['ZC_DATABASE_TYPE'] . $zbp->db->version . '; ' . $ajax;
 
     if (defined('OPENSSL_VERSION_TEXT')) {
-        $system_environment .= '; ' . str_replace(' ', '', OPENSSL_VERSION_TEXT);
+        $a = explode(' ', OPENSSL_VERSION_TEXT);
+        $system_environment .= '; ' . GetValueInArray($a,0) . GetValueInArray($a,1);
     }
 
     return $system_environment;

@@ -607,8 +607,9 @@ class ZBlogPHP
 
         $this->ReflushLanguages();
 
-        if ($this->option['ZC_DEBUG_MODE']) {
-            $this->CheckTemplate(false, true);
+        //进后台时已自动检测模板并自动重建了，所以这里只针对开调试后的前台的访问进行
+        if ($this->option['ZC_DEBUG_MODE'] && $this->ismanage == false) {
+            $this->CheckTemplate();
         }
 
         $this->isload = true;
@@ -646,7 +647,7 @@ class ZBlogPHP
         Add_Filter_Plugin('Filter_Plugin_Admin_ModuleMng_SubMenu', 'Include_Admin_Addmodsubmenu');
         Add_Filter_Plugin('Filter_Plugin_Admin_CommentMng_SubMenu', 'Include_Admin_Addcmtsubmenu');
 
-        $this->CheckTemplate(true);
+        $this->CheckTemplate();
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_LoadManage'] as $fpname => &$fpsignal) {
             $fpname();
@@ -1710,6 +1711,10 @@ class ZBlogPHP
         $s = implode($this->template->templates);
         $md5 = md5($s);
 
+        //本函数的返回值很有意思，为false表示需要rebuild 为true表示已重建完成或是不需要rebuild
+        //$zbp->CheckTemplate(true) == false 的意思，就是判断模板需需要重刷新吗？
+
+        //如果对比不一样,$onlycheck就有用了
         if ($md5 != $this->cache->templates_md5) {
             if ($onlycheck == true && $forcebuild == false) {
                 return false;
@@ -1717,7 +1722,11 @@ class ZBlogPHP
             $this->BuildTemplate();
             $this->cache->templates_md5 = $md5;
             $this->SaveCache();
-        } else {
+
+            return true;
+        }
+        //如果对比一样的话，$forcebuild就有用了
+        if ($md5 == $this->cache->templates_md5) {
             if ($forcebuild == true) {
                 $this->BuildTemplate();
                 $this->cache->templates_md5 = $md5;
@@ -2782,8 +2791,10 @@ class ZBlogPHP
                 $this->tagsbyname[$v->Name] = &$this->tags[$v->ID];
                 $t[$v->Name] = &$this->tags[$v->ID];
             }
-
-            return array_merge($b, $t);
+            foreach ($t as $key => $value) {
+                $b[$key] = $value;
+            }
+            return $b;
         }
     }
 

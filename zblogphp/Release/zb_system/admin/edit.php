@@ -12,7 +12,6 @@ require '../function/c_system_admin.php';
 
 $zbp->CheckGzip();
 $zbp->Load();
-$zbp->template->LoadTemplates();
 $zbp->csrfExpiration = 48;
 
 $action = '';

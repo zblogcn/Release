@@ -27,7 +27,7 @@ AppCentre_CheckInSecurityMode();
 
 if ($blogversion >= 151525) {
     $app = $zbp->LoadApp($_GET['type'], $_GET['id']);
-    if ($app->type == $_GET['type']) {
+    if ($app->id != '' && ($app->type == 'plugin' || $app->type == 'theme')) {
         if ($app->CanDel()) {
             $app->Del();
         }
@@ -51,8 +51,10 @@ if ($blogversion >= 151525) {
             rmdir($dir);
         }
     }
-
-    rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
+    if ($_GET['type'] == 'plugin' || $_GET['type'] == 'theme') {
+    	$_GET['id'] = str_replace(array('.', '/', '\\'), '', $_GET['id']);
+        rrmdir($zbp->usersdir . $_GET['type'] . '/' . $_GET['id']);
+    }
 }
 
 Redirect($_SERVER["HTTP_REFERER"]);

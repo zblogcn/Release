@@ -502,15 +502,16 @@ function ViewSearch()
     $pagebar->PageBarCount = $zbp->pagebarcount;
     $pagebar->UrlRule->Rules['{%page%}'] = $page;
     $pagebar->UrlRule->Rules['{%q%}'] = rawurlencode($q);
+    $order = array('log_PostTime' => 'DESC');
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewSearch_Core'] as $fpname => &$fpsignal) {
-        $fpname($q, $page, $w, $pagebar);
+        $fpname($q, $page, $w, $pagebar, $order);
     }
 
     $array = $zbp->GetArticleList(
         '',
         $w,
-        array('log_PostTime' => 'DESC'),
+        $order,
         array(($pagebar->PageNow - 1) * $pagebar->PageCount, $pagebar->PageCount),
         array('pagebar' => $pagebar),
         false
@@ -3040,7 +3041,7 @@ function SaveSetting()
         }
         if ($key == 'ZC_UPLOAD_FILETYPE') {
             $value = strtolower($value);
-			$value = str_replace(array(' ','　'), '', $value);
+            $value = str_replace(array(' ','　'), '', $value);
             $value = DelNameInString($value, 'php');
             $value = DelNameInString($value, 'asp');
         }

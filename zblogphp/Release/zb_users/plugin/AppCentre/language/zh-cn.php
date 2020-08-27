@@ -20,7 +20,7 @@ return array(
     'login_store' => '登录应用商城',
     'my_store' => '我的应用仓库',
     'login_success' => '您已成功登录APP应用中心.',
-    'token_' => '您输入的令牌不存在或已被绑定，请申请一个新的令牌。',
+    'token_not_exist' => '您输入的令牌不存在或已被绑定，请申请一个新的令牌。',
     'logout' => '您已退出APP应用中心.',
     'account_login' => '账户登录',
     'token' => '令牌',

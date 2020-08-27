@@ -41,7 +41,7 @@ if (GetVars('act') == 'login') {
         Redirect('./main.php');
         die;
     } else {
-        $zbp->SetHint('bad', $zbp->lang['AppCentre']['app_name']);
+        $zbp->SetHint('bad', $zbp->lang['AppCentre']['token_not_exist']);
         Redirect('./client.php');
         die;
     }

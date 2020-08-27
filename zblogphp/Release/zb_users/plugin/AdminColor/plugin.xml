@@ -9,7 +9,7 @@
 <include>include.php</include>
 <level>1</level>
 <author>
-  <name>zxasd</name>
+  <name>zx.asd</name>
   <email>rainbowsoft@gmail.com</email>
   <url>http://www.zdevo.com/</url>
 </author>
@@ -19,16 +19,16 @@
   <url></url>
 </source>
 <adapted>151935</adapted>
-<version>4.6</version>
+<version>4.9</version>
 <pubdate>2013-07-07</pubdate>
-<modified>2020-04-07</modified>
+<modified>2020-08-19</modified>
 <price>0</price>
 <phpver>5.2</phpver>
 <advanced>
   <dependency></dependency>
   <rewritefunctions></rewritefunctions>
   <existsfunctions></existsfunctions>
-  <conflict></conflict>
+  <conflict>iceAdmin</conflict>
 </advanced>
 <sidebars>
   <sidebar1></sidebar1>

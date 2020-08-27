@@ -96,7 +96,7 @@ function InstallPlugin_AppCentre()
 function AppCentre_AddMenu(&$m)
 {
     global $zbp;
-    $m['nav_AppCentre'] = MakeLeftMenu("root", $zbp->lang['AppCentre']['name'], $zbp->host . "zb_users/plugin/AppCentre/main.php", "nav_AppCentre", "aAppCentre", $zbp->host . "zb_users/plugin/AppCentre/images/Cube1.png");
+    $m['nav_AppCentre'] = MakeLeftMenu("root", $zbp->lang['AppCentre']['name'], $zbp->host . "zb_users/plugin/AppCentre/main.php", "nav_AppCentre", "aAppCentre", $zbp->host . "zb_users/plugin/AppCentre/images/Cube1.png", "icon-zblog-appcenter");
 }
 
 function AppCentre_AddSiteInfoMenu()
@@ -439,6 +439,54 @@ function AppCentre_DisablePlugin(&$name)
         }
     }
 }
+
+function AppCentre_CreateButton($name){
+    if ($GLOBALS['blogversion'] >= 172360) {
+
+        switch ($name) {
+            case 'edit':
+                return '<i class=\'icon-pencil-square\'></i>';
+                break;
+            case 'download':
+                return '<i class=\'icon-download\'></i>';
+            case 'cloudup':
+                return '<i class=\'icon-cloud-arrow-up-fill\'></i>';
+            case 'delete':
+                return '<i class=\'icon-trash\'></i>';
+            case 'module':
+                return '<i class=\'icon-grid-fill\'></i>';
+            case 'set':
+                return '<i class=\'icon-tools\'></i>';
+            default:
+                # code...
+                break;
+        }
+
+
+    } else {
+
+        switch ($name) {
+            case 'edit':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_users/plugin/AppCentre/images/application_edit.png\'/>';
+                break;
+            case 'download':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_users/plugin/AppCentre/images/download.png\'/>';
+            case 'cloudup':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_users/plugin/AppCentre/images/drive-upload.png\'/>';
+            case 'delete':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_users/plugin/AppCentre/images/delete.png\'/>';
+            case 'module':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_users/plugin/AppCentre/images/bricks.png\'/>';
+            case 'set':
+                return '<img height=\'16\' width=\'16\' src=\'"+bloghost+"zb_system/image/admin/setting_tools.png\'/>';
+            default:
+                # code...
+                break;
+        }
+
+    }
+}
+
 
 if (!function_exists('SplitAndGet')) {
 

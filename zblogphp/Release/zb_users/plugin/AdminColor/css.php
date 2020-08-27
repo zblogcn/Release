@@ -50,7 +50,7 @@ $c .= ".menu ul li a{background-color: rgb(255,255,255,0.95);}" . PHP_EOL;
 $c .= ".menu ul li.on a {background-color: #fff;}" . PHP_EOL;
 $c .= ".menu ul li a:hover {background-color: #b0cdee;}" . PHP_EOL;
 $c .= "#leftmenu a:hover {background-color: #b0cdee!important;}" . PHP_EOL;
-$c .= "div.theme-now{background-color:#b0cdee;}" . PHP_EOL;
+$c .= "div.theme-now{background-color:#b0cdee;border-color:#3399cc;}" . PHP_EOL;
 $c .= "div.theme-other .betterTip img:hover{border-color:#b0cdee;}" . PHP_EOL;
 $c .= ".SubMenu a:hover {background-color:#b0cdee;}" . PHP_EOL;
 $c .= ".siderbar-header:hover {background-color:#b0cdee;}" . PHP_EOL;
@@ -205,8 +205,8 @@ height: 40px;
 .left #leftmenu #nav_admincolor2 span {
     float: left;
     width: auto;
-    height: 30px;
-    line-height: 30px;
+    height: 36px;
+    line-height: 36px;
     text-align: left;
     cursor: pointer;
     margin-left: 25px;
@@ -233,7 +233,6 @@ header div.logo img{
     height: 60px;
     background-position: -5px -5px;
 }
-header div.logo img{background:url("images/sl.png")}
 .pagebar a{border:1px solid white;}
 body[class~=login],body[class~=error],body[class~=short]{background:none;}
 body[class~=login] div.bg,body[class~=error] div.bg,body[class~=short] div.bg {background: #3399cc;}
@@ -243,10 +242,12 @@ body[class~=login] input.button, body[class~=login] input[type="submit"], body[c
 body[class~=login] input[type="text"], body[class~=login] input[type="password"] {border-color: #3399cc;}
 body[class~=login] input.button:hover {background-color: #3a6ea5;}
 ';
-
     if ($GLOBALS['blogversion'] < 162090 && stripos($_SERVER['HTTP_REFERER'], 'login.php')) {
         $c .= 'body{background:none;}';
     }
+	//if ($GLOBALS['blogversion'] < 172360) {
+		$c .= 'header div.logo img{background:url("images/logo.svg")}';
+	//}
 }
 if ($zbp->Config('AdminColor')->TableShadow) {
     $c .= 'table,.pane,.theme,form.search{box-shadow:0 0 0.5em rgba(0,0,0,0.2);}';

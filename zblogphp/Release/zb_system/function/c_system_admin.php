@@ -635,23 +635,29 @@ function Admin_SiteInfo()
 
     echo '<table class="tableFull tableBorder table_striped table_hover" id="tbStatistic"><tr><th colspan="4"  scope="col">&nbsp;' . $zbp->lang['msg']['site_analyze'];
     if ($zbp->CheckRights('root')) {
-        echo '&nbsp;<a href="javascript:statistic(\'' . BuildSafeCmdURL('act=misc&type=statistic') . '\');" id="statistic">[' . $zbp->lang['msg']['refresh_cache'] . ']</a>';
+        echo '&nbsp;<a href="javascript:statistic(\'' . BuildSafeCmdURL('act=misc&type=statistic&forced=1') . '\');" id="statistic">[' . $zbp->lang['msg']['refresh_cache'] . ']</a>';
     }
     echo ' <img id="statloading" style="display:none" src="../image/admin/loading.gif" alt=""/></th></tr>';
 
-    if (((time() - (int) $zbp->cache->reload_statistic_time) > (23 * 60 * 60))
-              ||
-          ($zbp->CheckTemplate(true) == false)
-        ) {
+    if ((time() - (int) $zbp->cache->reload_statistic_time) > (23 * 60 * 60)) {
         echo '<script type="text/javascript">$(document).ready(function(){ statistic(\'' . BuildSafeCmdURL('act=misc&type=statistic') . '\'); });</script>';
     } else {
         $echoStatistic = true;
         $r = $zbp->cache->reload_statistic;
+        if (!$zbp->CheckRights('root')) {
+            $a = explode('<!--debug_mode_moreinfo-->', $r);
+            $r = $a[0];
+        }
         $r = str_replace('{$zbp->user->Name}', $zbp->user->Name, $r);
         $r = str_replace('{$zbp->theme}', $zbp->theme, $r);
         $r = str_replace('{$zbp->style}', $zbp->style, $r);
         $r = str_replace('{$system_environment}', GetEnvironment(), $r);
-        $r = str_replace('{$zbp->version}', ZC_VERSION_FULL, $r);
+        $app = $zbp->LoadApp('plugin','AppCentre');
+        $sv = ZC_VERSION_FULL;
+        if ($app->isloaded == true) {
+            $sv .= '; AppCentre' . $app->version;
+        }
+        $r = str_replace('{$zbp->version}', $sv, $r);
         $r = str_replace('{$theme_version}', '(v' . $zbp->themeapp->version . ')', $r);
         echo $r;
     }

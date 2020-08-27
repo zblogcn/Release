@@ -20,7 +20,7 @@ return array(
     'login_store'=>'登錄應用商城',
     'my_store'=>'我的應用倉庫',
     'login_success'=>'您已成功登錄APP應用中心.',
-    'token_'=>'您輸入的令牌不存在或已被綁定，請申請一個新的令牌。',
+    'token_not_exist'=>'您輸入的令牌不存在或已被綁定，請申請一個新的令牌。',
     'logout'=>'您已退出APP應用中心.',
     'account_login'=>'賬戶登錄',
     'token'=>'令牌',

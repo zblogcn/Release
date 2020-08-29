@@ -230,6 +230,11 @@ class Config
      */
     public function Save()
     {
+        global $zbp;
+        if ($zbp->option['ZC_LAST_VERSION'] > 170000) {
+            return false;
+        }
+
         $add = array_diff_key($this->kvdata, $this->origkvdata);
         $del = array_diff_key($this->origkvdata, $this->kvdata);
         $mod = array();

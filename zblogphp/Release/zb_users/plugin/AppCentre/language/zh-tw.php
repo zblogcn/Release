@@ -100,8 +100,8 @@ return array(
     'app_management_page_note'=>'Habitually named main.php',
     'app_embedding_page'=>'應用嵌入頁',
     'app_embedding_page_note'=>'只能命名為include.php',
-    'plugin_logo_tips'=>'提示:插件的圖標是名為logo.png的128 x 128 px大小的png文件,推薦使用<a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">Metro Studio軟件</a>創建logo,插件的縮略圖(可選)是名為screenshot.png的300x240px大小的png文件,放在插件的目錄下.',
-    'theme_logo_tips'=>'提示:主題的縮略圖是名為screenshot.png的<b>300x240px</b>大小的png文件,放在主題的目錄下.',
+    'plugin_logo_tips'=>'提示:插件的圖標是名為logo.png的128 x 128 px大小的png文件,推薦使用<a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">Metro Studio軟件</a>創建logo,插件的縮略圖(可選)是名為screenshot.png的320x200px大小的png文件,放在插件的目錄下.',
+    'theme_logo_tips'=>'提示:主題的縮略圖是名為screenshot.png的<b>320x200px</b>大小的png文件,放在主題的目錄下.',
     'detailed_description'=>'詳細說明 ',
     'export_sidebar'=>'導出側欄配置',
     'dependent_apps'=>'【高級】依賴應用列表（以|分隔）',
@@ -116,4 +116,5 @@ return array(
     'app_id_name_rule'=>'應用ID名必須是字母數字和下劃線組成,長度3-30字符.',
     'enable_multi_download'=>'启动CUrl大文件分割下载',
     'ignore_updated_apps' => '忽略更新的应用',
+    'config_theme'=>'配置主題',
 );

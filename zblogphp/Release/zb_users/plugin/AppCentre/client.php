@@ -33,7 +33,7 @@ if (GetVars('act') == 'login') {
         $zbp->Config('AppCentre')->token = GetVars("app_token", "POST");
         $zbp->Config('AppCentre')->uniq_id = trim($s);
         $zbp->Config('AppCentre')->old_token = 'false';
-        unset($zbp->Config('AppCentre')->old_token);
+        $zbp->Config('AppCentre')->DelKey('old_token');
 
         $zbp->SaveConfig('AppCentre');
 

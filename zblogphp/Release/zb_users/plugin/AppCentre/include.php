@@ -192,14 +192,14 @@ function AppCentre_Get_Cookies()
 {
     global $zbp;
 
-    if ($zbp->Config('AppCentre')->username !== '') {
+    if ($zbp->Config('AppCentre')->username != '') {
         $zbp->Config('AppCentre')->token = $zbp->Config('AppCentre')->username;
         $zbp->Config('AppCentre')->uniq_id = $zbp->Config('AppCentre')->password;
         $zbp->Config('AppCentre')->old_token = 'true';
         $zbp->Config('AppCentre')->username = '';
         $zbp->Config('AppCentre')->password = '';
-        unset($zbp->Config('AppCentre')->username);
-        unset($zbp->Config('AppCentre')->password);
+        $zbp->Config('AppCentre')->DelKey('username');
+        $zbp->Config('AppCentre')->DelKey('password');
         $zbp->SaveConfig('AppCentre');
     }
 

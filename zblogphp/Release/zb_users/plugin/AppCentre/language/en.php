@@ -100,8 +100,8 @@ return array(
     'app_management_page_note' => 'Habitually named main.php',
     'app_embedding_page' => 'Built-in app embedding page',
     'app_embedding_page_note' => 'must be named include.php',
-    'plugin_logo_tips' => 'Tip: The icon of the plug-in is a 128 x 128 px png file named logo.png.It is recommended to use <a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">the Metro Studio software</a> to create the logo. The thumbnail of the plug-in (optional) is a 300x240px png file named screenshot.png Put it in the plugin\'s directory.',
-    'theme_logo_tips' => 'Tip: The thumbnail of the theme is a <b> 300x240px </ b> png file named screenshot.png, which is placed in the theme\'s directory.',
+    'plugin_logo_tips' => 'Tip: The icon of the plug-in is a 128 x 128 px png file named logo.png.It is recommended to use <a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">the Metro Studio software</a> to create the logo. The thumbnail of the plug-in (optional) is a 320x200px png file named screenshot.png Put it in the plugin\'s directory.',
+    'theme_logo_tips' => 'Tip: The thumbnail of the theme is a <b> 320x200px </ b> png file named screenshot.png, which is placed in the theme\'s directory.',
     'detailed_description' => 'Detailed description',
     'export_sidebar' => 'Export sidebar configuration',
     'dependent_apps' => '[Advanced] List of dependent apps (separated by |)',
@@ -116,4 +116,5 @@ return array(
     'app_id_name_rule' => 'The App ID name must consist of alphanumeric characters and underscores, and the length is 3-30 characters.',
     'enable_multi_download' => 'Start CUrl large file split download',
     'ignore_updated_apps' => 'Ignore updated apps',
+    'config_theme'=>'Confit theme',
 );

@@ -136,10 +136,10 @@ function updatedb_14to15()
 }
 
 if (isset($_GET['updatedb'])) {
-    if ($zbp->version >= 150101 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
+    if ($zbp->version >= 150101 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
         updatedb_14to15();
     }
-    if ($zbp->version >= 162090 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
+    if ($zbp->version >= 162090 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
         updatedb_15to16();
     }
     if (defined(ZC_VERSION_MAJOR) && defined(ZC_VERSION_MINOR)) {

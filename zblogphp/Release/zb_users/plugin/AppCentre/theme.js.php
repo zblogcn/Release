@@ -14,14 +14,14 @@ $("#divMain2").prepend("<form class='search' name='edit' id='edit' method='post'
 
 $(".theme").each(function(){
     var t=$(this).find("strong").html();
-    var s="<p>";
+    var s="<p style='padding-bottom:0.5em;'>";
 
     if($(this).hasClass("theme-now")){
         <?php
 
             if ($zbp->LoadApp('theme', $zbp->theme)->IsUsed() && $zbp->LoadApp('theme', $zbp->theme)->path) {
 ?>
-        s=s+"<a class=\"button\" href='<?php echo $zbp->LoadApp('theme', $zbp->theme)->GetManageUrl();?>' title='<?php echo $zbp->lang['AppCentre']['add_module_for_theme']; ?>'><?php echo AppCentre_CreateButton('set'); ?></a>&nbsp;&nbsp;&nbsp;";
+        s=s+"<a class=\"button\" href='<?php echo $zbp->LoadApp('theme', $zbp->theme)->GetManageUrl();?>' title='<?php echo $zbp->lang['AppCentre']['config_theme']; ?>'><?php echo AppCentre_CreateButton('set'); ?></a>&nbsp;&nbsp;&nbsp;";
 <?php
             }
         ?>

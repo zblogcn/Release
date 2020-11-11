@@ -1,6 +1,6 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
 
-<p><a href="https://app.zblogcn.com/" target="_blank"><b>玩转全年最低价，双11应用狂欢节！ (2020-11-2)</b></a></p>
+<!--<p><a href="https://app.zblogcn.com/" target="_blank"><b>Z-Blog应用中心——玩转全年最低价，双11应用狂欢节！ (2020-11-2)</b></a></p>-->
 
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank"><b>ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</b></a></p>
 
@@ -24,8 +24,6 @@
 <a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:failure:cannotemoji" target="_blank">不能发Emoji表情</a>
 </p>
 
-<!--<p><a href="https://blog.zblogcn.com/2018/03/29/98/" target="_blank"><b>2018年3月29日应用中心安全更新公告(2018-3-29)</b></a></p>
--->
 <p><a href="https://blog.zblogcn.com/2018/02/12/99/" target="_blank">大吉大利，天天吃鸡——Z-Blog祝您2018新春快乐，应用中心红包活动开始了！ (2018-2-12)</a></p>
 
 <!-- <p><a style="color:crimson"  href="https://app.zblogcn.com/11.php" target="_blank">Z-Blog应用中心“双十一”大促活动 (2017-11-09)</a></p>-->

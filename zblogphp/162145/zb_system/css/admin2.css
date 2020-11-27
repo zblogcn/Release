@@ -78,7 +78,7 @@ label { cursor: pointer; }
 .left { float: left; width: 140px; padding: 0px; overflow: hidden; margin: 0 0 0 0; position: absolute; }
 .left #leftmenu { }
 .left #leftmenu li { float: left; width: 140px; height: 32px; margin-bottom: 5px; background: #ededed; cursor: pointer; }
-.left #leftmenu a { float: left; width: 140px; height: 32px; line-height: 35px; cursor: pointer; }
+.left #leftmenu a { float: left; width: 140px; height: 32px; line-height: 35px; cursor: pointer; padding-right:1em; }
 .left #leftmenu a:hover { color: #000000; background: #b0cdee; }
 .left #leftmenu span { float: left; width: auto; height: 32px; line-height: 32px; text-align: left; cursor: pointer; margin-left: 25px; padding-left: 22px; }
 

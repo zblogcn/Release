@@ -1,5 +1,8 @@
 <?php
 
+// 标记为 CMD 运行模式
+define('ZBP_IN_CMD', true);
+
 require './function/c_system_base.php';
 $zbp->Load();
 $action = GetVars('act', 'GET');

@@ -196,6 +196,8 @@ class ZBlogPHP
     public $ismanage = false; //是否加载管理模式
     private $isGzip = false; //是否开启gzip
     public $isHttps = false; //是否HTTPS
+    public $iscmd = false; //是否加载CMD模式
+    public $isajax = false; //是否加载AJAX模式
 
     /**
      * @var Template 当前模板
@@ -536,6 +538,9 @@ class ZBlogPHP
         $this->LoadConfigsOnlySystem(false);
 
         $this->LoadCache();
+
+        !defined('ZBP_IN_CMD') || $this->iscmd = true;
+        !defined('ZBP_IN_AJAX') || $this->isajax = true;
 
         $this->isinitialized = true;
 

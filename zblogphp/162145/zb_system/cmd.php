@@ -4,11 +4,13 @@
 define('ZBP_IN_CMD', true);
 
 require './function/c_system_base.php';
-$zbp->Load();
+
 $action = GetVars('act', 'GET');
 if ($action == 'ajax') {
     define('IN_AJAX_PROCESSING', true);
 }
+
+$zbp->Load();
 
 if (!$zbp->CheckRights($action)) {
     $zbp->ShowError(6, __FILE__, __LINE__);

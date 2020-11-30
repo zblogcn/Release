@@ -20,8 +20,8 @@ $zbpvers['151626']='1.5 Zero Build 151626';
  */
 define('ZC_VERSION_MAJOR', '1');
 define('ZC_VERSION_MINOR', '6');
-define('ZC_VERSION_BUILD', '5');
-define('ZC_VERSION_COMMIT', '2140');
+define('ZC_VERSION_BUILD', '6');
+define('ZC_VERSION_COMMIT', '2145');
 define('ZC_VERSION_CODENAME', 'Valyria');
 define('ZC_VERSION', ZC_VERSION_MAJOR . '.' . ZC_VERSION_MINOR . '.' . ZC_VERSION_BUILD . '.' . ZC_VERSION_COMMIT);
 define('ZC_VERSION_DISPLAY', ZC_VERSION_MAJOR . '.' . ZC_VERSION_MINOR . '.' . ZC_VERSION_BUILD . ' ' . ZC_VERSION_CODENAME);

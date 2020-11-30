@@ -196,6 +196,8 @@ class ZBlogPHP
     public $ismanage = false; //是否加载管理模式
     private $isGzip = false; //是否开启gzip
     public $isHttps = false; //是否HTTPS
+    public $iscmd = false; //是否加载CMD模式
+    public $isajax = false; //是否加载AJAX模式
 
     /**
      * @var Template 当前模板
@@ -537,6 +539,9 @@ class ZBlogPHP
 
         $this->LoadCache();
 
+        !defined('ZBP_IN_CMD') || $this->iscmd = true;
+        !defined('ZBP_IN_AJAX') || $this->isajax = true;
+
         $this->isinitialized = true;
 
         return true;
@@ -718,6 +723,13 @@ class ZBlogPHP
             case 'mysqli':
             case 'pdo_mysql':
             default:
+                if ($this->option['ZC_DATABASE_TYPE'] == 'mysql' && version_compare(PHP_VERSION, '7.0.0') >= 0) {
+                    if (extension_loaded('mysqli')){
+                        $this->option['ZC_DATABASE_TYPE'] = 'mysqli';
+                    }elseif (extension_loaded('pdo_mysql')){
+                        $this->option['ZC_DATABASE_TYPE'] = 'pdo_mysql';
+                    }
+                }
                 $this->db = self::InitializeDB($this->option['ZC_DATABASE_TYPE']);
                 if ($this->db->Open(array(
                     $this->option['ZC_MYSQL_SERVER'],
@@ -2239,7 +2251,7 @@ class ZBlogPHP
         if ($id == 0) {
             return;
         }
-        if ($object != null) {
+        if ($object !== null) {
             //$modules非ID为key
             if ($className == "Module") {
                 if ($id > 0) {

@@ -1,11 +1,18 @@
 <?php
 
-require './function/c_system_base.php';
-$zbp->Load();
-$action = GetVars('act', 'GET');
-if ($action == 'ajax') {
+// 标记为 CMD 运行模式
+define('ZBP_IN_CMD', true);
+
+if ((isset($_REQUEST['act']) && $_REQUEST['act'] == 'ajax') || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'XMLHttpRequest') == 0)) {
+    define('ZBP_IN_AJAX', true);
     define('IN_AJAX_PROCESSING', true);
 }
+
+require './function/c_system_base.php';
+
+$action = GetVars('act', 'GET');
+
+$zbp->Load();
 
 if (!$zbp->CheckRights($action)) {
     $zbp->ShowError(6, __FILE__, __LINE__);

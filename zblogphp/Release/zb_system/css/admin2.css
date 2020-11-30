@@ -78,7 +78,7 @@ label { cursor: pointer; }
 .left { float: left; width: 140px; padding: 0px; overflow: hidden; margin: 0 0 0 0; position: absolute; }
 .left #leftmenu { }
 .left #leftmenu li { float: left; width: 140px; height: 32px; margin-bottom: 5px; background: #ededed; cursor: pointer; }
-.left #leftmenu a { float: left; width: 140px; height: 32px; line-height: 35px; cursor: pointer; }
+.left #leftmenu a { float: left; width: 140px; height: 32px; line-height: 35px; cursor: pointer; padding-right:1em; }
 .left #leftmenu a:hover { color: #000000; background: #b0cdee; }
 .left #leftmenu span { float: left; width: auto; height: 32px; line-height: 32px; text-align: left; cursor: pointer; margin-left: 25px; padding-left: 22px; }
 
@@ -140,7 +140,7 @@ label { cursor: pointer; }
 #divMain2 { padding: 0px; margin: 0px; }
 .divHeader { height: 1.8em; line-height: 1.8em; font-size: 1.5em; padding: 5px 0 42px 0; }
 .divHeader2 { height: 1.8em; line-height: 1.8em; font-size: 1.5em; padding: 5px 0 42px 0; border-bottom: 5px solid #e0e0e0; margin-bottom:5px; }
-.main>#divMain>div[class^="divHeader"],.main>#divMain2>div[class^="divHeader"]{padding-left:40px;background:url('../image/admin/none.gif') 3px 9px no-repeat;background-size:32px;}
+.main>#divMain>div[class^="divHeader"],.main>#divMain2>div[class^="divHeader"]{padding-left:2em;background:url('../image/admin/none.gif') 3px 9px no-repeat;background-size:1.6em;}
 
 
 /*表   格*/

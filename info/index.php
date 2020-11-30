@@ -2,11 +2,11 @@
 
 <!--<p><a href="https://app.zblogcn.com/" target="_blank"><b>Z-Blog应用中心——玩转全年最低价，双11应用狂欢节！ (2020-11-2)</b></a></p>-->
 
+<p><a href="https://blog.zblogcn.com/2020/12/01/115/" target="_blank"><b>拥抱 PHP8，ZBP 1.6.6 正式发布！ (2020-12-1)</b></a></p>
+
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank"><b>ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/08/24/112/" target="_blank">宝塔面板出现漏洞，大家快更新吧，配合ZBP漏洞补丁食用效果更佳！ (2020-8-24)</a></p>
-
-<p><a href="https://blog.zblogcn.com/2020/06/01/110/" target="_blank"><b>滴滴滴，发车了！Z-BlogPHP 1.6.4 Valyria发布了! (2020-6-1)</b></a></p>
 
 <p>[Wiki]&nbsp;&nbsp;
 <a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:changelog" target="_blank">ZBlogPHP详细更新日志</a>

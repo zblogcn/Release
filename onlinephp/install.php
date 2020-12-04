@@ -30,13 +30,13 @@ function GetHttpContent($url) {
 			curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
 		}
 		curl_setopt($ch, CURLOPT_TIMEOUT, 300);
-		$opt[CURLOPT_USERAGENT]=$_SERVER['HTTP_USER_AGENT'];
+		$opt[CURLOPT_USERAGENT]=$_SERVER['HTTP_USER_AGENT'] . ' AppCentre/2099-01-01 ';
 		curl_setopt_array($ch,$opt);
 		$r = curl_exec($ch);
 		curl_close($ch);
 	} elseif (ini_get("allow_url_fopen")) {
 		if(function_exists('ini_set'))ini_set('default_socket_timeout',300);
-		$opt['header']='User-Agent: ' . $_SERVER['HTTP_USER_AGENT'];
+		$opt['header']='User-Agent: AppCentre/2099-01-01 ' . $_SERVER['HTTP_USER_AGENT'];
 		$r = file_get_contents((extension_loaded('zlib')?'compress.zlib://':'') . $url, false, stream_context_create(array('http' => $opt)));
 	}
 
@@ -60,7 +60,7 @@ function install1(){
 	echo "<p>正在努力地下载数据包...</p>";
 	ob_flush();
 
-	$GLOBALS['xml']=GetHttpContent('https://update.zblogcn.com/zblogphp/?install');
+	$GLOBALS['xml']=GetHttpContent('https://update.zblogcn.com/zblogphp/Release.xml');
 
 	//file_put_contents('release.xml',$GLOBALS['xml']);
 
@@ -113,11 +113,12 @@ function install3(){
 	<title>Z-BlogPHP 在线安装程序</title>
 <style type="text/css"><!--
 *{font-size:14px;font-family:'Microsoft YaHei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', 'Heiti SC', STHeiti, SimSun, sans-serif , Verdana, Arial;}
-body{margin:0;padding:0;color: #000000;background:#fff;}
+body{margin:0;padding:0;color: #000000;background:#fafafa;}
 h1,h2,h3,h4,h5,h6{font-size:18px;padding:0;color:#3a6ea5;}
 h1{font-size:28px;}
-input{padding:15px 82px;}
-div{position:absolute;left: 50%;top: 50%;margin: -190px 0px 0px -150px;padding:0;overflow:hidden;width:300px;background-color:white;text-align:center;}
+input{padding:15px 82px;cursor:pointer;}
+input:hover{box-shadow:0 0 0.5em rgba(0,0,0,0.2);}
+div{position:absolute;left: 50%;top: 50%;margin: -250px 0px 0px -300px;padding:0;overflow:hidden;height:400px;width:600px;background-color:white;text-align:center;box-shadow:0 0 0.5em rgba(0,0,0,0.2);padding-top:20px;padding-bottom:20px;}
 --></style>
 </head>
 <body>
@@ -140,9 +141,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 }else{
 
 ?>
-<p><?php echo (($v=GetHttpContent('https://update.zblogcn.com/zblogphp/'))=='')?'不能联网获取Z-BlogPHP！':'最新版本：'.$v;?></p>
-<p><img id="logo" src="https://update.zblogcn.com/zblogphp/loading.png" alt="Z-BlogPHP在线安装" title="Z-BlogPHP在线安装"/></p>
-<p style="display:none;"><img id="logo2" src="https://update.zblogcn.com/zblogphp/loading.gif" alt="" title=""/></p>
+<p><?php echo (($v=GetHttpContent('https://update.zblogcn.com/zblogphp/'))=='')?'不能联网获取Z-BlogPHP！':'最新版本：'.$v;?></p><br/>
+<p><img id="logo" src="https://update.zblogcn.com/zblogphp/loading.svg" alt="Z-BlogPHP在线安装" title="Z-BlogPHP在线安装"/></p>
+<p style="display:none;"><img id="logo2" src="https://update.zblogcn.com/zblogphp/loading.gif" alt="" title=""/></p><br/>
 <?php
 	install0();
 }

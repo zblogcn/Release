@@ -227,6 +227,8 @@ class Network__curl implements Network__Interface
         if ($this->maxredirs > 0) {
             if (ini_get("safe_mode") == false) {
                 curl_setopt($this->ch, CURLOPT_MAXREDIRS, $this->maxredirs);
+            }
+            if (ini_get("safe_mode") == false && ini_get('open_basedir') == '') {
                 @curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
             }
         }

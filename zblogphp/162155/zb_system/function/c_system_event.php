@@ -892,8 +892,10 @@ function ViewList($page, $cate, $auth, $date, $tags, $isrewrite = false)
             } else {
                 $arysubcate = array();
                 $arysubcate[] = array('log_CateID', $category->ID);
-                foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
-                    $arysubcate[] = array('log_CateID', $subcate->ID);
+                if (isset($zbp->categories[$category->ID])) {
+                    foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
+                        $arysubcate[] = array('log_CateID', $subcate->ID);
+                    }
                 }
                 $w[] = array('array', $arysubcate);
             }
@@ -3451,9 +3453,10 @@ function CountCategoryArray($array, $plus = null)
         if ($value == 0) {
             continue;
         }
-
-        CountCategory($zbp->categories[$value], $plus);
-        $zbp->categories[$value]->Save();
+        if (isset($zbp->categories[$value])) {
+            CountCategory($zbp->categories[$value], $plus);
+            $zbp->categories[$value]->Save();
+        }
     }
 }
 

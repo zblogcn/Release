@@ -289,9 +289,6 @@ class Template
      */
     protected function remove_php_blocks(&$content)
     {
-        //为了模板更好看
-        $content = str_replace('{php}<' . '?php', '{php}', $content);
-        $content = str_replace('?' . '>{/php}', '{/php}', $content);
         $content = preg_replace("/\<\?php[\d\D]+?\?\>/si", '', $content);
     }
 

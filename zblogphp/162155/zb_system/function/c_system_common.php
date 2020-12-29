@@ -634,7 +634,7 @@ function GetFilesInDir($dir, $type)
 
     if (function_exists('scandir')) {
         foreach (scandir($dir) as $f) {
-            if ($f != "." && $f != ".." && is_file($dir . $f)) {
+            if (is_file($dir . $f)) {
                 foreach (explode("|", $type) as $t) {
                     $t = '.' . $t;
                     $i = strlen($t);

@@ -892,10 +892,8 @@ function ViewList($page, $cate, $auth, $date, $tags, $isrewrite = false)
             } else {
                 $arysubcate = array();
                 $arysubcate[] = array('log_CateID', $category->ID);
-                if (isset($zbp->categories[$category->ID])) {
-                    foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
-                        $arysubcate[] = array('log_CateID', $subcate->ID);
-                    }
+                foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
+                    $arysubcate[] = array('log_CateID', $subcate->ID);
                 }
                 $w[] = array('array', $arysubcate);
             }
@@ -2747,14 +2745,6 @@ function PostModule()
 
     FilterModule($mod);
 
-    //不能新存themeinclude
-    if ($mod->SourceType == 'themeinclude') {
-        $f = $zbp->usersdir . 'theme/' . $zbp->theme . '/include/' . $mod->FileName . '.php';
-        if (!file_exists($f)) {
-            return false;
-        }
-    }
-
     $mod->Save();
 
     if ((int) GetVars('ID', 'POST') > 0) {
@@ -3453,10 +3443,9 @@ function CountCategoryArray($array, $plus = null)
         if ($value == 0) {
             continue;
         }
-        if (isset($zbp->categories[$value])) {
-            CountCategory($zbp->categories[$value], $plus);
-            $zbp->categories[$value]->Save();
-        }
+
+        CountCategory($zbp->categories[$value], $plus);
+        $zbp->categories[$value]->Save();
     }
 }
 

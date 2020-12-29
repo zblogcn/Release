@@ -67,8 +67,6 @@ class Module extends Base
                 return 'system';
             } elseif ($this->Source == 'user') {
                 return 'user';
-            } elseif (stripos($this->Source, 'themeinclude_') === 0) {
-                return 'themeinclude';
             } elseif ($this->Source == 'theme') {
                 return 'theme';
             } elseif (stripos($this->Source, 'theme_') === 0) {
@@ -116,7 +114,7 @@ class Module extends Base
                 return $fpreturn;
             }
         }
-        if ($this->SourceType == 'themeinclude') {
+        if ($this->Source == 'theme') {
             if (!$this->FileName) {
                 return true;
             }
@@ -156,7 +154,7 @@ class Module extends Base
             if ($this->ID > 0 && $m->ID == $this->ID) {
                 unset($zbp->modules[$key]);
             }
-            if ($this->SourceType == 'themeinclude') {
+            if ($this->Source == 'theme') {
                 if ($this->FileName != '' && $m->FileName == $this->FileName) {
                     unset($zbp->modules[$key]);
                 }
@@ -175,7 +173,7 @@ class Module extends Base
                 return $fpreturn;
             }
         }
-        if ($this->SourceType == 'themeinclude') {
+        if ($this->Source == 'theme') {
             if (!$this->FileName) {
                 return true;
             }

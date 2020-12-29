@@ -7,7 +7,7 @@
      xinxr@msn.com
 */
 * { padding: 0; margin: 0; box-sizing: border-box; }
-body { min-width: 980px; padding: 0; margin: 0; font-family: "Microsoft YaHei", STHeiti, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Heiti SC", NSimSun, SimSun, Arial, Helvetica, sans-serif; color: #333333; font-size: 14px; }
+body { min-width: 980px; padding: 0; margin: 0; font-family: "Microsoft YaHei", STHeiti, "Hiragino Sans GB", "WenQuanYi Micro Hei", "Heiti SC", NSimSun, SimSun, Arial, Helvetica, sans-serif; color: #333333; font-size: 14px; line-height: 20px; }
 div,
 h1,
 h2,
@@ -335,7 +335,6 @@ span.button:hover { box-shadow: 0 0 1px #000; border-radius: 0.3em; padding: 2px
 .widget_source_theme .widget-title { background: #d7e3bc; }
 .widget_source_plugin .widget-title { background: #d4cddd; }
 .widget_source_other .widget-title { background: #ded9c0; }
-.widget_source_themeinclude .widget-title { background: #e3bebc; }
 
 /*.custom-state-active{background: #B5DCF0;}*/
 .siderbar-list .roll { display: none; }

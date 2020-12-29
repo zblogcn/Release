@@ -16,57 +16,17 @@
             "beta": false
         },
         {
-            "version": 162100,
-            "name": "1.6.1 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162105,
-            "name": "1.6.2 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162110,
-            "name": "1.6.3 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162115,
-            "name": "1.6.4 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162120,
-            "name": "1.6.4 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162125,
-            "name": "1.6.4 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162130,
-            "name": "1.6.4 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162135,
-            "name": "1.6.4 Valyria",
-            "beta": false
-        },
-        {
-            "version": 162140,
-            "name": "1.6.5 Valyria",
-            "beta": false
-        },
-        {
             "version": 162145,
             "name": "1.6.6 Valyria",
             "beta": false
         },
         {
             "version": 162150,
+            "name": "1.6.6 Valyria",
+            "beta": false
+        },
+        {
+            "version": 162155,
             "name": "1.6.6 Valyria",
             "beta": false
         },
@@ -81,57 +41,17 @@
             "beta": true
         },
         {
-            "version": 162100,
-            "name": "1.6.1 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162105,
-            "name": "1.6.2 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162110,
-            "name": "1.6.3 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162115,
-            "name": "1.6.4 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162120,
-            "name": "1.6.4 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162125,
-            "name": "1.6.4 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162130,
-            "name": "1.6.4 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162135,
-            "name": "1.6.4 Valyria",
-            "beta": true
-        },
-        {
-            "version": 162140,
-            "name": "1.6.5 Valyria",
-            "beta": true
-        },
-        {
             "version": 162145,
             "name": "1.6.6 Valyria",
             "beta": true
         },
         {
             "version": 162150,
+            "name": "1.6.6 Valyria",
+            "beta": true
+        },
+        {
+            "version": 162155,
             "name": "1.6.6 Valyria",
             "beta": true
         }

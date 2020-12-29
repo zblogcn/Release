@@ -612,8 +612,7 @@ class ZBlogPHP
 
         $this->ReflushLanguages();
 
-        //进后台时已自动检测模板并自动重建了，所以这里只针对开调试后的前台的访问进行
-        if ($this->option['ZC_DEBUG_MODE'] && $this->ismanage == false) {
+        if ($this->option['ZC_DEBUG_MODE'] || $this->ismanage) {
             $this->CheckTemplate();
         }
 
@@ -651,8 +650,6 @@ class ZBlogPHP
         Add_Filter_Plugin('Filter_Plugin_Admin_MemberMng_SubMenu', 'Include_Admin_Addmemsubmenu');
         Add_Filter_Plugin('Filter_Plugin_Admin_ModuleMng_SubMenu', 'Include_Admin_Addmodsubmenu');
         Add_Filter_Plugin('Filter_Plugin_Admin_CommentMng_SubMenu', 'Include_Admin_Addcmtsubmenu');
-
-        $this->CheckTemplate();
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_LoadManage'] as $fpname => &$fpsignal) {
             $fpname();
@@ -1690,6 +1687,8 @@ class ZBlogPHP
 
         $template->SetPath($this->usersdir . 'cache/compiled/' . $theme . '/');
         $template->theme = $theme;
+
+        $template->LoadTemplates();
 
         return $template;
     }

@@ -1061,7 +1061,7 @@ function ViewList($page, $cate, $auth, $date, $tags, $isrewrite = false)
             }
         }
 
-        if ($type == 'category') {
+        if ($type == 'category' && $page == 1) {
             foreach ($articles_top_notorder as $articles_top_notorder_post) {
                 if ($articles_top_notorder_post->TopType == 'category' && $articles_top_notorder_post->CateID == $category->ID) {
                     $articles_top[] = $articles_top_notorder_post;

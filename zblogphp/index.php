@@ -40,19 +40,19 @@ if($_SERVER['QUERY_STRING']=='install'){
       $json = json_decode(file_get_contents('./build.json'));
     }
 
-    if(array_key_exists('beta', $_GET)==true){
+    if(array_key_exists('beta', $_GET) == true){
       $version = '';
       foreach ($json->builds as $key => $value) {
-        if($value->beta == true)
+        if(stripos($value->beta, 'beta') !== false)
             $version = $value->name . ' Build ' . $value->version;
       }
       echo $version;
     }
 
-    if(array_key_exists('beta', $_GET)==false){
+    if(array_key_exists('beta', $_GET) == false){
       $version = '';
       foreach ($json->builds as $key => $value) {
-        if($value->beta == false)
+        if(stripos($value->beta, 'normal') !== false)
             $version = $value->name . ' Build ' . $value->version;
       }
       echo $version;

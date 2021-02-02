@@ -19,7 +19,7 @@ $source = new stdClass;
 $result = new stdClass;
 
 foreach ($json->builds as $key => $value) {
-  if($value->beta == $isbeta){
+  if(stripos($value->beta, 'normal') !== false){
     $source->build = $value->version;
     $source->name = $value->name;
     break;
@@ -33,7 +33,7 @@ if (stripos($s,'ZBlogPHP')!==false){
   $old = explode(' ',$old);
   $old = $old[0];
   foreach ($json->builds as $key => $value) {
-    if($value->beta == $isbeta && (int)$value->version <= (int) $old){
+    if(stripos($value->beta, 'normal') !== false && (int)$value->version <= (int) $old){
       $source->build = $value->version;
       $source->name = $value->name;
     }
@@ -41,7 +41,7 @@ if (stripos($s,'ZBlogPHP')!==false){
 }
 
 foreach ($json->builds as $key => $value) {
-  if($value->beta == $isbeta){
+  if(stripos($value->beta, 'normal') !== false){
     $target->build = $value->version;
     $target->name = $value->name;
   }

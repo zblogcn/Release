@@ -123,7 +123,7 @@ return array(
     'ZC_UPLOAD_FILESIZE' => 2,
 
     // '用户名,密码,评论长度等限制
-    'ZC_USERNAME_MIN' => 3,
+    'ZC_USERNAME_MIN' => 2,
 
     'ZC_USERNAME_MAX' => 50,
 

@@ -1,5 +1,8 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
 
+
+<p><a href="https://blog.zblogcn.com/2021/02/08/117/" target="_blank"><b>2021年农历牛年前夕，Z-BlogPHP 1.7 重磅公测✨ (2021-2-8)</b></a></p>
+
 <p><a href="https://blog.zblogcn.com/2021/01/28/119/" target="_blank"><b>紧急公告：Z-Blog用户中心域名切换通知 (2021-1-28)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/12/01/115/" target="_blank"><b>拥抱 PHP8，ZBP 1.6.6 正式发布！ (2020-12-1)</b></a></p>

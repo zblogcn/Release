@@ -32,6 +32,7 @@ if (GetVars('act') == 'save') {
     $zbp->Config('AppCentre')->enablegzipapp = (int) GetVars("app_enablegzipapp");
     $zbp->Config('AppCentre')->networktype = trim(GetVars("app_networktype"));
     $zbp->Config('AppCentre')->firstdomain = trim(GetVars("app_firstdomain"));
+    $zbp->Config('AppCentre')->enablepluginsort = trim(GetVars("app_enablepluginsort"));
     $zbp->Config('AppCentre')->enablemultidownload = trim(GetVars("app_enablemultidownload"));
     $zbp->Config('AppCentre')->app_ignores = GetVars("app_ignores");
     $zbp->SaveConfig('AppCentre');
@@ -95,8 +96,8 @@ if(!is_array($zbp->Config('AppCentre')->app_ignores)) {
 foreach ($zbp->Config('AppCentre')->app_ignores as $key => $value) {
     echo "<label><input type=\"checkbox\" name=\"app_ignores[]\" checked=\"checked\" value=\"{$value}\">&nbsp;{$value}</label>&nbsp;&nbsp;&nbsp;";
 }
+$aps = array_merge(array($zbp->theme) , $GLOBALS['zbp']->GetPreActivePlugin());
 
-$aps = array($zbp->theme) + $GLOBALS['zbp']->GetPreActivePlugin();
 foreach ($aps as $key => $value) {
     if (in_array($value, $zbp->Config('AppCentre')->app_ignores) || $value == 'AppCentre') {
         continue;
@@ -107,7 +108,11 @@ foreach ($aps as $key => $value) {
 ?>
                   </td>
                 </tr>
-
+                <tr height="32">
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['enable_plugin_sort']; ?></b><br/>
+                      <span class="note"></span></p></td>
+                  <td><input id="app_enablepluginsort" name="app_enablepluginsort" type="text" value="<?php echo $zbp->Config('AppCentre')->enablepluginsort; ?>" class="checkbox"/></td>
+                </tr>
                 <tr height="32" style="display:none;">
                   <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['domain_of_appcentre']; ?></b><br/>
                       <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['domain_of_appcentre_note']; ?></span></p></td>

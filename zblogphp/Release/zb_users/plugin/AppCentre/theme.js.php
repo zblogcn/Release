@@ -21,7 +21,7 @@ $(".theme").each(function(){
 
             if ($zbp->LoadApp('theme', $zbp->theme)->IsUsed() && $zbp->LoadApp('theme', $zbp->theme)->path) {
 ?>
-        s=s+"<a class=\"button\" href='<?php echo $zbp->LoadApp('theme', $zbp->theme)->GetManageUrl();?>' title='<?php echo $zbp->lang['AppCentre']['config_theme']; ?>'><?php echo AppCentre_CreateButton('set'); ?></a>&nbsp;&nbsp;&nbsp;";
+        s=s+"<a class=\"button\" href='<?php echo $zbp->LoadApp('theme', $zbp->theme)->GetManageUrl();?>' title='<?php echo $zbp->lang['AppCentre']['config_theme']; ?>'><?php echo AppCentre_CreateButton('set'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 <?php
             }
         ?>
@@ -29,28 +29,30 @@ $(".theme").each(function(){
 
     if(app_enabledevelop){
 
-    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/theme_edit.php?id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['edit_app']; ?>'><?php echo AppCentre_CreateButton('edit'); ?></a>&nbsp;&nbsp;&nbsp;";
+    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/theme_edit.php?id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['edit_app']; ?>'><?php echo AppCentre_CreateButton('edit'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
-    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=theme&id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>&nbsp;&nbsp;&nbsp;";
+    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=theme&id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
     }
 
     if($(this).hasClass("theme-now")){
-        s=s+"<a class=\"button\" href='"+bloghost+"zb_system/admin/module_edit.php?source=theme' title='<?php echo $zbp->lang['AppCentre']['add_module_for_theme']; ?>'><?php echo AppCentre_CreateButton('module'); ?></a>&nbsp;&nbsp;&nbsp;";
+        s=s+"<a class=\"button\" href='"+bloghost+"zb_system/admin/module_edit.php?source=theme' title='<?php echo $zbp->lang['AppCentre']['add_module_for_theme']; ?>'><?php echo AppCentre_CreateButton('module'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
     }
 
     if(app_enabledevelop){
-        s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/submit.php?type=theme&amp;id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['upload_app_to_appcentre']; ?>' target='_blank'><?php echo AppCentre_CreateButton('cloudup'); ?></a>&nbsp;&nbsp;&nbsp;";
+        s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/submit.php?type=theme&amp;id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['upload_app_to_appcentre']; ?>' target='_blank'><?php echo AppCentre_CreateButton('cloudup'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
     }
 
 
     if($(this).hasClass("theme-other")){
-        s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_del.php?type=theme&id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['del_app']; ?>' onclick='return window.confirm(\"<?php echo str_replace('"', '', $zbp->lang['msg']['confirm_operating']); ?>\");'><?php echo AppCentre_CreateButton('delete'); ?></a>&nbsp;&nbsp;&nbsp;";
+        s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_del.php?type=theme&id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['del_app']; ?>' onclick='return window.confirm(\"<?php echo str_replace('"', '', $zbp->lang['msg']['confirm_operating']); ?>\");'><?php echo AppCentre_CreateButton('delete'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
     }
 
     s=s+"</p>";
     $(this).append(s);
     
 });
+
+if(zbp.options.blogversion>170000)$("a.button").removeClass("button");
 
 });

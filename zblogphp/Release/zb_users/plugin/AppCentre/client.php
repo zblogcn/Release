@@ -84,7 +84,9 @@ require $blogpath . 'zb_system/admin/admin_top.php';
                   <td align="center"><input type="submit" value="<?php echo $zbp->lang['msg']['login']; ?>" class="button" /></td>
                 </tr>
                 <tr height="32" align="center">
-                  <td align="center"><a href="https://uc.zblogcn.com/user/security/token" target="_blank"><?php echo $zbp->lang['AppCentre']['get_token']; ?></a></td>
+                  <td align="center"><a href="https://user.zblogcn.com/user/security/token" target="_blank"><?php echo $zbp->lang['AppCentre']['get_token']; ?></a>
+				  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="https://uc.zblogcn.com/user/security/token" target="_blank"><?php echo $zbp->lang['AppCentre']['get_token2']; ?></a></td>
                 </tr>
               </table>
             </form>

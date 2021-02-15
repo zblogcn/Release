@@ -25,6 +25,7 @@ return array(
     'account_login' => '账户登录',
     'token' => '令牌',
     'get_token' => '点击获取账户登录令牌.',
+    'get_token2' => '(备用域名)',
     'click_to_upgrade_database' => '请点击该链接升级数据库结构',
     'unable_to_verify' => '无法验证应用，请联系我们。',
     'operation_is_prohibited' => '安全模式下禁止执行此操作',
@@ -117,4 +118,10 @@ return array(
     'enable_multi_download' => '启动CUrl大文件分割下载',
     'ignore_updated_apps' => '检查更新时忽略的应用',
     'config_theme'=>'配置主题',
+    'priority_sort'=>'优先级',
+    'move_top'=>'移动到最顶',
+    'move_up'=>'向上移动',
+    'move_down'=>'向下移动',
+    'move_bottom'=>'移动到最底',
+    'enable_plugin_sort'=>'启用插件优先级调整',
 );

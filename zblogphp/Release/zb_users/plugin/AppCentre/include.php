@@ -143,20 +143,20 @@ function AppCentre_Cmd_Begin()
 function AppCentre_AddThemeMenu()
 {
     global $zbp;
+    echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";var app_enablepluginsort=" . (int) $zbp->Config('AppCentre')->enablepluginsort . ";</script>";
     if (AppCentre_InSecurityMode()) {
         return;
     }
-    echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
     Add_Filter_Plugin('Filter_Plugin_Admin_End', 'AppCentre_Theme_Admin_End');
 }
 
 function AppCentre_AddPluginMenu()
 {
     global $zbp;
+    echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";var app_enablepluginsort=" . (int) $zbp->Config('AppCentre')->enablepluginsort . ";</script>";
     if (AppCentre_InSecurityMode()) {
         return;
     }
-    echo "<script type='text/javascript'>var app_enabledevelop=" . (int) $zbp->Config('AppCentre')->enabledevelop . ";</script>";
     Add_Filter_Plugin('Filter_Plugin_Admin_End', 'AppCentre_Plugin_Admin_End');
 }
 

@@ -6,7 +6,11 @@ $action='root';
 if (!$zbp->CheckRights($action)) {$zbp->ShowError(6);die();}
 if (!$zbp->CheckPlugin('<%appid%>')) {$zbp->ShowError(48);die();}
 
-$blogtitle='<%appid%>';
+if (count($_POST) > 0) {
+CheckIsRefererValid();
+}
+
+$blogtitle='<%appname%>';
 require $blogpath . 'zb_system/admin/admin_header.php';
 require $blogpath . 'zb_system/admin/admin_top.php';
 ?>

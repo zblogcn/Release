@@ -25,6 +25,7 @@ return array(
     'account_login' => 'Account login',
     'token' => 'Token',
     'get_token' => 'Click to get the account login token.',
+    'get_token2' => '(Backup Domain)',
     'click_to_upgrade_database' => 'Please click the link to upgrade the database structure',
     'unable_to_verify' => 'Unable to verify the application, please contact us.',
     'operation_is_prohibited' => 'This operation is prohibited in safe mode',
@@ -117,4 +118,10 @@ return array(
     'enable_multi_download' => 'Start CUrl large file split download',
     'ignore_updated_apps' => 'Ignore updated apps',
     'config_theme'=>'Confit theme',
+    'priority_sort'=>'Priority',
+    'move_top'=>'Move top',
+    'move_up'=>'Move up',
+    'move_down'=>'Move down',
+    'move_bottom'=>'Move bottom',
+    'enable_plugin_sort'=>'Enable plugin sort',
 );

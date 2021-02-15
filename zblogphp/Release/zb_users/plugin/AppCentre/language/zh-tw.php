@@ -25,6 +25,7 @@ return array(
     'account_login'=>'賬戶登錄',
     'token'=>'令牌',
     'get_token'=>'點擊獲取賬戶登錄令牌.',
+    'get_token2' => '(备用域名)',
     'click_to_upgrade_database'=>'請點擊該鏈接升級數據庫結構',
     'unable_to_verify'=>'無法驗證應用，請聯系我們。',
     'operation_is_prohibited'=>'安全模式下禁止執行此操作',
@@ -117,4 +118,10 @@ return array(
     'enable_multi_download'=>'启动CUrl大文件分割下载',
     'ignore_updated_apps' => '忽略更新的应用',
     'config_theme'=>'配置主題',
+    'priority_sort'=>'优先级',
+    'move_top'=>'移动到最顶',
+    'move_up'=>'向上移动',
+    'move_down'=>'向下移动',
+    'move_bottom'=>'移动到最底',
+    'enable_plugin_sort'=>'启用插件优先级调整',
 );

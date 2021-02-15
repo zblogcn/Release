@@ -97,6 +97,7 @@ if (count($_POST) > 0) {
         if (trim($_POST['app_path'])) {
             $file = file_get_contents('tpl/main.html');
             $file = str_replace("<%appid%>", $app->id, $file);
+            $file = str_replace("<%appname%>", trim($_POST['app_name']), $file);
             $path = $zbp->usersdir . 'theme/' . $app->id . '/' . trim($_POST['app_path']);
             @file_put_contents($path, $file);
         }
@@ -260,8 +261,8 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <tr>
       <td><p><b>· <?php echo $zbp->lang['AppCentre']['app_version']; ?></b></p></td>
       <td><p>&nbsp;
-          <input id="app_version1" name="app_version1" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 0); ?>" /> . 
-          <input id="app_version2" name="app_version2" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 1); ?>" /> . 
+          <input id="app_version1" name="app_version1" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 0); ?>" /> .
+          <input id="app_version2" name="app_version2" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 1); ?>" /> .
           <input id="app_version3" name="app_version3" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 2); ?>" />
         </p></td>
     </tr>
@@ -394,7 +395,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
       <td><p><b>· <?php echo $zbp->lang['AppCentre']['export_sidebar']; ?></b> (<?php echo $zbp->lang['AppCentre']['optional']; ?>)</p></td>
       <td><p>&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar1" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar1" value="1"
             <?php
             if ($app->sidebars_sidebar1) {
                 echo 'checked="checked"';
@@ -404,7 +405,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar2" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar2" value="1"
             <?php
             if ($app->sidebars_sidebar2) {
                 echo 'checked="checked"';
@@ -414,7 +415,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar2']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar3" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar3" value="1"
             <?php
             if ($app->sidebars_sidebar3) {
                 echo 'checked="checked"';
@@ -424,7 +425,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar3']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar4" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar4" value="1"
             <?php
             if ($app->sidebars_sidebar4) {
                 echo 'checked="checked"';
@@ -434,7 +435,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar4']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar5" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar5" value="1"
             <?php
             if ($app->sidebars_sidebar5) {
                 echo 'checked="checked"';
@@ -444,7 +445,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar5']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar6" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar6" value="1"
             <?php
             if ($app->sidebars_sidebar6) {
                 echo 'checked="checked"';
@@ -454,7 +455,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar6']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar7" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar7" value="1"
             <?php
             if ($app->sidebars_sidebar7) {
                 echo 'checked="checked"';
@@ -464,7 +465,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar7']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar8" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar8" value="1"
             <?php
             if ($app->sidebars_sidebar8) {
                 echo 'checked="checked"';
@@ -474,7 +475,7 @@ if (function_exists('OutputOptionItemsOfMemberLevel')) {
             <?php echo $zbp->lang['msg']['sidebar8']; ?></label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <label>
-            <input type="checkbox" name="app_sidebars_sidebar9" value="1" 
+            <input type="checkbox" name="app_sidebars_sidebar9" value="1"
             <?php
             if ($app->sidebars_sidebar9) {
                 echo 'checked="checked"';

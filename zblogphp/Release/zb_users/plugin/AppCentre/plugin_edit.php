@@ -80,6 +80,7 @@ if (count($_POST) > 0) {
         if (trim($_POST['app_path'])) {
             $file = file_get_contents('tpl/main.html');
             $file = str_replace("<%appid%>", $app->id, $file);
+            $file = str_replace("<%appname%>", trim($_POST['app_name']), $file);
             $path = $zbp->usersdir . 'plugin/' . $app->id . '/' . trim($_POST['app_path']);
             @file_put_contents($path, $file);
         }
@@ -193,8 +194,8 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <tr>
       <td><p><b>· <?php echo $zbp->lang['AppCentre']['app_version']; ?></b></p></td>
       <td><p>&nbsp;
-          <input id="app_version1" name="app_version1" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 0); ?>" /> . 
-          <input id="app_version2" name="app_version2" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 1); ?>" /> . 
+          <input id="app_version1" name="app_version1" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 0); ?>" /> .
+          <input id="app_version2" name="app_version2" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 1); ?>" /> .
           <input id="app_version3" name="app_version3" style="width:175px;" type="number" min="0" step="1" value="<?php echo SplitAndGet($app->version, '.', 2); ?>" />
         </p></td>
     </tr>

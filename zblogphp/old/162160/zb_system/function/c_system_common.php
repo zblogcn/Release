@@ -1256,6 +1256,27 @@ function CloseTags($html)
 }
 
 /**
+ *  ZBP版StrLen.
+ *
+ * @param string $string
+ *
+ * @return string
+ */
+function Zbp_StrLen($string)
+{
+    if (function_exists('mb_strlen') && function_exists('mb_internal_encoding')) {
+        mb_internal_encoding('UTF-8');
+        return mb_strlen($string);
+    }
+    if (function_exists('iconv_strlen') && function_exists('iconv_set_encoding')) {
+        call_user_func('iconv_set_encoding', 'internal_encoding', "UTF-8");
+        call_user_func('iconv_set_encoding', 'output_encoding', "UTF-8");
+        return iconv_strlen($string);
+    }
+    return strlen($string);
+}
+
+/**
  * 获取UTF8格式的字符串的子串.
  *
  * @param string $sourcestr 源字符串

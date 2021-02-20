@@ -892,8 +892,10 @@ function ViewList($page, $cate, $auth, $date, $tags, $isrewrite = false)
             } else {
                 $arysubcate = array();
                 $arysubcate[] = array('log_CateID', $category->ID);
-                foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
-                    $arysubcate[] = array('log_CateID', $subcate->ID);
+                if (isset($zbp->categories[$category->ID])) {
+                    foreach ($zbp->categories[$category->ID]->ChildrenCategories as $subcate) {
+                        $arysubcate[] = array('log_CateID', $subcate->ID);
+                    }
                 }
                 $w[] = array('array', $arysubcate);
             }
@@ -1059,7 +1061,7 @@ function ViewList($page, $cate, $auth, $date, $tags, $isrewrite = false)
             }
         }
 
-        if ($type == 'category') {
+        if ($type == 'category' && $page == 1) {
             foreach ($articles_top_notorder as $articles_top_notorder_post) {
                 if ($articles_top_notorder_post->TopType == 'category' && $articles_top_notorder_post->CateID == $category->ID) {
                     $articles_top[] = $articles_top_notorder_post;
@@ -1146,9 +1148,9 @@ function ViewPost($object, $theSecondParam, $enableRewrite = false)
     } else {
         $id = $object;
         $alias = $theSecondParam;
-        $object = array('id' => $object);
-        $object[0] = $id;
-        $object['id'] = $id;
+        $object = array('id' => $id);
+        $object['alias'] = $alias;
+        $object[0] = empty($alias) ? $id : $alias;
     }
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewPost_Begin'] as $fpname => &$fpsignal) {
@@ -2753,6 +2755,14 @@ function PostModule()
 
     FilterModule($mod);
 
+    //不能新存themeinclude
+    if ($mod->SourceType == 'themeinclude') {
+        $f = $zbp->usersdir . 'theme/' . $zbp->theme . '/include/' . $mod->FileName . '.php';
+        if (!file_exists($f)) {
+            return false;
+        }
+    }
+
     $mod->Save();
 
     if ((int) GetVars('ID', 'POST') > 0) {
@@ -3219,7 +3229,7 @@ function FilterMember(&$member)
     $member->Alias = str_replace(' ', '', $member->Alias);
     $member->Alias = str_replace('_', '', $member->Alias);
     $member->Alias = SubStrUTF8_Start($member->Alias, 0, (int) $zbp->datainfo['Member']['Alias'][2]);
-    if (strlen($member->Name) < $zbp->option['ZC_USERNAME_MIN'] || strlen($member->Name) > $zbp->option['ZC_USERNAME_MAX']) {
+    if (Zbp_StrLen($member->Name) < $zbp->option['ZC_USERNAME_MIN'] || Zbp_StrLen($member->Name) > $zbp->option['ZC_USERNAME_MAX']) {
         $zbp->ShowError(77, __FILE__, __LINE__);
     }
 
@@ -3451,9 +3461,10 @@ function CountCategoryArray($array, $plus = null)
         if ($value == 0) {
             continue;
         }
-
-        CountCategory($zbp->categories[$value], $plus);
-        $zbp->categories[$value]->Save();
+        if (isset($zbp->categories[$value])) {
+            CountCategory($zbp->categories[$value], $plus);
+            $zbp->categories[$value]->Save();
+        }
     }
 }
 

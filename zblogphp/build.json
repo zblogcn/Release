@@ -26,12 +26,17 @@
             "beta": "normal,beta"
         },
         {
+            "version": 162160,
+            "name": "1.6.7 Valyria",
+            "beta": "normal,beta"
+        },
+        {
             "version": 172800,
             "name": "1.7.0 Beta",
             "beta": "beta"
         },
         {
-            "version": 172840,
+            "version": 172845,
             "name": "1.7.0 Beta",
             "beta": "beta"
         }

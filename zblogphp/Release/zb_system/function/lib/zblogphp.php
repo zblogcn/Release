@@ -1454,7 +1454,8 @@ class ZBlogPHP
                 } else {
                     $m->Type = 'div';
                 }
-                $m->Source = 'theme';
+                $m->Source = 'themeinclude_' . $this->theme;;
+                $m->IsIncludeFile = true;
                 $this->modules[] = $m;
                 $this->modulesbyfilename[$m->FileName] = $m;
             }
@@ -1635,7 +1636,6 @@ class ZBlogPHP
         $languagePtr = require $languagePath;
         $this->langpacklist[] = array($type, $id, $language);
         if ($type == 'system') {
-            $this->lang['error']['77'] = str_replace(array('%min', '%max'), array($this->option['ZC_USERNAME_MIN'], $this->option['ZC_USERNAME_MAX']), $this->lang['error']['77']);
             $this->langs = json_decode(json_encode($this->lang));
         } else {
             if ($id != '' && isset($this->lang[$id])) {
@@ -1648,6 +1648,7 @@ class ZBlogPHP
 
     public function ReflushLanguages()
     {
+        $this->lang['error']['77'] = str_replace(array('%min', '%max'), array($this->option['ZC_USERNAME_MIN'], $this->option['ZC_USERNAME_MAX']), $this->lang['error']['77']);
         $this->langs = json_decode(json_encode($this->lang));
     }
 

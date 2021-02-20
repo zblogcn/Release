@@ -485,22 +485,16 @@ function CreateModuleDiv($m, $button = true)
     global $zbp;
 
     echo '<div class="widget widget_source_' . $m->SourceType . ' widget_id_' . $m->FileName . '">';
-    echo '<div class="widget-title"><img class="more-action" width="16" src="../image/admin/brick.png" alt="" />' . (($m->SourceType != 'theme' || $m->Source == 'plugin_' . $zbp->theme || $m->Source == 'theme_' . $zbp->theme) ? $m->Name : $m->FileName) . '';
+    echo '<div class="widget-title"><img class="more-action" width="16" src="../image/admin/brick.png" alt="" />' . (($m->SourceType != 'themeinclude') ? $m->Name : $m->FileName) . '';
 
     if ($button) {
-        if ($m->SourceType != 'theme' || $m->Source == 'plugin_' . $zbp->theme || $m->Source == 'theme_' . $zbp->theme) {
+        if ($m->SourceType != 'themeinclude') {
             echo '<span class="widget-action"><a href="../cmd.php?act=ModuleEdt&amp;id=' . $m->ID . '"><img class="edit-action" src="../image/admin/brick_edit.png" alt="' . $zbp->lang['msg']['edit'] . '" title="' . $zbp->lang['msg']['edit'] . '" width="16" /></a>';
         } else {
-            echo '<span class="widget-action"><a href="../cmd.php?act=ModuleEdt&amp;source=theme&amp;filename=' . $m->FileName . '"><img class="edit-action" src="../image/admin/brick_edit.png" alt="' . $zbp->lang['msg']['edit'] . '" title="' . $zbp->lang['msg']['edit'] . '" width="16" /></a>';
+            echo '<span class="widget-action"><a href="../cmd.php?act=ModuleEdt&amp;source=themeinclude_' . $zbp->theme . '&amp;filename=' . $m->FileName . '"><img class="edit-action" src="../image/admin/brick_edit.png" alt="' . $zbp->lang['msg']['edit'] . '" title="' . $zbp->lang['msg']['edit'] . '" width="16" /></a>';
             echo '&nbsp;<a onclick="return window.confirm(\'' . $zbp->lang['msg']['confirm_operating'] . '\');" href="' . BuildSafeCmdURL('act=ModuleDel&amp;source=theme&amp;filename=' . $m->FileName) . '"><img src="../image/admin/delete.png" alt="' . $zbp->lang['msg']['del'] . '" title="' . $zbp->lang['msg']['del'] . '" width="16" /></a>';
         }
-        if ($m->SourceType != 'system'
-            && $m->SourceType != 'theme'
-            && !(
-                $m->SourceType == 'plugin' &&
-                CheckRegExp($m->Source, '/plugin_(' . $zbp->option['ZC_USING_PLUGIN_LIST'] . ')/i')
-            )
-        ) {
+        if ($m->SourceType == 'user') {
             echo '&nbsp;<a onclick="return window.confirm(\'' . $zbp->lang['msg']['confirm_operating'] . '\');" href="' . BuildSafeCmdURL('act=ModuleDel&amp;id=' . $m->ID) . '"><img src="../image/admin/delete.png" alt="' . $zbp->lang['msg']['del'] . '" title="' . $zbp->lang['msg']['del'] . '" width="16" /></a>';
         }
         echo '</span>';
@@ -1509,7 +1503,7 @@ function Admin_ModuleMng()
             $sm[] = $m;
         } elseif ($m->SourceType == 'user') {
             $um[] = $m;
-        } elseif ($m->SourceType == 'theme') {
+        } elseif ($m->SourceType == 'theme' || $m->SourceType == 'themeinclude') {
             //判断模块归属当前主题
             if ($m->Source == 'theme' || (substr($m->Source, -1-strlen($zbp->theme))) == ('_' . $zbp->theme) ) {
                 $tm[] = $m;

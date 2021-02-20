@@ -30,16 +30,14 @@ require ZBP_PATH . 'zb_system/admin/admin_top.php';
 $modid = null;
 $mod = null;
 
-if (isset($_GET['source'])) {
-    if (GetVars('source', 'GET') == 'theme') {
-        $mod = new Module();
-        $mod->Name = GetVars('filename', 'GET');
-        $mod->FileName = GetVars('filename', 'GET');
-        $mod->HtmlID = GetVars('filename', 'GET');
-        $mod->Source = 'theme';
-        if ($mod->FileName) {
-            $mod->Content = file_get_contents($zbp->usersdir . 'theme/' . $zbp->theme . '/include/' . FormatString($mod->FileName, '[filename]') . '.php');
+if (isset($_GET['source']) && isset($_GET['filename'])) {
+    if (GetVars('source', 'GET') == 'themeinclude_' . $zbp->theme) {
+        $mod = $zbp->GetModuleByFileName(GetVars('filename', 'GET'));
+        if ($mod->SourceType != 'themeinclude') {
+            $zbp->ShowError(61);
         }
+    } else {
+        $zbp->ShowError(61);
     }
 } elseif (isset($_GET['filename'])) {
     $array = $zbp->GetModuleList(
@@ -69,16 +67,16 @@ if ($mod->Type == 'ul') {
 }
 
 $islock = '';
-if ($mod->Source == 'system' || $mod->Source == 'theme') {
+if ($mod->Source == 'system' || $mod->SourceType == 'themeinclude') {
     $islock = 'readonly="readonly"';
 }
-if ($mod->Source == 'theme' && $mod->FileName == '') {
+if ($mod->SourceType == 'themeinclude' && $mod->FileName == '') {
     $islock = '';
     $mod->Name = 'newmodule';
     $mod->HtmlID = 'newmodule';
 }
 $ishide = '';
-if ($mod->Source == 'theme') {
+if ($mod->SourceType == 'themeinclude') {
     $ishide = 'style="display:none;"';
 }
 ?>

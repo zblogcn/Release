@@ -1448,6 +1448,8 @@ class ZBlogPHP
             foreach ($files as $sortname => $fullname) {
                 $m = new Module();
                 $m->FileName = $sortname;
+                $m->Name = $m->FileName;
+                $m->HtmlID = $m->FileName;
                 $m->Content = file_get_contents($fullname);
                 if ( stripos($m->Content,'<li') !== false && stripos($m->Content,'</li>') !== false ) {
                     $m->Type = 'ul';

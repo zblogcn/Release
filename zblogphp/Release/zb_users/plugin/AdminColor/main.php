@@ -34,6 +34,7 @@ if (isset($_GET['setcolor'])) {
         } else {
           $zbp->Config('AdminColor')->HeaderPathUse = false;
         }
+        $zbp->Config('AdminColor')->LeftWidth = 140;
         $zbp->SaveConfig('AdminColor');
         Redirect($zbp->host . 'zb_users/plugin/AdminColor/main.php');
         die();
@@ -53,6 +54,8 @@ if (GetVars('act') == 'save') {
     $zbp->Config('AdminColor')->HeaderPathUse = (bool) GetVars("ac_HeaderPathUse");
     $zbp->Config('AdminColor')->TableShadow = (bool) GetVars("ac_TableShadow");
     $zbp->Config('AdminColor')->FontSize = (int) GetVars("ac_FontSize");
+    $zbp->Config('AdminColor')->LeftWidth = (int) GetVars("ac_LeftWidth");
+    if($zbp->Config('AdminColor')->LeftWidth<140)$zbp->Config('AdminColor')->LeftWidth=140;
     //if ( $zbp->Config('AdminColor')->ColorID == 10 )
     //    $zbp->Config('AdminColor')->HeaderPathUse = true;
     $zbp->SaveConfig('AdminColor');
@@ -90,10 +93,11 @@ require $blogpath . 'zb_system/admin/admin_top.php';
                 </tr>
                 <tr height="32">
                   <td width="30%" align="left"><p><br/><b>· 替换Logo路径</b><br/>
-                      <span class="note">&nbsp;&nbsp; Logo 为 200x70的PNG图片。</span></p></td>
+                      <span class="note">&nbsp;&nbsp; 默认Logo 为 200x70的图片。</span></p></td>
                   <td>
 <input id="ac_LogoPath" name="ac_LogoPath" type="text" value="<?php echo $zbp->Config('AdminColor')->LogoPath; ?>"  size="50"/><br/>
                   </td>
+                </tr>
                 <tr height="32">
                   <td width="30%" align="left"><p><b>· 后台header背景路径</b></p></td>
                   <td>
@@ -151,12 +155,21 @@ $$fontsize = 'checked="checked"';
 <input class="radio" type="radio" name="ac_FontSize" id="ac_FontSize_14" value="14" <?php echo $fontsize_14;?>/>
 <label for="ac_FontSize_14">14px</label>
                   </td>
+                </tr>
+                <tr height="32">
+                  <td width="30%" align="left"><p><br/><b>· 左侧菜单宽度</b><br/>
+                      <span class="note">&nbsp;&nbsp; 默认为140px</span></p></td>
+                  <td>
+<input id="ac_LeftWidth" name="ac_LeftWidth" type="text" value="<?php echo $zbp->Config('AdminColor')->LeftWidth; ?>"  size="20"/>px<br/>
+                  </td>
+                </tr>
                 <tr height="32">
                   <td width="30%" align="left"><p><b>· 开启表格阴影</b></p></td>
                   <td>
 <input id="ac_TableShadow" name="ac_TableShadow" class="checkbox" type="text" value="<?php echo $zbp->Config('AdminColor')->TableShadow; ?>"  size="100"/><br/>
                   </td>
-                <tr height="32" <?php if ($GLOBALS['blogversion'] < 172360)echo 'style="display:none;"';?>>
+                </tr>
+                <tr height="32" >
                   <td width="30%" align="left"><p><b>· 显示收缩菜单</b></p></td>
                   <td>
 <input id="ac_HeaderPath" name="ac_SlidingButton" class="checkbox" type="text" value="<?php echo $zbp->Config('AdminColor')->SlidingButton; ?>"  size="100"/><br/>

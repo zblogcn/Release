@@ -19,16 +19,16 @@ $c .= '
     box-shadow: 0 0 7px black;
   }
   .arrow_leftmenu {
-	width: 12px;
-	height: 30px;
+    width: 12px;
+    height: 30px;
     overflow: hidden;
     position: absolute;
     margin-left: -35px;
     bottom: -16px;
     top: 3px;
-	left: 23px;
-	bottom: auto;
-	background-color: transparent;
+    left: 23px;
+    bottom: auto;
+    background-color: transparent;
   }
   .arrow_leftmenu:after {
     content: "";
@@ -72,7 +72,8 @@ $c .= "#divMain a:hover,#divMain2  a:hover{color:#d60000;}" . PHP_EOL;
 $c .= ".imgcheck-on:before {background: #3a6ea5;}" . PHP_EOL;
 $c .= ".radio:checked + label:before {border: 1px solid #3a6ea5;}" . PHP_EOL;
 $c .= ".radio + label:after {background: #3a6ea5;}" . PHP_EOL;
-
+$c .= ".left #leftmenu span.bgicon{background-size:".$zbp->Config('AdminColor')->FontSize."px;}" . PHP_EOL;
+$c .= "#divMain2 [class^='icon-']{font-size:".($zbp->Config('AdminColor')->FontSize+2)."px;}" . PHP_EOL;
 //appcenter
 /*
 $c .= ".tabs { border-bottom-color:#3a6ea5!important;}" . PHP_EOL;
@@ -178,7 +179,6 @@ padding-top:0px;
 float:left;
 height:auto;
 background-position: -30px -2px;
-width:160px;
 background-color:#333333;
   }
 .left #leftmenu{
@@ -186,14 +186,12 @@ background-color:#333333;
 }
 .left #leftmenu a{
 color:#fff;
-width: 160px;
 height: 40px;
 padding-right:2em;
 }
 .left #leftmenu li{
 background-color:#333;
 color:#fff;
-width: 160px;
 height: 40px;
     overflow:hidden;
 }
@@ -215,16 +213,11 @@ padding-right: 10px;
     margin-left: 32px;
 
 }
-.divHeader {
-    padding: 10px 0 45px 0;
-    background-position:1px 13px!important;
-}
 div.hint {margin-top:0.5em;}
 
 .left #leftmenu #nav_admincolor2 {
 background-color:#444;
 color:#fff;
-width: 160px;
 height: 40px;
 }
 
@@ -235,16 +228,14 @@ height: 40px;
     line-height: 36px;
     text-align: left;
     cursor: pointer;
-    margin-left: 36px;
-    padding-left: 60px;
-    background-position: 40px 12px;
+    margin-left: 60px;
 }
 .left #leftmenu #nav_admincolor2 a:hover { background-color: Transparent!important;}
 .left #leftmenu li span {color:black;filter: invert(0.8);font-weight:bold;}
 .left #leftmenu li.on span {color:white;filter: none;font-weight:bold;}
 .left #leftmenu li a:hover span {color:black;filter: invert(0.1);font-weight:bold;}
 .left #leftmenu li.on a:hover span {color:white;filter: invert(0.1);font-weight:bold;}
-body{background:url("images/l.png") repeat-y 0 top;}
+body{background:url("images/color10bg.png") repeat-y 0 top;}
 body[class~=login] {background:none;}
 header div.logo{
     background-color: Transparent;
@@ -271,7 +262,8 @@ body[class~=login] input.button:hover {background-color: #3a6ea5;}
     if ($GLOBALS['blogversion'] < 162090 && stripos($_SERVER['HTTP_REFERER'], 'login.php')) {
         $c .= 'body{background:none;}';
     }
-	$c .= 'header div.logo img{background:url("images/logo.svg")}';
+    $c .= 'header div.logo img{background:url("images/logo.svg")}';
+    $c .= ".left #leftmenu span.bgicon{background-position:0px 13px;}";
 }
 
 
@@ -305,9 +297,9 @@ header('Content-Type: text/css; Charset=utf-8');
 header('Etag: ' . $m);
 
 if (isset($_SERVER["HTTP_IF_NONE_MATCH"]) && $_SERVER["HTTP_IF_NONE_MATCH"] == $m) {
-	if (isset($zbp->option['ZC_JS_304_ENABLE']) && $zbp->option['ZC_JS_304_ENABLE']) {
-    	SetHttpStatusCode(304);
-    	die;
+    if (isset($zbp->option['ZC_JS_304_ENABLE']) && $zbp->option['ZC_JS_304_ENABLE']) {
+        SetHttpStatusCode(304);
+        die;
     }
 }
 

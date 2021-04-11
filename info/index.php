@@ -1,11 +1,8 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
 
-
-<p><a href="https://blog.zblogcn.com/2021/02/08/117/" target="_blank"><b>2021年农历牛年前夕，Z-BlogPHP 1.7 重磅公测✨ (2021-2-8)</b></a></p>
+<p><a href="https://blog.zblogcn.com/2021/04/10/122/" target="_blank"><b>Z-BlogPHP 1.7 Tenet 终于发布了 (2021-4-10)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2021/01/28/119/" target="_blank"><b>紧急公告：Z-Blog用户中心域名切换通知 (2021-1-28)</b></a></p>
-
-<p><a href="https://blog.zblogcn.com/2020/12/01/115/" target="_blank"><b>拥抱 PHP8，ZBP 1.6.6 正式发布！ (2020-12-1)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank">ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</a></p>
 

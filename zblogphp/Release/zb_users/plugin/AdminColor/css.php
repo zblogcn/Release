@@ -101,8 +101,10 @@ $c .= "div.bg input[type=\"text\"], input[type=\"password\"] {border-color:#3a6e
 $c .= PHP_EOL . "/*AdminColor*/" . PHP_EOL . "#admin_color{float:left;line-height: 2.5em;font-size: 0.5em;letter-spacing: -0.1em;}";
 
 if ($zbp->Config('AdminColor')->HeaderPathUse == true) {
-    $c .= 'header,.header{background:url(' . $zbp->Config('AdminColor')->HeaderPath . ') no-repeat center center;background-size:cover}' . PHP_EOL;
-    $c .= 'div.bg{background:url(' . $zbp->Config('AdminColor')->HeaderPath . ') no-repeat center center;background-size:cover}' . PHP_EOL;
+    if ($zbp->Config('AdminColor')->HeaderPath) {
+        $c .= 'header,.header{background:url(' . $zbp->Config('AdminColor')->HeaderPath . ') no-repeat center center;background-size:cover}' . PHP_EOL;
+        $c .= 'div.bg{background:url(' . $zbp->Config('AdminColor')->HeaderPath . ') no-repeat center center;background-size:cover}' . PHP_EOL;
+    }
 }
 if ($zbp->Config('AdminColor')->HeaderPathUse == false && $id == 10) {
     $c .= 'header,.header{background-image:none;}' . PHP_EOL;
@@ -119,6 +121,9 @@ form.search p{padding:0;}
 td,th{border:none;border-right: 1px solid #efefef;padding:0.6em;}
 table{border-collapse: collapse;background: #ffffff;line-height: 120%;margin:0.5em 0 0.5em 0;border:none;line-height:1.5em;}
 ';
+
+$c .= ".blodcolor{color:#1d4c7d}.normalcolor{color:#3a6ea5}.lightcolor{color:#b0cdee}.highcolor{color:#3399cc}.anticolor{color:#d60000}";
+$c .= ".bg-blodcolor{background-color:#1d4c7d}.bg-normalcolor{background-color:#3a6ea5}.bg-lightcolor{background-color:#b0cdee}.bg-highcolor{background-color:#3399cc}.bg-anticolor{background-color:#d60000}";
 
 if ($zbp->Config('AdminColor')->TableShadow) {
     $c .= 'table,.pane,.theme,form.search{box-shadow:0 0 0.5em rgba(0,0,0,0.2);}';

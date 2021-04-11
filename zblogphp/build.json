@@ -16,11 +16,6 @@
             "beta": "normal,beta"
         },
         {
-            "version": 162155,
-            "name": "1.6.6 Valyria",
-            "beta": "normal,beta"
-        },
-        {
             "version": 162160,
             "name": "1.6.7 Valyria",
             "beta": "normal,beta"
@@ -31,9 +26,9 @@
             "beta": "beta"
         },
         {
-            "version": 172895,
-            "name": "1.7.0 Beta",
-            "beta": "beta"
+            "version": 172915,
+            "name": "1.7.0 Tenet",
+            "beta": "normal,beta"
         }
     ]
 }

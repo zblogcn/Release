@@ -2,7 +2,7 @@
 
 <p><a href="https://blog.zblogcn.com/2021/04/10/122/" target="_blank"><b>Z-BlogPHP 1.7 Tenet 终于发布了 (2021-4-10)</b></a></p>
 
-<p><a href="https://blog.zblogcn.com/2021/01/28/119/" target="_blank"><b>紧急公告：Z-Blog用户中心域名切换通知 (2021-1-28)</b></a></p>
+<p><a href="https://blog.zblogcn.com/2021/01/28/119/" target="_blank">紧急公告：Z-Blog用户中心域名切换通知 (2021-1-28)</a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank">ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</a></p>
 

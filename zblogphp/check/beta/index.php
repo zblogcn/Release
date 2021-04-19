@@ -26,6 +26,8 @@ foreach ($json->builds as $key => $value) {
   }
 }
 
+$old = 130707;
+
 $s = $_SERVER['HTTP_USER_AGENT'];
 if (stripos($s,'ZBlogPHP')!==false){
   $i = stripos($s,'ZBlogPHP');
@@ -42,8 +44,13 @@ if (stripos($s,'ZBlogPHP')!==false){
 
 foreach ($json->builds as $key => $value) {
   if(stripos($value->beta, 'beta') !== false){
-    $target->build = $value->version;
-    $target->name = $value->name;
+    if ($old < 162200) {
+      $target->build = '162200';
+      $target->name = '1.6.8 Valyria';
+    } else {
+      $target->build = $value->version;
+      $target->name = $value->name;
+    }
   }
 }
 $result->source = $source;

@@ -115,6 +115,7 @@ function updatedb_14to15()
         $zbp->db->Query("CREATE INDEX " . $zbp->db->dbpre . "cate_Order on " . $table['Category'] . "(cate_Order) ;");
         $zbp->db->Query("CREATE INDEX " . $zbp->db->dbpre . "mem_Alias on " . $table['Member'] . "(mem_Alias) ;");
     }
+    /*
     if ($zbp->db->type == 'mysql' || $zbp->db->type == 'sqlite') {
         $zbp->db->DelTable($GLOBALS['table']['Config']);
         $s = $zbp->db->sql->CreateTable($GLOBALS['table']['Config'], $GLOBALS['datainfo']['Config']);
@@ -128,7 +129,7 @@ function updatedb_14to15()
         foreach ($zbp->configs as $c) {
             $c->Save();
         }
-    }
+    }*/
     $zbp->option['ZC_LAST_VERSION'] = 150101;
     $zbp->SaveOption();
     //$zbp->SetHint('good');
@@ -136,9 +137,9 @@ function updatedb_14to15()
 }
 
 if (isset($_GET['updatedb'])) {
-    if ($zbp->version >= 150101 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
-        updatedb_14to15();
-    }
+    //if ($zbp->version >= 150101 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
+    //    updatedb_14to15();
+    //}
     if ($zbp->version >= 162090 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
         updatedb_15to16();
     }

@@ -231,7 +231,20 @@ class Config
     public function Save()
     {
         global $zbp;
-        if ($zbp->option['ZC_LAST_VERSION'] > 170000) {
+
+        if ($this->db->type == 'sqlite') {
+            $old = @$this->db->Query('PRAGMA table_info([' . $this->table . '])');
+            $old = serialize($old);
+            if (stripos($old, '"conf_Key"') !== false) {
+                $old = array();
+            } else {
+                $old = array(false);
+            }
+        } else {
+            $old = @$this->db->Query($this->db->sql->Select($this->table, 'conf_Key', null, null, 1));
+        }
+
+        if (!(count($old) == 1 && $old[0] === false)) {
             return false;
         }
 

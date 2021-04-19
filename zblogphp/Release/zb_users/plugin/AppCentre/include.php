@@ -17,6 +17,30 @@ zwIDAQAB
 -----END PUBLIC KEY-----'
 );
 
+$domain = (string) $GLOBALS['zbp']->Config('AppCentre')->firstdomain;
+
+if ($domain == '' || stripos(APPCENTRE_DOMAINS, $domain) === false) {
+    $domain = SplitAndGet(APPCENTRE_DOMAINS, '|', 0);
+}
+
+define('APPCENTRE_DOMAIN', 'app.' . $domain);
+
+if (stripos($GLOBALS['bloghost'], 'https://') !== false) {
+    define('APPCENTRE_URL', 'https://' . APPCENTRE_DOMAIN . '/client/');
+    define('APPCENTRE_CMD_URL', 'https://' . APPCENTRE_DOMAIN . '/zb_system/cmd.php?');
+    define('APPCENTRE_SYSTEM_UPDATE', 'https://update.' . $domain . '/zblogphp/');
+    define('APPCENTRE_VERIFY', 'https://verify.' . APPCENTRE_DOMAIN . '/release/v1/');
+    define('APPCENTRE_VERIFY_V2', 'https://verify.' . APPCENTRE_DOMAIN . '/release/v2/');
+} else {
+    define('APPCENTRE_URL', 'http://' . APPCENTRE_DOMAIN . '/client/');
+    define('APPCENTRE_CMD_URL', 'http://' . APPCENTRE_DOMAIN . '/zb_system/cmd.php?');
+    define('APPCENTRE_SYSTEM_UPDATE', 'http://update.' . $domain . '/zblogphp/');
+    define('APPCENTRE_VERIFY', 'http://verify.' . APPCENTRE_DOMAIN . '/release/v1/');
+    define('APPCENTRE_VERIFY_V2', 'http://verify.' . APPCENTRE_DOMAIN . '/release/v2/');
+}
+
+unset($domain);
+
 #定义版本号列
 $zbpvers = array();
 $zbpvers['130707'] = '1.0 Beta Build 130707';
@@ -50,28 +74,6 @@ function ActivePlugin_AppCentre()
     Add_Filter_Plugin('Filter_Plugin_Admin_SiteInfo_SubMenu', 'AppCentre_AddSiteInfoMenu');
     Add_Filter_Plugin('Filter_Plugin_Cmd_Begin', 'AppCentre_Cmd_Begin');
     //Add_Filter_Plugin('Filter_Plugin_DisablePlugin', 'AppCentre_DisablePlugin');
-
-    $domain = (string) $zbp->Config('AppCentre')->firstdomain;
-
-    if ($domain == '' || stripos(APPCENTRE_DOMAINS, $domain) === false) {
-        $domain = SplitAndGet(APPCENTRE_DOMAINS, '|', 0);
-    }
-
-    define('APPCENTRE_DOMAIN', 'app.' . $domain);
-
-    if (stripos($GLOBALS['bloghost'], 'https://') !== false) {
-        define('APPCENTRE_URL', 'https://' . APPCENTRE_DOMAIN . '/client/');
-        define('APPCENTRE_CMD_URL', 'https://' . APPCENTRE_DOMAIN . '/zb_system/cmd.php?');
-        define('APPCENTRE_SYSTEM_UPDATE', 'https://update.' . $domain . '/zblogphp/');
-        define('APPCENTRE_VERIFY', 'https://verify.' . APPCENTRE_DOMAIN . '/release/v1/');
-        define('APPCENTRE_VERIFY_V2', 'https://verify.' . APPCENTRE_DOMAIN . '/release/v2/');
-    } else {
-        define('APPCENTRE_URL', 'http://' . APPCENTRE_DOMAIN . '/client/');
-        define('APPCENTRE_CMD_URL', 'http://' . APPCENTRE_DOMAIN . '/zb_system/cmd.php?');
-        define('APPCENTRE_SYSTEM_UPDATE', 'http://update.' . $domain . '/zblogphp/');
-        define('APPCENTRE_VERIFY', 'http://verify.' . APPCENTRE_DOMAIN . '/release/v1/');
-        define('APPCENTRE_VERIFY_V2', 'http://verify.' . APPCENTRE_DOMAIN . '/release/v2/');
-    }
 
     if (method_exists('ZBlogPHP', 'LoadLanguage')) {
         $zbp->LoadLanguage('plugin', 'AppCentre');
@@ -111,8 +113,12 @@ function AppCentre_AddSiteInfoMenu()
             $zbp->SaveConfig('AppCentre');
         }
     }
-    if ($zbp->version < 162300 && $zbp->version >= 150101 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
-        echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips\"><a href=\"{$zbp->host}zb_users/plugin/AppCentre/update.php?updatedb\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
+    if ($zbp->version < 170000 && $zbp->version >= 162090 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
+        echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a href=\"{$zbp->host}zb_users/plugin/AppCentre/update.php?updatedb\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
+    } elseif (is_readable($zbp->path . 'zb_system/admin/updatedb.php') && defined('ZC_LAST_VERSION')) {
+        if ($zbp->version >= ZC_LAST_VERSION && (int) $zbp->option['ZC_LAST_VERSION'] < ZC_LAST_VERSION) {
+            echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a href=\"{$zbp->host}zb_system/admin/updatedb.php?updatedb\" target=\"_blank\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
+        }
     }
 }
 

@@ -86,6 +86,7 @@ class Database__PDO_MySQL implements Database__Interface
                 $u = "utf8";
             }
             $db_link->query("SET NAMES '" . $u . "'");
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
             return true;
         } catch (PDOException $e) {

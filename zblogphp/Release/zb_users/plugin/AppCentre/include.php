@@ -50,9 +50,9 @@ $zbpvers['140220'] = '1.2 Hippo Build 140220';
 $zbpvers['140614'] = '1.3 Wonce Build 140614';
 $zbpvers['150101'] = '1.4 Deeplue Build 150101';
 $zbpvers['151626'] = '1.5 Zero Build 151626';
-$zbpvers['151740'] = '1.5.1 Zero Build 151740';
 $zbpvers['151935'] = '1.5.2 Zero Build 151935';
 $zbpvers['162090'] = '1.6.0 Valyria Build 162090';
+$zbpvers['162200'] = '1.6.8 Valyria Build 162200';
 $zbpvers['172900'] = '1.7.0 Tenet Build 172900';
 
 if (!isset($zbpvers[$GLOBALS['blogversion']])) {

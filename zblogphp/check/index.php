@@ -42,7 +42,7 @@ if (stripos($s,'ZBlogPHP')!==false){
 
 foreach ($json->builds as $key => $value) {
   if(stripos($value->beta, 'normal') !== false){
-    if ($old < 162210) {
+    if ($old < 162200) {
       $target->build = '162210';
       $target->name = '1.6.8 Valyria';
     } else {

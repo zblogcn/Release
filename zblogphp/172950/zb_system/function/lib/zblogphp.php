@@ -3588,9 +3588,15 @@ class ZBlogPHP
      */
     public function GetCSRFToken($id = '')
     {
+        $oldZone = date_default_timezone_get();
+        date_default_timezone_set($this->option['ZC_TIME_ZONE_NAME']);
+
+        $time = date('Ymdh');
         $s = $this->user->ID . $this->user->Password . $this->user->Status;
 
-        return md5($this->guid . $s . $id . date('Ymdh'));
+
+        date_default_timezone_set($oldZone);
+        return md5($this->guid . $s . $id . $time);
     }
 
     /**
@@ -3603,15 +3609,21 @@ class ZBlogPHP
      */
     public function VerifyCSRFToken($token, $id = '')
     {
+        $oldZone = date_default_timezone_get();
+        date_default_timezone_set($this->option['ZC_TIME_ZONE_NAME']);
+
         $userString = $this->user->ID . $this->user->Password . $this->user->Status;
         $tokenString = $this->guid . $userString . $id;
 
         for ($i = 0; $i <= $this->csrfExpiration; $i++) {
             if ($token === md5($tokenString . date('Ymdh', (time() - (3600 * $i))))) {
+                date_default_timezone_set($oldZone);
                 return true;
             }
         }
 
+
+        date_default_timezone_set($oldZone);
         return false;
     }
 

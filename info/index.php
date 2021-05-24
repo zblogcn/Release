@@ -1,12 +1,12 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
 
+<p><a href="https://blog.zblogcn.com/2021/05/04/121/" target="_blank">只需三步，快速在 Serverless 架构部署 Z-BlogPHP 博客 (2021-5-4)</a></p>
+
 <p><a href="https://blog.zblogcn.com/2021/04/10/122/" target="_blank"><b>Z-BlogPHP 1.7 Tenet 终于发布了 (2021-4-10)</b></a></p>
 
 <p><a href="https://blog.zblogcn.com/2021/01/28/119/" target="_blank">紧急公告：Z-Blog用户中心域名切换通知 (2021-1-28)</a></p>
 
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank">ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</a></p>
-
-<p><a href="https://blog.zblogcn.com/2020/08/24/112/" target="_blank">宝塔面板出现漏洞，大家快更新吧，配合ZBP漏洞补丁食用效果更佳！ (2020-8-24)</a></p>
 
 <p>[Wiki]&nbsp;&nbsp;
 <a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:changelog" target="_blank">ZBlogPHP详细更新日志</a>

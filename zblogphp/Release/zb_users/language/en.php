@@ -282,6 +282,7 @@ return array(
         'confirm_clear_thumb_cache'         => 'Confirm to clear thumb cache.',
         'category_legacy_display'           => 'Category manage legacy display',
         'change_default_password'           => 'Please change the default password immediately.',
+        'delete_member_with_alldata'        => 'Delete user and delete user\'s data',
         ''                                  => '',
     ),
 
@@ -555,6 +556,9 @@ return array(
 
     'offical_urls' => array(
         'more_help' => 'https://www.zblogcn.com/help/?id={%id%}&message={%message%}',
+        'bing_help' => 'https://cn.bing.com/search?q={%message%}',
+        'office_docs' => 'https://docs.zblogcn.com/php/#/books/start-faq',
+        'office_bbs' => 'https://bbs.zblogcn.com/',
     ),
 
     // Possible causes of the error

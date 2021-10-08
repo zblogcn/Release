@@ -2,6 +2,23 @@
 #注册插件
 RegisterPlugin("AppCentre", "ActivePlugin_AppCentre");
 
+if (!function_exists('SplitAndGet')) {
+
+    function SplitAndGet($string, $delimiter = ';', $n = 0)
+    {
+        $a = explode($delimiter, $string);
+        if (!is_array($a)) {
+            $a = array();
+        }
+        if (isset($a[$n])) {
+            return (string) $a[$n];
+        }
+
+        return '';
+    }
+
+}
+
 define('APPCENTRE_DOMAINS', 'zblogcn.com|zblogcn.net');
 
 define(
@@ -52,8 +69,9 @@ $zbpvers['150101'] = '1.4 Deeplue Build 150101';
 $zbpvers['151626'] = '1.5 Zero Build 151626';
 $zbpvers['151935'] = '1.5.2 Zero Build 151935';
 $zbpvers['162090'] = '1.6.0 Valyria Build 162090';
-$zbpvers['162200'] = '1.6.8 Valyria Build 162200';
+$zbpvers['162210'] = '1.6.8 Valyria Build 162210';
 $zbpvers['172900'] = '1.7.0 Tenet Build 172900';
+$zbpvers['172960'] = '1.7.1 Tenet Build 172960';
 
 if (!isset($zbpvers[$GLOBALS['blogversion']])) {
     if (defined('ZC_VERSION_FULL')) {
@@ -116,9 +134,9 @@ function AppCentre_AddSiteInfoMenu()
     if ($zbp->version < 170000 && $zbp->version >= 162090 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
         echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a href=\"{$zbp->host}zb_users/plugin/AppCentre/update.php?updatedb\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
     } elseif (is_readable($zbp->path . 'zb_system/admin/updatedb.php') && defined('ZC_LAST_VERSION')) {
-        if ($zbp->version >= ZC_LAST_VERSION && (int) $zbp->option['ZC_LAST_VERSION'] < ZC_LAST_VERSION) {
-            echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a href=\"{$zbp->host}zb_system/admin/updatedb.php?updatedb\" target=\"_blank\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
-        }
+        //if ($zbp->version >= ZC_LAST_VERSION && (int) $zbp->option['ZC_LAST_VERSION'] < ZC_LAST_VERSION) {
+            //echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a href=\"{$zbp->host}zb_system/admin/updatedb.php?updatedb\" target=\"_blank\">{$zbp->lang['AppCentre']['click_to_upgrade_database']}</a></p></div>');</script>";
+        //}
     }
 }
 
@@ -492,22 +510,4 @@ function AppCentre_CreateButton($name){
         }
 
     }
-}
-
-
-if (!function_exists('SplitAndGet')) {
-
-    function SplitAndGet($string, $delimiter = ';', $n = 0)
-    {
-        $a = explode($delimiter, $string);
-        if (!is_array($a)) {
-            $a = array();
-        }
-        if (isset($a[$n])) {
-            return (string) $a[$n];
-        }
-
-        return '';
-    }
-
 }

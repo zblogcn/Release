@@ -123,5 +123,6 @@ return array(
     'move_up'=>'向上移动',
     'move_down'=>'向下移动',
     'move_bottom'=>'移动到最底',
-    'enable_plugin_sort'=>'启用插件优先级调整',
+    'enable_plugin_sort'=>'啓用插件優先級調整',
+    'non_root_prohibit_operation'=>'非root級别的管理員禁止該操作',
 );

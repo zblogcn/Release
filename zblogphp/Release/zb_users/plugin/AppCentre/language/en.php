@@ -124,4 +124,5 @@ return array(
     'move_down'=>'Move down',
     'move_bottom'=>'Move bottom',
     'enable_plugin_sort'=>'Enable plugin sort',
+    'non_root_prohibit_operation'=>'Non-root administrators prohibit this operation',
 );

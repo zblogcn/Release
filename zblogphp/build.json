@@ -34,6 +34,11 @@
             "version": 172955,
             "name": "1.7.0 Tenet",
             "beta": "normal,beta"
+        },
+        {
+            "version": 172975,
+            "name": "1.7.1 Tenet",
+            "beta": "normal,beta"
         }
     ]
 }

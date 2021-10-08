@@ -124,4 +124,5 @@ return array(
     'move_down'=>'向下移动',
     'move_bottom'=>'移动到最底',
     'enable_plugin_sort'=>'启用插件优先级调整',
+    'non_root_prohibit_operation'=>'非root级别的管理员禁止该操作',
 );

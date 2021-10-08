@@ -11,6 +11,10 @@ $action = 'root';
 if (!$zbp->CheckRights($action)) {
     $zbp->ShowError(6);
     die();
+} else {
+    if ($zbp->user->IsGod == false) {
+        $zbp->ShowError($zbp->lang['AppCentre']['non_root_prohibit_operation']);
+    }
 }
 
 if (!$zbp->CheckPlugin('AppCentre')) {

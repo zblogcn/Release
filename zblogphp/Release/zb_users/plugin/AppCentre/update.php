@@ -33,25 +33,9 @@ $blogtitle = $zbp->lang['AppCentre']['name'] . '-' . $zbp->lang['AppCentre']['sy
 $checkbegin = false;
 $nowxml = '';
 
-ZBlogException::SuspendErrorHook();
-$old1 = @$zbp->db->Query("select {$datainfo['Tag']['Type'][0]} from {$table['Tag']} limit 1");
-$old2 = @$zbp->db->Query("select {$datainfo['Category']['Type'][0]} from {$table['Category']} limit 1");
-if (count($old1) == 1 && $old1[0] === false) {
-    $old1 = true;
-}
-if (count($old2) == 1 && $old2[0] === false) {
-    $old2 = true;
-}
-if ($old1 === true || $old2 === true) {
-    updatedb_common();
-}
-ZBlogException::ResumeErrorHook();
-
 function updatedb_common()
 {
     global $zbp, $table;
-    @$zbp->db->Query("ALTER TABLE " . $table['Tag'] . " ADD  tag_Type integer NOT NULL DEFAULT 0;");
-    @$zbp->db->Query("ALTER TABLE " . $table['Category'] . " ADD  cate_Type integer NOT NULL DEFAULT 0;");
 }
 
 function updatedb_15to16()

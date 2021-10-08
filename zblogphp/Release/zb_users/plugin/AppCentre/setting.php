@@ -113,7 +113,7 @@ foreach ($aps as $key => $value) {
                       <span class="note"></span></p></td>
                   <td><input id="app_enablepluginsort" name="app_enablepluginsort" type="text" value="<?php echo $zbp->Config('AppCentre')->enablepluginsort; ?>" class="checkbox"/></td>
                 </tr>
-                <tr height="32" style="display:none;">
+                <tr height="32">
                   <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['domain_of_appcentre']; ?></b><br/>
                       <span class="note">&nbsp;&nbsp;<?php echo $zbp->lang['AppCentre']['domain_of_appcentre_note']; ?></span></p></td>
                   <td>

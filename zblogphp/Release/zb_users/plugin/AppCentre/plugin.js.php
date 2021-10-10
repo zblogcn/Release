@@ -94,7 +94,7 @@ $(".plugin").each(function(){
     var s=""
     s=s+"<a class=\"button\"  href='"+bloghost+"zb_users/plugin/AppCentre/plugin_edit.php?id="+t+"<?php echo $t?>' title='<?php echo $zbp->lang['AppCentre']['edit_app']; ?>'><?php echo AppCentre_CreateButton('edit'); ?></a>";
 
-    s=s+"&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"button\"  href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=plugin&id="+t+"<?php echo $t?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>";
+    s=s+"&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"button\"  href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=plugin&id="+t+"<?php echo $t . '&rnd=' . crc32(rand());?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>";
 
     if(app_enabledevelop){
         s=s+"&nbsp;&nbsp;&nbsp;&nbsp;<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/submit.php?type=plugin&amp;id="+t+"<?php echo $t?>' title='<?php echo $zbp->lang['AppCentre']['upload_app_to_appcentre']; ?>' target='_blank'><?php echo AppCentre_CreateButton('cloudup'); ?></a>";

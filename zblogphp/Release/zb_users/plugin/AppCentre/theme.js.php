@@ -31,7 +31,7 @@ $(".theme").each(function(){
 
     s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/theme_edit.php?id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['edit_app']; ?>'><?php echo AppCentre_CreateButton('edit'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
-    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=theme&id="+t+"<?php echo $t; ?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+    s=s+"<a class=\"button\" href='"+bloghost+"zb_users/plugin/AppCentre/app_pack.php?type=theme&id="+t+"<?php echo $t . '&rnd=' . crc32(rand()); ?>' title='<?php echo $zbp->lang['AppCentre']['export_app']; ?>' target='_blank'><?php echo AppCentre_CreateButton('download'); ?></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
     }
 

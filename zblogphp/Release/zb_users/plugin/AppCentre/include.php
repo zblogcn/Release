@@ -71,7 +71,7 @@ $zbpvers['151935'] = '1.5.2 Zero Build 151935';
 $zbpvers['162090'] = '1.6.0 Valyria Build 162090';
 $zbpvers['162210'] = '1.6.8 Valyria Build 162210';
 $zbpvers['172900'] = '1.7.0 Tenet Build 172900';
-$zbpvers['172960'] = '1.7.1 Tenet Build 172960';
+$zbpvers['172980'] = '1.7.1 Tenet Build 172980';
 
 if (!isset($zbpvers[$GLOBALS['blogversion']])) {
     if (defined('ZC_VERSION_FULL')) {
@@ -255,6 +255,15 @@ function AppCentre_Get_Sign($token)
 {
     global $zbp;
     //$zbp->user->Level != 1
+    if ($zbp->user->IsGod == false) {
+        $admins = $zbp->GetMemberList(null, array(array('=', 'mem_Level', 1)), array('mem_ID' => 'ASC'));
+        foreach ($admins as $m) {
+            return hash_hmac('sha256', $m->Name . '|' . $m->Password . '|' . $m->Guid, $token);
+        }
+    } else {
+        return hash_hmac('sha256', $zbp->user->Name . '|' . $zbp->user->Password . '|' . $zbp->user->Guid, $token);
+    }
+    //下边代码已废除
     if ($zbp->user->Level != 1) {
         foreach ($zbp->members as $key => $m) {
             if ($m->Level == 1) {

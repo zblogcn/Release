@@ -2241,6 +2241,9 @@ class ZBlogPHP
         }
         //如果对比一样的话，$forcebuild就有用了
         if ($md5 == GetValueInArray($array_md5, $this->template->template_dirname)) {
+            if ($onlycheck == true && $forcebuild == false) {
+                return true;
+            }
             if ($forcebuild == true) {
                 $this->BuildTemplate();
                 $array_md5[$this->template->template_dirname] = $md5;

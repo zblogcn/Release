@@ -40,7 +40,7 @@ function Admin_SiteInfo()
     }
     echo ' </th></tr>';
 
-    if ((time() - (int) $zbp->cache->reload_statistic_time) > (6 * 24 * 60 * 60)) {
+    if ((time() - (int) $zbp->cache->reload_statistic_time) > (23 * 60 * 60)) {
         echo '<script>$(document).ready(function(){ statistic(\'' . BuildSafeCmdURL('act=misc&type=statistic') . '\'); });</script>';
     } else {
         $echoStatistic = true;
@@ -1499,15 +1499,15 @@ function Admin_PluginMng()
 
         if ($plugin->type == 'plugin') {
             if ($plugin->IsUsed()) {
-                echo '<a href="' . BuildSafeCmdURL('act=PluginDis&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['disable'] . '"><i class="icon-cancel on"></i></a>';
+                echo '<a href="' . BuildSafeCmdURL('act=PluginDis&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['disable'] . '" class="btn-icon btn-disable"><i class="icon-cancel on"></i></a>';
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;';
             } else {
-                echo '<a href="' . BuildSafeCmdURL('act=PluginEnb&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['enable'] . '"><i class="icon-power off"></i></a>';
+                echo '<a href="' . BuildSafeCmdURL('act=PluginEnb&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['enable'] . '" class="btn-icon btn-enable"><i class="icon-power off"></i></a>';
             }
         }
 
         if ($plugin->IsUsed() && $plugin->CanManage()) {
-            echo '<a href="' . $plugin->GetManageUrl() . '" title="' . $zbp->lang['msg']['manage'] . '"><i class="icon-tools"></i></a>';
+            echo '<a href="' . $plugin->GetManageUrl() . '" title="' . $zbp->lang['msg']['manage'] . '" class="btn-icon btn-manage" data-pluginid="' . htmlspecialchars($plugin->id) . '"><i class="icon-tools"></i></a>';
         }
 
         echo '</td>';

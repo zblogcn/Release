@@ -1499,10 +1499,10 @@ function Admin_PluginMng()
 
         if ($plugin->type == 'plugin') {
             if ($plugin->IsUsed()) {
-                echo '<a href="' . BuildSafeCmdURL('act=PluginDis&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['disable'] . '" class="btn-icon btn-disable"><i class="icon-cancel on"></i></a>';
+                echo '<a href="' . BuildSafeCmdURL('act=PluginDis&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['disable'] . '" class="btn-icon btn-disable" data-pluginid="' . htmlspecialchars($plugin->id) . '"><i class="icon-cancel on"></i></a>';
                 echo '&nbsp;&nbsp;&nbsp;&nbsp;';
             } else {
-                echo '<a href="' . BuildSafeCmdURL('act=PluginEnb&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['enable'] . '" class="btn-icon btn-enable"><i class="icon-power off"></i></a>';
+                echo '<a href="' . BuildSafeCmdURL('act=PluginEnb&amp;name=' . htmlspecialchars($plugin->id)) . '" title="' . $zbp->lang['msg']['enable'] . '" class="btn-icon btn-enable" data-pluginid="' . htmlspecialchars($plugin->id) . '"><i class="icon-power off"></i></a>';
             }
         }
 

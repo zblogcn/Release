@@ -609,7 +609,7 @@ class ZBlogPHP
                 return $fpreturn;
             }
         }
-        trigger_error($this->lang['error'][81], E_USER_WARNING);
+        trigger_error(__CLASS__ . " '$method' " . $this->lang['error'][81], E_USER_WARNING);
     }
 
     /**
@@ -630,7 +630,7 @@ class ZBlogPHP
                 return $fpreturn;
             }
         }
-        trigger_error($this->lang['error'][81], E_USER_WARNING);
+        trigger_error(__CLASS__ . " '$name' " . $this->lang['error'][81], E_USER_WARNING);
     }
 
     /**
@@ -650,7 +650,7 @@ class ZBlogPHP
                 return $fpreturn;
             }
         }
-        trigger_error($this->lang['error'][81], E_USER_WARNING);
+        trigger_error(__CLASS__ . " '$name' " . $this->lang['error'][81], E_USER_WARNING);
     }
 
     /**

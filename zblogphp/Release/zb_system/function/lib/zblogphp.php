@@ -3378,7 +3378,7 @@ class ZBlogPHP
      */
     public function GetTagByAlias($name, $type = 0)
     {
-        $ret = $this->GetSomeThingByAttr($this->tags, 'Tag', array('Alias', 'Type'), array($name, $type));
+        $ret = $this->GetSomeThingByAttr($this->tags_all, 'Tag', array('Alias', 'Type'), array($name, $type));
         if (is_object($ret) && $ret->ID >= 0) {
             return $ret;
         }
@@ -3404,7 +3404,7 @@ class ZBlogPHP
      */
     public function GetTagByName($name, $type = 0)
     {
-        $ret = $this->GetSomeThingByAttr($this->tags, 'Tag', array('Name', 'Type'), array($name, $type));
+        $ret = $this->GetSomeThingByAttr($this->tags_all, 'Tag', array('Name', 'Type'), array($name, $type));
         if (is_object($ret) && $ret->ID >= 0) {
             return $ret;
         }

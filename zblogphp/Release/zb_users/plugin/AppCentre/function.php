@@ -160,6 +160,7 @@ function Server_Open($method)
             if (strpos($s, '<!--developer-nologin-->') !== false) {
                 if ($zbp->Config('AppCentre')->token) {
                     $zbp->Config('AppCentre')->token = '';
+                    $zbp->Config('AppCentre')->uniq_id = '';
                     $zbp->SaveConfig('AppCentre');
                 }
             }

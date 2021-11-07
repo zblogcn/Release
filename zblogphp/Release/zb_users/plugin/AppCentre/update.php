@@ -28,7 +28,7 @@ if (!$zbp->CheckPlugin('AppCentre')) {
     die();
 }
 
-$blogtitle = $zbp->lang['AppCentre']['name'] . '-' . $zbp->lang['AppCentre']['system_update'];
+$blogtitle = AppCentre_GetBlogTitle() . '-' . $zbp->lang['AppCentre']['system_update'];
 
 $checkbegin = false;
 $nowxml = '';
@@ -220,7 +220,12 @@ if (!is_object($newversion_json)) {
 <div id="divMain">
 
   <div class="divHeader"><?php echo $blogtitle; ?></div>
-<div class="SubMenu"><?php AppCentre_SubMenus(3); ?></div>
+<div class="SubMenu"><?php
+foreach ($GLOBALS['hooks']['Filter_Plugin_AppCentre_Client_SubMenu'] as $fpname => &$fpsignal) {
+    $fpname();
+}
+AppCentre_SubMenus(3);
+?></div>
   <div id="divMain2">
 
             <form method="post" action="">

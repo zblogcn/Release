@@ -456,12 +456,7 @@ function ApiVerifyCSRF($force_check = false)
             );
 
             foreach ($GLOBALS['hooks']['Filter_Plugin_API_VerifyCSRF_Skip'] as $fpname => &$fpsignal) {
-                $fpreturn = $fpname($skip_acts, $csrf_token);
-                if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
-                    $fpsignal = PLUGIN_EXITSIGNAL_NONE;
-        
-                    return $fpreturn;
-                }
+                $fpname($skip_acts);
             }
 
             foreach ($skip_acts as $api_act) {

@@ -2362,8 +2362,12 @@ class ZBlogPHP
             $id = $l->GetIdName();
             if ($this->CheckCache('Base', $l->$id) == false) {
                 $this->AddCache($l);
+                $list[] = $l;
+            } else {
+                $n = &$this->GetCache('Base', $l->$id);
+                $list[] = $n;
             }
-            $list[] = $l;
+            unset($l, $n);
         }
 
         return $list;
@@ -2403,8 +2407,12 @@ class ZBlogPHP
             $id = $l->GetIdName();
             if ($this->CheckCache('Base', $l->$id) == false) {
                 $this->AddCache($l);
+                $list[] = $l;
+            } else {
+                $n = &$this->GetCache('Base', $l->$id);
+                $list[] = $n;
             }
-            $list[] = $l;
+            unset($l, $n);
         }
 
         return $list;
@@ -2446,8 +2454,12 @@ class ZBlogPHP
                 $id = $l->GetIdName();
                 if ($this->CheckCache($type, $l->$id) == false) {
                     $this->AddCache($l);
+                    $list[] = $l;
+                } else {
+                    $n = &$this->GetCache($type, $l->$id);
+                    $list[] = $n;
                 }
-                $list[] = $l;
+                unset($l, $n);
             }
         }
 
@@ -2521,8 +2533,12 @@ class ZBlogPHP
             $id = $l->GetIdName();
             if ($this->CheckCache($type, $l->$id) == false) {
                 $this->AddCache($l);
+                $list[] = $l;
+            } else {
+                $n = &$this->GetCache($type, $l->$id);
+                $list[] = $n;
             }
-            $list[] = $l;
+            unset($l, $n);
         }
 
         return $list;
@@ -4536,6 +4552,29 @@ class ZBlogPHP
         }
 
         return array_key_exists($idvalue, $cacheobject[$classname]);
+    }
+
+    /**
+     * 获取指定classname的缓存数组，指定了$idvalue就返回单个的object，不指定就返回objects
+     */
+    public function &GetCache($classname, $idvalue = null)
+    {
+        $cacheobject = &$this->cacheobject;
+        if (is_subclass_of($classname, 'BasePost') == true) {
+            $classname = 'Post';
+        }
+        if (!isset($cacheobject[$classname])) {
+            $cacheobject[$classname] = array();
+        }
+        if (!is_null($idvalue)) {
+            if (array_key_exists($idvalue, $cacheobject[$classname])) {
+                return $cacheobject[$classname][$idvalue];
+            } else {
+                $null = null;
+                return $null;
+            }
+        }
+        return $cacheobject[$classname];
     }
 
     /**

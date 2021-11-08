@@ -40,7 +40,7 @@ $mods_allow = array(); //格式为 [] = array('模块名'=>'方法名')
 $mods_disallow = array(); //如果是 [] = array('模块名'=>'') 方法名为空将匹配整个模块
 
 //进行Api白名单和黑名单的检查
-ApiListCheck($mods_allow, $mods_disallow);
+ApiCheckMods($mods_allow, $mods_disallow);
 
 ApiLoadPostData();
 

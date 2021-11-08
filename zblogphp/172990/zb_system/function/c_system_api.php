@@ -88,12 +88,12 @@ function ApiRemoveMods($name)
 /**
  * 检查API Mods的白名单和黑名单.
  */
-function ApiListCheck(&$mods_allow, &$mods_disallow)
+function ApiCheckMods(&$mods_allow, &$mods_disallow)
 {
     global $zbp, $mod, $act;
 
     //接口及对$mods_allow, $mods_disallow的添加
-    foreach ($GLOBALS['hooks']['Filter_Plugin_API_ListCheck'] as $fpname => &$fpsignal) {
+    foreach ($GLOBALS['hooks']['Filter_Plugin_API_CheckMods'] as $fpname => &$fpsignal) {
         $new_allow = $new_disallow = array();
         $fpname($new_allow, $new_disallow);
 

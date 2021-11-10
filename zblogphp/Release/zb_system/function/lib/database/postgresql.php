@@ -251,11 +251,12 @@ class Database__PostgreSQL implements Database__Interface
         //$query=str_replace('%pre%', $this->dbpre, $query);
         pg_query($this->db, $this->sql->Filter($query));
         $this->LogsError();
+        $query = preg_replace('/INSERT[\s]+INTO/i', '', $query);
+        $query = ltrim($query, ' ');
         $seq = explode(' ', $query);
-        $seq = $seq[3];
-        $seq = trim($seq);
-        //$seq = 'select lastval();';
-        $seq = "select currval('{$seq}_seq'::regclass)";
+        $seq = $seq[0] . '_seq';
+        $seq = str_replace(array('"',"'"), '', $seq);
+        $seq = "select currval('{$seq}'::regclass)";
 
         $r = pg_query($this->db, $seq);
         $id = pg_fetch_result($r, 0, 0);

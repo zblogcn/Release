@@ -287,7 +287,7 @@ function api_member_get_auth()
     foreach ($GLOBALS['actions'] as $key => $value) {
         if ($zbp->CheckRights($key)) {
             $authArr['auth'][$key] = array(
-                'description' => $zbp->GetActionDescription($key),
+                'name' => $zbp->GetActionDescription($key),
                 'checked' => $zbp->CheckRights($key) ? true : false
             );
         }

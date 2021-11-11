@@ -1,5 +1,5 @@
 <!-- style="color:crimson"  style="color:#ff6600" style="color:blue"-->
-<p><a style="color:crimson"  href="https://app.zblogcn.com/page/double11/" target="_blank">不玩虚的，Z-Blog应用中心“双十一”大促活动 (2021-11-05)</a></p>
+<!-- <p><a style="color:crimson"  href="https://app.zblogcn.com/page/double11/" target="_blank">不玩虚的，Z-Blog应用中心“双十一”大促活动 (2021-11-05)</a></p>-->
 
 <p><a href="https://blog.zblogcn.com/2021/05/04/121/" target="_blank">只需三步，快速在 Serverless 架构部署 Z-BlogPHP 博客 (2021-05-04)</a></p>
 
@@ -10,19 +10,19 @@
 <p><a href="https://blog.zblogcn.com/2020/10/24/114/" target="_blank">ZBLOG应用中心“工单系统”上线了！ (2020-10-24)</a></p>
 
 <p>[Wiki]&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:changelog" target="_blank">ZBlogPHP详细更新日志</a>
+<a href="https://docs.zblogcn.com/php/#/books/feat-history" target="_blank">ZBlogPHP详细更新日志</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:development" target="_blank">ZBlogPHP应用开发指南</a>
+<a href="https://docs.zblogcn.com/php/#/books/dev-05-start" target="_blank">ZBlogPHP应用开发指南</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:development:migration:1.5_-_1.6" target="_blank">开发者更新指南</a>
+<a href="https://docs.zblogcn.com/php/#/books/dev-50-faq" target="_blank">开发者更新指南</a>
 </p>
 
 <p>[故障处理]&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:failure:forgetpassword" target="_blank">ZBlogPHP密码找回工具</a>
+<a href="https://docs.zblogcn.com/php/#/books/start-25-faq?id=%e5%af%86%e7%a0%81%e9%87%8d%e7%bd%ae" target="_blank">ZBlogPHP密码找回工具</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:failure:permanentdomainerror" target="_blank">固定域名出错</a>
+<a href="https://docs.zblogcn.com/php/#/books/start-25-faq?id=%e5%9b%ba%e5%ae%9a%e5%9f%9f%e5%90%8d%e5%87%ba%e9%94%99%e4%b8%8d%e8%83%bd%e7%99%bb%e5%85%a5" target="_blank">固定域名出错</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<a href="https://wiki.zblogcn.com/doku.php?id=zblogphp:failure:cannotemoji" target="_blank">不能发Emoji表情</a>
+<a href="https://docs.zblogcn.com/php/#/books/start-25-faq?id=emoji-%e8%a1%a8%e6%83%85%e6%94%af%e6%8c%81" target="_blank">不能发Emoji表情</a>
 </p>
 
 <p><a href="https://blog.zblogcn.com/2018/02/12/99/" target="_blank">大吉大利，天天吃鸡——Z-Blog祝您2018新春快乐，应用中心红包活动开始了！ (2018-02-12)</a></p>

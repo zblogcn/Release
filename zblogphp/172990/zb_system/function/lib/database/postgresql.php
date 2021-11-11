@@ -249,7 +249,7 @@ class Database__PostgreSQL implements Database__Interface
     public function Insert($query)
     {
         //$query=str_replace('%pre%', $this->dbpre, $query);
-        $r = pg_query($this->db, $this->sql->Filter($query));
+        pg_query($this->db, $this->sql->Filter($query));
         $this->LogsError();
         $id = null;
         if (preg_match('/[\s]*INSERT[\s]+INTO[\s]+([\S]+)[\s]+/i', $query, $m) == 1) {

@@ -222,12 +222,12 @@ class Database__PDO_PostgreSQL implements Database__Interface
         //$query=str_replace('%pre%', $this->dbpre, $query);
         $this->db->query($this->sql->Filter($query));
         $this->LogsError();
-        $query = preg_replace('/INSERT[\s]+INTO/i', '', $query);
-        $query = ltrim($query, ' ');
-        $seq = explode(' ', $query);
-        $seq = $seq[0] . '_seq';
-        $seq = str_replace(array('"',"'"), '', $seq);
-        $id = $this->db->lastInsertId($seq);
+        $id = null;
+        if (preg_match('/[\s]*INSERT[\s]+INTO[\s]+([\S]+)[\s]+/i', $query, $m) == 1) {
+            $seq = $m[1];
+            $seq = str_replace(array('"',"'"), '', $seq) . '_seq';
+            $id = $this->db->lastInsertId($seq);
+        }
         return $id;
     }
 

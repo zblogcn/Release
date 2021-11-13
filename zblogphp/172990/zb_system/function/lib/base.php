@@ -470,7 +470,15 @@ class Base
                 continue;
             }
             if (!array_key_exists($key, $this->data)) {
-                unset($keyvalue[$value[0]]);
+                if (empty($this->data[$this->idname])) {
+                    if (strcasecmp($value[1], 'string') == 0 && trim($value[2]) == '') {
+                        $keyvalue[$value[0]] = trim($value[2]);
+                    } else {
+                        unset($keyvalue[$value[0]]);
+                    }
+                } else {
+                    unset($keyvalue[$value[0]]);
+                }
                 continue;
             }
 

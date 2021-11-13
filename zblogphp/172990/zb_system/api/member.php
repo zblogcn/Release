@@ -150,13 +150,15 @@ function api_member_get()
 {
     global $zbp;
 
-    ApiCheckAuth(true, 'MemberPst');
-
     $member = null;
     $memberId = GetVars('id');
 
     if ($memberId !== null) {
         $member = $zbp->GetMemberByID($memberId);
+        ApiCheckAuth(true, 'MemberMng');
+    } else {
+        $member = $zbp->GetMemberByID($zbp->user->ID);
+        ApiCheckAuth(false, 'api');
     }
 
     //如果不是读本人的

@@ -469,6 +469,10 @@ class Base
             if (!is_array($value) || count($value) < 4) {
                 continue;
             }
+            if (!array_key_exists($key, $this->data)) {
+                unset($keyvalue[$value[0]]);
+                continue;
+            }
 
             if ($value[1] == 'boolean') {
                 $keyvalue[$value[0]] = (int) $this->data[$key];

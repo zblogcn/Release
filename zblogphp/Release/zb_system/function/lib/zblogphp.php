@@ -344,6 +344,8 @@ class ZBlogPHP
 
     public $islogin = false; //是否Login
 
+    public $isloggedin = false; //链接至islogin
+
     /**
      * @var Template 当前模板
      */
@@ -579,6 +581,7 @@ class ZBlogPHP
         $this->user->Metas = new Metas();
 
         $this->ishttps = &$this->isHttps;
+        $this->isloggedin = &$this->islogin;
 
         $this->BindingCache();
     }

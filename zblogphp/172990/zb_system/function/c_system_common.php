@@ -999,7 +999,13 @@ function GetRequestUri()
             $url .= '?' . $_SERVER['REDIRECT_QUERY_STRIN'];
         }
     } else {
-        $url = $_SERVER['PHP_SELF'] . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+        $url = str_replace('\\', '/' ,$_SERVER['PHP_SELF']);
+        if (strpos($url, ZBP_PATH) !== false) {
+            $url = str_replace(ZBP_PATH, '/', $url);
+            $url = ltrim($url, '/');
+            $url = '/' . $url;
+        }
+        $url = $url . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
     }
 
     return $url;

@@ -516,8 +516,8 @@ function GetCurrentHost($blogpath, &$cookiesPath)
     if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) {
         $x = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);
         $y = $blogpath;
-        if (stripos($x, $y) !== false) {
-            $x = str_ireplace($y, '', $x);
+        if (strpos($x, $y) !== false) {
+            $x = str_replace($y, '', $x);
             $x = ltrim($x, '/');
             $x = '/' . $x;
         }

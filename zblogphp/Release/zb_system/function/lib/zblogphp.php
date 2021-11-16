@@ -4366,9 +4366,18 @@ class ZBlogPHP
     /**
      * 清空整个路由
      */
-    public function ClearRoute()
+    public function ClearRoute($route_type = '')
     {
-        $this->routes = array();
+        if (!empty($route_type)) {
+            foreach ($this->routes as $name => $value) {
+                if (stripos($name, $route_type . '_') === 0) {
+                    unset($this->routes[$name]);
+                }
+            }
+        } else {
+            $this->routes = array();
+        }
+
         return true;
     }
 

@@ -140,6 +140,11 @@ class PageBar
     public function Make()
     {
         global $zbp;
+
+        if ($this->PageNow < 1) {
+            $this->PageNow = 1;
+        }
+
         if ($this->PageCount == 0) {
             return '';
         }

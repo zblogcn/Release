@@ -449,6 +449,10 @@ function ApiVerifyCSRF($force_check = false)
                 return;
             }
 
+            if (php_sapi_name() == 'cli') {
+                return;
+            }
+
             // 不需要校验 CSRF 的 API
             $skip_acts = array(
                 array('mod' => 'member', 'act' => 'login'),

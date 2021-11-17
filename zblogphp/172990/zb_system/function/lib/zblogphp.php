@@ -3870,7 +3870,7 @@ class ZBlogPHP
         }
         for ($i = 1; $i <= 10; $i++) {
             $signal = GetVars('hint_signal' . $i, 'COOKIE');
-            $hint = json_decode($signal);
+            $hint = (empty($signal)) ? null : json_decode($signal);
             if ($hint !== null) {
                 $this->ShowHint($hint);
                 setcookie("hint_signal" . $i, '', (time() - 3600), $this->cookiespath);

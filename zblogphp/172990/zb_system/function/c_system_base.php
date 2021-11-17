@@ -394,7 +394,7 @@ $_SERVER['_query_count'] = 0;
 $_SERVER['_memory_usage'] = 0;
 $_SERVER['_error_count'] = 0;
 if (function_exists('memory_get_usage')) {
-    $_SERVER['_memory_usage'] = memory_get_usage(true);
+    $_SERVER['_memory_usage'] = memory_get_usage();
 }
 
 /*

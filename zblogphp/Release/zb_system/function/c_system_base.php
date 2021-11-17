@@ -435,6 +435,7 @@ if (IS_CLI) {
     $_SERVER['SERVER_SOFTWARE'] = "CLI";
     $_GET = array();
     parse_str($_SERVER["QUERY_STRING"], $_GET);
+    parse_str($_SERVER["QUERY_STRING"], $_REQUEST);
     // $_POST = json_decode(file_get_contents('php://stdin'), true);
 }
 

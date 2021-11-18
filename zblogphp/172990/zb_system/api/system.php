@@ -109,6 +109,7 @@ function api_system_get_info()
     
     $info = array(
         'environment' => $zbp->cache->system_environment,
+        'version' => $GLOBALS['blogversion'],
         'full_version' => ZC_VERSION_FULL,
         'articles' => (int) $zbp->cache->all_article_nums,
         'categories' => (int) $zbp->cache->all_category_nums,

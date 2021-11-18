@@ -154,7 +154,7 @@ class DbSql
                 $option['pagebar']->Count = GetValueInArrayByCurrent($query, 'num');
             }
             $option['pagebar']->Count = (int) $option['pagebar']->Count;
-            $option['pagebar']->make();
+            $option['pagebar']->Make();
         }
 
         if (!is_array($select)) {

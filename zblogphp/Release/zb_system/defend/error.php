@@ -69,7 +69,7 @@ unset($post_data['token']);
         echo '(' . $error->type . ')' . $error->typeName . ' :   ' . (FormatString($error->messagefull, '[noscript]'));
         echo ' (' . ZC_VERSION_FULL . ') ';
         if (!in_array('Status: 404 Not Found', headers_list())) {
-                echo '(' . GetEnvironment() . ') ';
+                echo '(' . GetEnvironment(true) . ') ';
         }
         ?>
                         </div>

@@ -2097,17 +2097,17 @@ class ZBlogPHP
             }
         }
 
-        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_LoadLanguage'] as $fpname => &$fpsignal) {
-            $fpname($this->lang);
-            $this->langs = json_decode(json_encode($this->lang));
-        }
-
         return true;
     }
 
     public function ReflushLanguages()
     {
         $this->lang['error']['77'] = str_replace(array('%min', '%max'), array($this->option['ZC_USERNAME_MIN'], $this->option['ZC_USERNAME_MAX']), $this->lang['error']['77']);
+
+        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_LoadLanguage'] as $fpname => &$fpsignal) {
+            $fpname($this->lang);
+        }
+
         $this->langs = json_decode(json_encode($this->lang));
     }
 
@@ -2123,6 +2123,7 @@ class ZBlogPHP
         foreach ($array as $v) {
             $this->LoadLanguage($v[0], $v[1], $v[2]);
         }
+        $this->ReflushLanguages();
     }
 
     /**

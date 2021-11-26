@@ -577,4 +577,18 @@ class Base
         return $this->idname;
     }
 
+    /**
+     * DebugInfo >= php 5.6
+     */
+    public function __debugInfo()
+    {
+        foreach ($this as $key => $value) {
+            if ($key == 'datainfo' || $key == 'db') {
+                continue;
+            }
+            $array[$key] = $value;
+        }
+        return $array;
+    }
+
 }

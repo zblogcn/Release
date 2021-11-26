@@ -881,11 +881,6 @@ class ZBlogPHP
             $fpreturn = $fpname();
         }
 
-        //此处接口应该在下一版本移除，请不要再使用了！！！
-        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_Load_Pre'] as $fpname => &$fpsignal) {
-            $fpreturn = $fpname();
-        }
-
         $this->ispreload = true;
         return true;
     }
@@ -901,6 +896,10 @@ class ZBlogPHP
     {
         if (!$this->isinitialized || !$this->ispreload || $this->isload) {
             return false;
+        }
+
+        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_Load_Pre'] as $fpname => &$fpsignal) {
+            $fpreturn = $fpname();
         }
 
         if (!headers_sent()) {

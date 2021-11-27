@@ -2089,13 +2089,12 @@ class ZBlogPHP
                     }
                 }
             }
-            $this->langs = json_decode(json_encode($this->lang));
-        } else {
-            if ($id != '' && isset($this->lang[$id])) {
-                $this->langs->$id = json_decode(json_encode($this->lang[$id]));
-            }
         }
-
+        if (function_exists('array_to_object')) {
+            $this->langs = array_to_object($this->lang);
+        } else {
+            $this->langs = json_decode(json_encode($this->lang));
+        }
         return true;
     }
 
@@ -2107,7 +2106,11 @@ class ZBlogPHP
             $fpname($this->lang);
         }
 
-        $this->langs = json_decode(json_encode($this->lang));
+        if (function_exists('array_to_object')) {
+            $this->langs = array_to_object($this->lang);
+        } else {
+            $this->langs = json_decode(json_encode($this->lang));
+        }
     }
 
     /**

@@ -238,11 +238,7 @@ function RunTime($isOutput = true)
 
     $_SERVER['_runtime_result'] = $rt;
 
-    if (array_key_exists('_end_time', $_SERVER)) {
-        return $rt;
-    } else {
-        $_SERVER['_end_time'] = $_end_time;
-    }
+    $_SERVER['_end_time'] = $_end_time;
 
     if (isset($zbp->option['ZC_RUNINFO_DISPLAY']) && $zbp->option['ZC_RUNINFO_DISPLAY'] == false) {
         return $rt;
@@ -2214,4 +2210,13 @@ function rawurlencode_without_backslash($s)
     $s = rawurlencode($s);
     $s = str_replace('%2F', '/', $s);
     return $s;
+}
+
+function array_to_object($arr)
+{
+    if (is_array($arr)) {
+        return (object) array_map(__FUNCTION__, $arr);
+    } else {
+        return $arr;
+    }
 }

@@ -998,7 +998,7 @@ function DelComment()
     $cmt = $zbp->GetCommentByID($id);
 
     if ($zbp->CheckRights('CommentAll') == false) {
-        if ($cmt->AuthorID != $zbp->user->ID || $cmt->Post->AuthorID != $zbp->user->ID) {
+        if ($cmt->AuthorID != $zbp->user->ID && $cmt->Post->AuthorID != $zbp->user->ID) {
             return false;
         }
     }
@@ -1093,7 +1093,7 @@ function CheckComment()
         return $cmt;
     }
     if ($zbp->CheckRights('CommentAll') == false) {
-        if ($cmt->AuthorID != $zbp->user->ID || $cmt->Post->AuthorID != $zbp->user->ID) {
+        if ($cmt->AuthorID != $zbp->user->ID && $cmt->Post->AuthorID != $zbp->user->ID) {
             return $cmt;
         }
     }
@@ -1185,7 +1185,7 @@ function BatchComment()
     if ($type == 'all_del') {
         foreach ($childArray as $i => $cmt) {
             if ($zbp->CheckRights('CommentAll') == false) {
-                if ($cmt->AuthorID != $zbp->user->ID || $cmt->Post->AuthorID != $zbp->user->ID) {
+                if ($cmt->AuthorID != $zbp->user->ID && $cmt->Post->AuthorID != $zbp->user->ID) {
                     continue;
                 }
             }
@@ -1207,7 +1207,7 @@ function BatchComment()
                 continue;
             }
             if ($zbp->CheckRights('CommentAll') == false) {
-                if ($cmt->AuthorID != $zbp->user->ID || $cmt->Post->AuthorID != $zbp->user->ID) {
+                if ($cmt->AuthorID != $zbp->user->ID && $cmt->Post->AuthorID != $zbp->user->ID) {
                     continue;
                 }
             }
@@ -1227,7 +1227,7 @@ function BatchComment()
                 continue;
             }
             if ($zbp->CheckRights('CommentAll') == false) {
-                if ($cmt->AuthorID != $zbp->user->ID || $cmt->Post->AuthorID != $zbp->user->ID) {
+                if ($cmt->AuthorID != $zbp->user->ID && $cmt->Post->AuthorID != $zbp->user->ID) {
                     continue;
                 }
             }

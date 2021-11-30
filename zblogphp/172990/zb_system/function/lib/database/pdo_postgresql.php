@@ -80,7 +80,7 @@ class Database__PDO_PostgreSQL implements Database__Interface
     {
         $array[3] = strtolower($array[3]);
         $s = "pgsql:host={$array[0]};port={$array[5]};dbname={$array[3]};user={$array[1]};password={$array[2]};options='--client_encoding=UTF8'";
-        if (false == $array[5]) {
+        if (false == $array[6]) {
             $db_link = new PDO($s);
         } else {
             $db_link = new PDO($s, null, null, array(PDO::ATTR_PERSISTENT => true));

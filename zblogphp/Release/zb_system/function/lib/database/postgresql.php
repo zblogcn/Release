@@ -84,7 +84,7 @@ class Database__PostgreSQL implements Database__Interface
     {
         $array[3] = strtolower($array[3]);
         $s = "host={$array[0]} port={$array[5]} dbname={$array[3]} user={$array[1]} password={$array[2]} options='--client_encoding=UTF8'";
-        if (false == $array[5]) {
+        if (false == $array[6]) {
             $db_link = pg_connect($s);
         } else {
             $db_link = pg_pconnect($s);

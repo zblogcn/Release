@@ -1,15 +1,17 @@
 <?php
 
 if($_SERVER['QUERY_STRING']=='install'){
+    //不直读而是302跳转是要让cdn生效
     header('Location: https://update.zblogcn.com/zblogphp/Release.xml');die();
 
-    header("Content-type:text/xml; Charset=utf-8");
-    echo file_get_contents(__DIR__ . '/Release.xml');
+    //header("Content-type:text/xml; Charset=utf-8");
+    //echo file_get_contents(__DIR__ . '/Release.xml');
 }elseif($_SERVER['QUERY_STRING']!='' && $_SERVER['QUERY_STRING']!='beta' && $_SERVER['QUERY_STRING']!='alpha'){
     $s=__DIR__ . '/' . str_replace('\\','/',$_SERVER['QUERY_STRING']);
     if(is_readable($s) && strpos($s,'./')===false){
         //如果是xml文件
         if(substr($s, -4) == '.xml'){
+            //不直读而是302跳转是要让cdn生效
             header('Location: https://update.zblogcn.com/zblogphp/' . str_replace('\\','/',$_SERVER['QUERY_STRING']));die();
         }
 
@@ -31,7 +33,7 @@ if($_SERVER['QUERY_STRING']=='install'){
       $json = json_decode(file_get_contents('./build.json'));
     }
 
-    if(array_key_exists('beta', $_GET) == false){
+    if(array_key_exists('beta', $_GET) == false && array_key_exists('alpha', $_GET) == false){
       $version = '';
       foreach ($json->builds as $key => $value) {
         if(stripos($value->channel, 'normal') !== false)

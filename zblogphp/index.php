@@ -1,20 +1,11 @@
 <?php
 
-$beta = array(
-    '2020-3-26' => '1.6.0 Build 162090',
-    '2000-1-1' => '1.5.2 Build 151935',
-);
-$now = array(
-    '2020-3-26' => '1.6.0 Build 162090',
-    '2000-1-1' => '1.5.2 Build 151935',
-);
-
 if($_SERVER['QUERY_STRING']=='install'){
     header('Location: https://update.zblogcn.com/zblogphp/Release.xml');die();
 
     header("Content-type:text/xml; Charset=utf-8");
     echo file_get_contents(__DIR__ . '/Release.xml');
-}elseif($_SERVER['QUERY_STRING']!='' && $_SERVER['QUERY_STRING']!='beta'){
+}elseif($_SERVER['QUERY_STRING']!='' && $_SERVER['QUERY_STRING']!='beta' && $_SERVER['QUERY_STRING']!='alpha'){
     $s=__DIR__ . '/' . str_replace('\\','/',$_SERVER['QUERY_STRING']);
     if(is_readable($s) && strpos($s,'./')===false){
         //如果是xml文件
@@ -40,22 +31,26 @@ if($_SERVER['QUERY_STRING']=='install'){
       $json = json_decode(file_get_contents('./build.json'));
     }
 
-    if(array_key_exists('beta', $_GET) == true){
-      $version = '';
-      foreach ($json->builds as $key => $value) {
-        if(stripos($value->beta, 'beta') !== false)
-            $version = $value->name . ' Build ' . $value->version;
-      }
-      echo $version;
-    }
-
     if(array_key_exists('beta', $_GET) == false){
       $version = '';
       foreach ($json->builds as $key => $value) {
-        if(stripos($value->beta, 'normal') !== false)
+        if(stripos($value->channel, 'normal') !== false)
+            $version = $value->name . ' Build ' . $value->version;
+      }
+      echo $version;
+    } elseif(array_key_exists('beta', $_GET) == true){
+      $version = '';
+      foreach ($json->builds as $key => $value) {
+        if(stripos($value->channel, 'beta') !== false)
+            $version = $value->name . ' Build ' . $value->version;
+      }
+      echo $version;
+    } elseif(array_key_exists('alpha', $_GET) == true){
+      $version = '';
+      foreach ($json->builds as $key => $value) {
+        if(stripos($value->channel, 'alpha') !== false)
             $version = $value->name . ' Build ' . $value->version;
       }
       echo $version;
     }
-
 }

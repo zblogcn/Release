@@ -3,37 +3,44 @@
         {
             "version": 130707,
             "name": "1.0 Beta",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
             "version": 151935,
             "name": "1.5 Zero",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
             "version": 162090,
             "name": "1.6.0 Valyria",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
             "version": 162210,
             "name": "1.6.8 Valyria",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
             "version": 172900,
             "name": "1.7.0 Tenet",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
             "version": 172955,
             "name": "1.7.0 Tenet",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         },
         {
-            "version": 172990,
+            "version": 172985,
             "name": "1.7.1 Tenet",
-            "beta": "normal,beta"
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         }
     ]
 }

@@ -1,8 +1,20 @@
 <?php
 
+$old = 170000;
+$php = '5.2';
+$channel_name = 'normal';
+
 $isbeta = false;
-if(strpos(__DIR__,'/beta')!==false)
+if(strpos(__DIR__,'/beta')!==false){
   $isbeta = true;
+  $channel_name = 'beta';
+}
+
+$isalpha = false;
+if(strpos(__DIR__,'/alpha')!==false){
+  $isalpha = true;
+  $channel_name = 'alpha';
+}
 
 if (is_readable('../../build.json')) {
   $json = json_decode(file_get_contents('../../build.json'));
@@ -19,42 +31,50 @@ $source = new stdClass;
 $result = new stdClass;
 
 foreach ($json->builds as $key => $value) {
-  if(stripos($value->beta, 'beta') !== false){
+  if(stripos($value->channel, 'normal') !== false){
     $source->build = $value->version;
     $source->name = $value->name;
+    $old = $source->build;
+    $source->php = $php;
     break;
   }
 }
 
-$old = 130707;
-
 $s = $_SERVER['HTTP_USER_AGENT'];
 if (stripos($s,'ZBlogPHP')!==false){
-  $i = stripos($s,'ZBlogPHP');
-  $old = substr($s, $i+9,7);
-  $old = explode(' ',$old);
-  $old = $old[0];
+
+  if (preg_match('/ZBlogPHP\/([0-9]+)/i', $s, $m) == 1) {
+     $old = $m[1];
+  }
+  if (preg_match('/PhpVer\/([0-9.]+)/i', $s, $m) == 1) {
+     $php = $m[1];
+  }
   foreach ($json->builds as $key => $value) {
-    if(stripos($value->beta, 'beta') !== false && (int)$value->version <= (int) $old){
+    if(stripos($value->channel, $channel_name) !== false && (int)$value->version <= (int) $old){
       $source->build = $value->version;
       $source->name = $value->name;
     }
   }
+
+  $source->php = $php;
 }
 
 foreach ($json->builds as $key => $value) {
-  if(stripos($value->beta, 'beta') !== false){
+  if(stripos($value->channel, $channel_name) !== false && version_compare($php, $value->php) >= 0){
     if ($old < 162200) {
       $target->build = '162210';
       $target->name = '1.6.8 Valyria';
+      $target->php = $value->php;
     } else {
       $target->build = $value->version;
       $target->name = $value->name;
+      $target->php = $value->php;
     }
   }
 }
 $result->source = $source;
 $result->target = $target;
 $result->isbeta = $isbeta;
+$result->isalpha = $isalpha;
 
 echo json_encode($result);

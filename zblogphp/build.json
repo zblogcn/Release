@@ -40,7 +40,7 @@
             "version": 172990,
             "name": "1.7.1 Tenet",
             "php" : 5.2,
-            "channel": "beta,alpha"
+            "channel": "normal,beta,alpha"
         }
     ]
 }

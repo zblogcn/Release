@@ -2212,6 +2212,15 @@ function rawurlencode_without_backslash($s)
     return $s;
 }
 
+function CheckIsMoblie()
+{
+    $ua = GetGuestAgent();
+    if (preg_match('/(Android|Web0S|webOS|iPad|iPhone|Mobile|Windows\sPhone|Kindle|BlackBerry|Opera\sMini)/', $ua)) {
+        return true;
+    }
+    return false;
+}
+
 function array_to_object($arr)
 {
     if (is_array($arr)) {

@@ -17,6 +17,7 @@ if ($zbp->option['ZC_ADDITIONAL_SECURITY']) {
 <meta name="generator" content="Z-BlogPHP <?php echo ZC_VERSION_DISPLAY; ?>" />
 <meta name="robots" content="none" />
 <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,viewport-fit=cover" />
 <meta name="csrfToken" content="<?php echo $zbp->GetCSRFToken(); ?>" />
 <meta name="csrfExpiration" content="<?php echo $zbp->csrfExpiration; ?>" />
 <title><?php echo $blogname . ' - ' . $blogtitle; ?></title>
@@ -29,6 +30,10 @@ if ($zbp->option['ZC_ADDITIONAL_SECURITY']) {
 <script src="<?php echo $bloghost; ?>zb_system/script/jquery-ui.custom.min.js?v=<?php echo $blogversion; ?>"></script>
 <script>if (!window.bloghost && window.confirm("<?php echo $lang['msg']['error_load_js']; ?>")) window.open('<?php echo str_replace('{%message%}', '', str_replace('{%id%}', 89, $lang['offical_urls']['more_help'])); ?>');</script>
 <?php
+if (function_exists('CheckIsMoblie') && CheckIsMoblie()){
+    echo '<style>@media screen and (max-width: 800px) {body{font-size:14px}}@media screen and (max-width: 500px) {body{font-size:16px}}</style>';
+}
+
 if ($zbp->cache->success_updated_app !== '') {
     echo '<script src="' . $bloghost . 'zb_system/cmd.php?act=misc&type=updatedapp"></script>';
 }

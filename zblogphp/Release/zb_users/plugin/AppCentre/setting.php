@@ -101,7 +101,12 @@ if(!is_array($zbp->Config('AppCentre')->app_ignores)) {
 foreach ($zbp->Config('AppCentre')->app_ignores as $key => $value) {
     echo "<label><input type=\"checkbox\" name=\"app_ignores[]\" checked=\"checked\" value=\"{$value}\">&nbsp;{$value}</label>&nbsp;&nbsp;&nbsp;";
 }
-$aps = array_merge(array($zbp->theme) , $GLOBALS['zbp']->GetPreActivePlugin());
+if (method_exists($zbp, 'GetPreActivePlugin')) {
+    $aps = $GLOBALS['zbp']->GetPreActivePlugin();
+} else {
+    $aps = array_unique(explode("|", $zbp->option['ZC_USING_PLUGIN_LIST']));
+}
+$aps = array_merge(array($zbp->theme) ,$aps);
 
 foreach ($aps as $key => $value) {
     if (in_array($value, $zbp->Config('AppCentre')->app_ignores) || $value == 'AppCentre') {

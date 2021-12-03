@@ -476,9 +476,13 @@ function AppCentre_PHPVersion($default)
         '7.2' => '7.2',
         '7.3' => '7.3',
         '7.4' => '7.4',
-        '8.0' => '8.0'
+        '8.0' => '8.0',
+        '8.1' => '8.1'
     );
     $i = 0;
+    if ($default == '') {
+        $default = '5.3';
+    }
     foreach ($array as $key => $value) {
         $s .= '<option value="' . $key . '" ' . ($default == $key ? 'selected="selected"' : '') . ' >' . $value . '</option>';
     }

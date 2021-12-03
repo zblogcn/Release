@@ -536,12 +536,14 @@ function AppCentre_GetBlogTitle() {
 
 function AppCentre_CheckDebugMode(){
     global $zbp;
+    $a = $zbp->Config('AppCentre')->enabledevelop;
     if (property_exists($zbp, 'isdebug')) {
         $b = $zbp->isdebug;
     } else {
         $b = $zbp->option['ZC_DEBUG_MODE'];
     }
-    if (!$b && (time() - (int) $zbp->Config('AppCentre')->debug_tips_interval) > (24*3600) ) {
+    $c = (time() - (int) $zbp->Config('AppCentre')->debug_tips_interval) > (24*3600);
+    if (!$b && $a && $c) {
         echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_tips hint_always\"><a target=\"_blank\" href=\"https://docs.zblogcn.com/php/#/books/dev-05-start?id=%e5%bc%80%e5%8f%91%e6%a8%a1%e5%bc%8f\">{$zbp->lang['AppCentre']['please_open_debugmode']}</a></p></div>');</script>";
         $zbp->Config('AppCentre')->debug_tips_interval = time();
         $zbp->SaveConfig('AppCentre');

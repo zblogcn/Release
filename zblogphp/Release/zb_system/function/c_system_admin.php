@@ -1239,7 +1239,7 @@ function Admin_ModuleMng()
         $fpname();
     }
     echo '</div>';
-    echo '<div id="divMain2">';
+    echo '<div id="divMain2" style="min-width:550px;">';
 
     $sm = array();
     $um = array();

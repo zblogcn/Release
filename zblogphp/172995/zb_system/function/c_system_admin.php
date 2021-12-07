@@ -1181,7 +1181,7 @@ function Admin_ThemeMng()
         $fpname();
     }
     echo '</div>';
-    echo '<div id="divMain2"><form id="frmTheme" method="post" action="../cmd.php?act=ThemeSet">';
+    echo '<div id="divMain2"  style="min-width:550px;"><form id="frmTheme" method="post" action="../cmd.php?act=ThemeSet">';
     echo '<input type="hidden" name="csrfToken" value="' . $zbp->GetCSRFToken() . '">';
     echo '<input type="hidden" name="theme" id="theme" value="" />';
     echo '<input type="hidden" name="style" id="style" value="" />';

@@ -39,5 +39,5 @@ foreach ($GLOBALS['hooks']['Filter_Plugin_Admin_Header'] as $fpname => &$fpsigna
 }
 
 if (function_exists('CheckIsMoblie') && CheckIsMoblie()){
-    echo '<style>@media screen{body{font-size:15px}}@media screen and (max-width: 800px) {#divMain{overflow:scroll;}}</style>';
+    echo '<style>@media screen{body{font-size:15px}}@media screen and (max-width: 800px) {#divMain{padding-left:1px;padding-right:1px;overflow:scroll;}}</style>';
 }

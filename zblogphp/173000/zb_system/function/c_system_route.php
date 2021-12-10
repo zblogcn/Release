@@ -1406,9 +1406,15 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
     $zbp->LoadTagsByIDString($article->Tag);
 
     if (isset($zbp->option['ZC_VIEWNUMS_TURNOFF']) && $zbp->option['ZC_VIEWNUMS_TURNOFF'] == false) {
-        $article->ViewNums += 1;
-        $sql = $zbp->db->sql->Update($zbp->table['Post'], array('log_ViewNums' => $article->ViewNums), array(array('=', 'log_ID', $article->ID)));
-        $zbp->db->Update($sql);
+        if (count($GLOBALS['hooks']['Filter_Plugin_ViewPost_ViewNums']) > 0) {
+            foreach ($GLOBALS['hooks']['Filter_Plugin_ViewPost_ViewNums'] as $fpname => &$fpsignal) {
+                $article->ViewNums = $fpname($article);
+            }
+        } else {
+            $article->ViewNums += 1;
+            $sql = $zbp->db->sql->Update($zbp->table['Post'], array('log_ViewNums' => $article->ViewNums), array(array('=', 'log_ID', $article->ID)));
+            $zbp->db->Update($sql);
+        }
     }
 
     $pagebar = new Pagebar('javascript:zbp.comment.get(\'' . $article->ID . '\',\'{%page%}\');', false);

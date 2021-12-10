@@ -1063,6 +1063,7 @@ function GetRequestUri()
 function GetRequestScript()
 {
     global $blogpath;
+    $s = (string) $blogpath;
     $f = '';
     if (isset($_SERVER['PHP_SELF'])) {
         $f = $_SERVER['PHP_SELF'];
@@ -1070,8 +1071,8 @@ function GetRequestScript()
         $f = $_SERVER['SCRIPT_NAME'];
     }
     $f = str_replace('\\', '/', $f);
-    if (strpos($f, (string) $blogpath) === 0) {
-        $f = str_replace((string) $blogpath, '', $f);
+    if (empty($s) == false && strpos($f, $s) === 0) {
+        $f = str_replace($s, '', $f);
     }
     $f = ltrim($f, '/');
     return $f;

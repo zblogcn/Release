@@ -158,6 +158,24 @@ function Include_Admin_CheckHttp304OK()
     }
 }
 
+/**
+ * Check Moblie and Response Style
+ */
+function Include_Admin_CheckMoblie()
+{
+    if (function_exists('CheckIsMoblie') && CheckIsMoblie()) {
+        echo '<style>@media screen{body{font-size:15px}}@media screen and (max-width: 800px) {#divMain{padding:0 1px;overflow:scroll;}}</style>';
+    }
+}
+
+function Include_Admin_UpdateAppAfter()
+{
+    global $zbp;
+    if ($zbp->cache->success_updated_app !== '') {
+        echo '<script src="' . $zbp->cmdurl . '?act=misc&type=updatedapp"></script>';
+    }
+}
+
 $topmenus = array();
 
 $leftmenus = array();

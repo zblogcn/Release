@@ -138,6 +138,7 @@ function GetPHPVersion()
  */
 function AutoloadClass($className)
 {
+    global $autoload_class_dirs;
     foreach ($GLOBALS['hooks']['Filter_Plugin_Autoload'] as $fpname => &$fpsignal) {
         $fpreturn = $fpname($className);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
@@ -146,15 +147,38 @@ function AutoloadClass($className)
             return $fpreturn;
         }
     }
-    $className = str_replace('__', '/', $className);
-    $fileName = ZBP_PATH . 'zb_system/function/lib/' . strtolower($className) . '.php';
-    if (is_readable($fileName)) {
-        include $fileName;
 
-        return true;
+    $className = str_replace('__', '/', $className);
+    //$fileName = ZBP_PATH . 'zb_system/function/lib/' . strtolower($className) . '.php';
+    foreach ($autoload_class_dirs as $dir) {
+        $fileName = $dir . strtolower($className) . '.php';
+        if (is_readable($fileName)) {
+            include $fileName;
+            return true;
+        }
     }
 
     return false;
+}
+
+/**
+ * 管理自动加载类文件的目录.
+ */
+function AddAutoloadClassDir($dir, $prepend = false)
+{
+    global $autoload_class_dirs;
+    $dir = trim($dir);
+    if (empty($dir)) {
+        return false;
+    }
+    $dir = str_replace('\\', '/', $dir);
+    $dir = rtrim($dir, '/') . '/';
+    if ($prepend == false) {
+        $autoload_class_dirs[] = $dir;
+    } else {
+        array_unshift($autoload_class_dirs, $dir);
+    }
+    return true;
 }
 
 /**
@@ -181,8 +205,11 @@ function Logs($logString, $level = 'INFO', $source = 'system')
         $isError = true;
     }
 
+    $ip = GetGuestIP();
+    $ua = GetGuestAgent();
+
     foreach ($GLOBALS['hooks']['Filter_Plugin_Logs'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($logString, $level, $source, $time);
+        $fpreturn = $fpname($logString, $level, $source, $time, $ip, $ua);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
             $fpsignal = PLUGIN_EXITSIGNAL_NONE;
 
@@ -206,7 +233,7 @@ function Logs($logString, $level = 'INFO', $source = 'system')
     $handle = @fopen($f, 'a+');
     if ($handle) {
         $t = $time;
-        @fwrite($handle, '[' . $t . ']' . " " . $level . " " . $source . "\r\n" . $logString . "\r\n");
+        @fwrite($handle, '[' . $t . ']' . " " . $level . " " . $source . " " . $ip . "\r\n" . $logString . "\r\n");
         @fclose($handle);
     }
     ZBlogException::ResumeErrorHook();
@@ -230,6 +257,8 @@ function RunTime($isOutput = true)
     $rt['time'] = number_format((1000 * ($_end_time - $_SERVER['_start_time'])), 2);
     $rt['query'] = $_SERVER['_query_count'];
     $rt['memory'] = $_SERVER['_memory_usage'];
+    $rt['debug'] = $zbp->isdebug ? 1 : 0;
+    $rt['loggedin'] = $zbp->islogin ? 1 : 0;
     $rt['error'] = $_SERVER['_error_count'];
     $rt['error_detail'] = ZBlogException::$errors_msg;
     if (function_exists('memory_get_peak_usage')) {
@@ -238,7 +267,11 @@ function RunTime($isOutput = true)
 
     $_SERVER['_runtime_result'] = $rt;
 
-    $_SERVER['_end_time'] = $_end_time;
+    if (array_key_exists('_end_time', $_SERVER)) {
+        return $rt;
+    } else {
+        $_SERVER['_end_time'] = $_end_time;
+    }
 
     if (isset($zbp->option['ZC_RUNINFO_DISPLAY']) && $zbp->option['ZC_RUNINFO_DISPLAY'] == false) {
         return $rt;
@@ -246,9 +279,9 @@ function RunTime($isOutput = true)
 
     if ($isOutput) {
         echo '<!--' . $rt['time'] . ' ms , ';
-        echo $rt['query'] . ' query';
+        echo $rt['query'] . ' queries';
         echo ' , ' . $rt['memory'] . 'kb memory';
-        echo ' , ' . $rt['error'] . ' error';
+        echo ' , ' . $rt['error'] . ' error' . ($rt['error'] > 1 ? 's' : '');
         echo '-->';
     }
 
@@ -302,6 +335,12 @@ function GetEnvironment($more = false)
     }
 
     if ($more) {
+        if (method_exists($zbp, 'LoadApp')) {
+            $app = $zbp->LoadApp('plugin', 'AppCentre');
+            if (is_object($app) && $app->isloaded == true && $app->IsUsed()) {
+                $system_environment .= ';  AppCentre' . $app->version;
+            }
+        }
         $um = ini_get('upload_max_filesize');
         $pm = ini_get('post_max_size');
         $ml = ini_get('memory_limit');
@@ -454,9 +493,12 @@ function GetGuid()
  */
 function GetVars($name, $type = 'REQUEST', $default = null)
 {
+    if (empty($type)) {
+        $type = 'REQUEST';
+    }
     $array = &$GLOBALS[strtoupper("_$type")];
 
-    if (isset($array[$name])) {
+    if (array_key_exists($name, $array)) {
         return $array[$name];
     } else {
         return $default;
@@ -476,13 +518,7 @@ function GetVars($name, $type = 'REQUEST', $default = null)
  */
 function GetVarsByDefault($name, $type = 'REQUEST', $default = null)
 {
-    $array = &$GLOBALS[strtoupper("_$type")];
-
-    if (isset($array[$name])) {
-        return $array[$name];
-    } else {
-        return $default;
-    }
+    return GetVars($name, $type, $default);
 }
 
 /**
@@ -953,6 +989,9 @@ function GetGuestIP()
     global $zbp;
     if (isset($zbp->option['ZC_USING_CDN_GUESTIP_TYPE']) && $zbp->option['ZC_USING_CDN_GUESTIP_TYPE'] != '') {
         $user_ip = GetVars($zbp->option['ZC_USING_CDN_GUESTIP_TYPE'], "SERVER");
+        if (is_null($user_ip)) {
+            $user_ip = GetVars("REMOTE_ADDR", "SERVER");
+        }
     } else {
         $user_ip = GetVars("REMOTE_ADDR", "SERVER");
     }
@@ -1013,8 +1052,29 @@ function GetRequestUri()
         }
         $url = $url . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
     }
-
     return $url;
+}
+
+/**
+ * 获取请求Script Name.
+ *
+ * @return string filename
+ */
+function GetRequestScript()
+{
+    global $blogpath;
+    $f = '';
+    if (isset($_SERVER['PHP_SELF'])) {
+        $f = $_SERVER['PHP_SELF'];
+    } elseif (isset($_SERVER['SCRIPT_NAME'])) {
+        $f = $_SERVER['SCRIPT_NAME'];
+    }
+    $f = str_replace('\\', '/', $f);
+    if (strpos($f, (string) $blogpath) === 0) {
+        $f = str_replace((string) $blogpath, '', $f);
+    }
+    $f = ltrim($f, '/');
+    return $f;
 }
 
 /**
@@ -1987,7 +2047,7 @@ function RemovePHPCode($code)
 /**
  * 拿到ID数组byList列表
  *
- * @param array $array
+ * @param array $array (可以是base对象数组，也可以是array)
  * @param string $keyname
  *
  * @return array
@@ -1996,12 +2056,29 @@ function GetIDArrayByList($array, $keyname = null)
 {
     $ids = array();
     foreach ($array as $key => $value) {
-        if ($keyname == null) {
-            $a = $value->GetData();
-            $ids[] = reset($a);
-        } else {
-            $a = $value->GetData();
-            $ids[] = $a[$keyname];
+        if (is_array($value)) {
+            if ($keyname == null) {
+                $ids[] = reset($value);
+            } else {
+                if (array_key_exists($keyname, $array)) {
+                    $ids[] = $value[$keyname];
+                } else {
+                    $ids[] = null;
+                }
+            }
+        } elseif (is_object($value) && is_subclass_of($value, 'Base')) {
+            if ($keyname == null) {
+                $a = $value->GetData();
+                $ids[] = reset($a);
+            } else {
+                $ids[] = $value->$keyname;
+            }
+        } elseif (is_object($value)) {
+            if (property_exists($value, $keyname)) {
+                $ids[] = $value->$keyname;
+            } else {
+                $ids[] = null;
+            }
         }
     }
 
@@ -2059,7 +2136,7 @@ function Logs_Dump()
 {
     $a = func_get_args();
     foreach ($a as $key => $value) {
-        $s = var_export($value, true);
+        $s = print_r($value, true);
         Logs($s);
     }
 }
@@ -2212,6 +2289,11 @@ function rawurlencode_without_backslash($s)
     return $s;
 }
 
+/**
+ * 检查移动端
+ *
+ * @return boolean
+ */
 function CheckIsMoblie()
 {
     $ua = GetGuestAgent();
@@ -2221,10 +2303,32 @@ function CheckIsMoblie()
     return false;
 }
 
+/**
+ * 数组 转 对象
+ *
+ * @param array $arr 数组
+ * @return object
+ */
 function array_to_object($arr)
 {
     if (is_array($arr)) {
         return (object) array_map(__FUNCTION__, $arr);
+    } else {
+        return $arr;
+    }
+}
+
+/**
+ * 对象 转 数组
+ *
+ * @param object $obj 对象
+ * @return array
+ */
+function object_to_array($obj)
+{
+    $arr = is_object($obj) ? get_object_vars($obj) : $obj;
+    if (is_array($arr)) {
+        return array_map(__FUNCTION__, $arr);
     } else {
         return $arr;
     }

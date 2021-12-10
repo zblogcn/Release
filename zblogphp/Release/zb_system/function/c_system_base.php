@@ -18,6 +18,9 @@ defined('ZBP_PATH') || define('ZBP_PATH', rtrim(str_replace('\\', '/', realpath(
 defined('ZBP_HOOKERROR') || define('ZBP_HOOKERROR', true);
 defined('ZBP_SAFEMODE') || define('ZBP_SAFEMODE', false);
 
+//强制开启debug模式，需要开启时请打开注释
+//defined('ZBP_DEBUGMODE') || define('ZBP_DEBUGMODE', true);
+
 /**
  * 加载系统基础函数.
  */
@@ -31,7 +34,16 @@ require ZBP_PATH . 'zb_system/function/c_system_route.php';
 require ZBP_PATH . 'zb_system/function/c_system_event.php';
 require ZBP_PATH . 'zb_system/function/c_system_api.php';
 
+/**
+ * 指定加载类的目录并注册加载函数到系统
+ */
+$GLOBALS['autoload_class_dirs'] = array();
+AddAutoloadClassDir(ZBP_PATH . 'zb_system/function/lib');
 spl_autoload_register('AutoloadClass');
+
+if (is_readable($file_base = ZBP_PATH . 'vendor/autoload.php') && PHP_VERSION_ID >= 50300) {
+    include_once $file_base;
+}
 
 /*
  * 定义系统变量
@@ -457,11 +469,13 @@ $GLOBALS['action'] = '';
  */
 $GLOBALS['currenturl'] = GetRequestUri();
 $GLOBALS['fullcurrenturl'] = '';
+$GLOBALS['currentscript'] = GetRequestScript();
+$GLOBALS['fullcurrentscript'] = ZBP_PATH . $GLOBALS['currentscript'];
 /*
  * 语言包
  */
-$GLOBALS['lang'] = array();
-$GLOBALS['langs'] = array();
+$GLOBALS['lang'] = array(); // array
+$GLOBALS['langs'] = null; // object
 /*
  * 系统根路径
  */

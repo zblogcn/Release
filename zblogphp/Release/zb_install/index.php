@@ -293,13 +293,13 @@ Z-BlogPHP官方网址：https://www.zblogcn.com/
 
     Z-BlogPHP免责申明
 
-(一)、ZBLOGCN.COM提供免费开源的建站程序Z-Blog和Z-BlogPHP，不提供网站相关的内容服务，该建站程序之著作权归ZBLOGCN.COM所有。
+(一)、ZBLOGCN.COM提供免费、开源的建站程序Z-Blog和Z-BlogPHP（以下简称“本建站程序”），不提供网站相关的内容服务，本建站程序之著作权归ZBLOGCN.COM所有。
 
-(二)、用户可自由选择是否使用我们的建站程序，ZBLOGCN.COM与用户使用我们的建站程序所建立的网站无任何关联，ZBLOGCN.COM对用户及其网站不承担任何责任。
+(二)、用户可自由选择是否使用本建站程序，ZBLOGCN.COM与用户及使用本建站程序所建立的网站无任何关联，ZBLOGCN.COM对用户及其网站不承担任何责任。
 
 (三)、用户下载、安装、使用本建站程序，即表明用户信任ZBLOGCN.COM，ZBLOGCN.COM对任何原因在使用本建站程序时可能对用户自己或他人造成的任何形式的损失和伤害不承担责任。
 
-(四)、任何单位或个人认为使用本建站程序建立的网站可能涉嫌侵犯其合法权益的，应该及时向该网站的所有人反映、交涉、或诉诸法律手段。
+(四)、任何单位或个人认为使用本建站程序所建立的网站可能涉嫌侵犯其合法权益的，应该及时向该网站的所有人反映、交涉、或诉诸法律手段。
 
 (五)、使用本建站程序的用户因为违反本声明的规定而触犯中华人民共和国法律的，一切后果自己负责，ZBLOGCN.COM不承担任何责任。
 
@@ -1327,7 +1327,7 @@ function InsertInfo()
     $t->FileName = "searchpanel";
     $t->Source = "system";
     $t->SidebarID = 1;
-    $t->Content = '<form name="search" method="post" action="{#ZC_BLOG_HOST#}zb_system/cmd.php?act=search"><input type="text" name="q" size="11" /> <input type="submit" value="' . $zbp->lang['msg']['search'] . '" /></form>';
+    $t->Content = '<form name="search" method="post" action="{#ZC_BLOG_HOST#}zb_system/cmd.php?act=search"><label><span style="position:absolute;color:transparent;z-index:-9999;">Search</span><input type="text" name="q" size="11" /></label> <input type="submit" value="' . $zbp->lang['msg']['search'] . '" /></form>';
     $t->HtmlID = "divSearchPanel";
     $t->Type = "div";
     $t->Save();

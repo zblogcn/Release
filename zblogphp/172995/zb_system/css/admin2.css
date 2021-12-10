@@ -449,5 +449,4 @@ i.icon-arrow-repeat.loading-status:before { animation: refreshloading 1.5s linea
     form.search p {line-height: 3em;}
     #divEditRight .editmod>select,#divEditRight .editmod>input[type=text]{width: 130px;}
     #btnPost{width: 170px;}
-    .content-box .content-box-tabs a, .content-box .content-box-tabs a.current {padding-left:3px;padding-right:3px;margin-right:5px;}
 }

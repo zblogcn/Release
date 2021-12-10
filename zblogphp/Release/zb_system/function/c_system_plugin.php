@@ -386,6 +386,17 @@ DefinePluginFilter('Filter_Plugin_Zbp_BuildModule');
 /*
 '**************************************************<
 '类型:Filter
+'名称:Filter_Plugin_Zbp_RegBuildModules
+'参数:
+'说明:Zbp类的注册模块时的接口
+'调用:
+'**************************************************>
+ */
+DefinePluginFilter('Filter_Plugin_Zbp_RegBuildModules');
+
+/*
+'**************************************************<
+'类型:Filter
 '名称:Filter_Plugin_Zbp_PreLoad
 '参数:
 '说明:Zbp类的预加载接口
@@ -449,17 +460,6 @@ DefinePluginFilter('Filter_Plugin_Zbp_LoadManage');
 '**************************************************>
  */
 DefinePluginFilter('Filter_Plugin_Zbp_Terminate');
-
-/*
-'**************************************************<
-'类型:Filter
-'名称:Filter_Plugin_Zbp_LoadLanguage
-'参数:&$lang
-'说明:Zbp类的加载语言包的接口
-'调用:
-'**************************************************>
- */
-DefinePluginFilter('Filter_Plugin_Zbp_LoadLanguage');
 
 //###############################################################################################################
 //<前台view,index>
@@ -583,6 +583,17 @@ DefinePluginFilter('Filter_Plugin_Cmd_End');
 '**************************************************>
  */
 DefinePluginFilter('Filter_Plugin_Cmd_Ajax');
+
+/*
+'**************************************************<
+'类型:Filter
+'名称:Filter_Plugin_Cmd_Redirect
+'参数:$url, $action
+'说明:cmd.php的最后跳转接口,用于修改url跳转值
+'调用:
+'**************************************************>
+ */
+DefinePluginFilter('Filter_Plugin_Cmd_Redirect');
 
 /*
 '**************************************************<
@@ -1501,6 +1512,17 @@ DefinePluginFilter('Filter_Plugin_ViewList_Template');
 '**************************************************>
  */
 DefinePluginFilter('Filter_Plugin_ViewPost_Template');
+
+/*
+'**************************************************<
+'类型:Filter
+'名称:Filter_Plugin_ViewPost_ViewNums
+'参数:&$article
+'说明:
+'调用:
+'**************************************************>
+ */
+DefinePluginFilter('Filter_Plugin_ViewPost_ViewNums');
 
 /*
 '**************************************************<
@@ -2437,7 +2459,7 @@ DefinePluginFilter('Filter_Plugin_Template_GetTemplate');
 '名称:Filter_Plugin_Template_Display
 '参数:$this, $entryPage
 '说明:Template类显示接口
-'调用:未启用
+'调用:
 '**************************************************>
  */
 DefinePluginFilter('Filter_Plugin_Template_Display');
@@ -2647,7 +2669,6 @@ DefinePluginFilter('Filter_Plugin_API_Get_Object_Array');
 '**************************************************>
  */
 DefinePluginFilter('Filter_Plugin_API_VerifyCSRF_Skip');
-
 
 /*
 '**************************************************<

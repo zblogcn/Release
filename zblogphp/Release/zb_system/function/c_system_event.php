@@ -25,6 +25,7 @@ function VerifyLogin($throwException = true)
     $m = null;
     if ($zbp->Verify_MD5(trim(GetVars('username', 'POST')), trim(GetVars('password', 'POST')), $m)) {
         $zbp->user = $m;
+        $zbp->islogin = true;
         $sd = (float) GetVars('savedate');
         $sd = ($sd < 1) ? 1 : $sd; // must >= 1 day
         $sdt = (time() + 3600 * 24 * $sd);
@@ -98,17 +99,17 @@ function Logout()
 
 //###############################################################################################################
 
-function Redirect_to_search()
+function Redirect_cmd_to_search($post_type = 0)
 {
-    global $zbp;
+    global $zbp, $action;
     //$q = rawurlencode(trim(strip_tags(GetVars('q', 'POST'))));
     //Redirect($zbp->searchurl . '?q=' . $q);
 
-    $route = $zbp->GetPostType_Sub(0, 'routes', 'post_article_search');
+    $route = $zbp->GetPostType_Sub($post_type, 'routes', 'post_article_search');
     if (!empty($route)) {
         $r = new UrlRule($zbp->GetRoute($route));
     } else {
-        $urlrule = $zbp->GetPostType(0, 'search_urlrule');
+        $urlrule = $zbp->GetPostType($post_type, 'search_urlrule');
         $r = new UrlRule($urlrule);
     }
 
@@ -116,13 +117,17 @@ function Redirect_to_search()
     $r->Rules['{%page%}'] = '';
     $r->Rules['{%q%}'] = $q;
     $r->Rules['{%search%}'] = $q;
+    $r->Rules['{%posttype%}'] = $post_type;
 
     $url = $r->Make();
 
-    Redirect($url);
+    Redirect_cmd_end($url);
 }
 
-function Redirect_to_inside($url)
+/**
+ * 检查已登录后才跳转到内部页面的CMD页面跳转函数
+ */
+function Redirect_cmd_from_args_with_loggedin($url)
 {
     global $zbp;
     if (empty($zbp->user->ID)) {
@@ -133,9 +138,41 @@ function Redirect_to_inside($url)
     }
     $a = parse_url($url);
     $b = parse_url($zbp->host);
-    if (isset($a['host']) && isset($b['host']) && strtolower($a['host']) == strtolower($b['host'])) {
-        Redirect($url);
+    if (isset($a['host']) && isset($b['host']) && strcasecmp($a['host'], $b['host']) == 0) {
+        Redirect_cmd_end($url);
     }
+}
+
+/**
+ * CMD页面结束前的跳转函数.
+ *
+ * @api Filter_Plugin_Cmd_Redirect
+ */
+function Redirect_cmd_end($url)
+{
+    global $zbp, $action;
+
+    foreach ($GLOBALS['hooks']['Filter_Plugin_Cmd_Redirect'] as $fpname => &$fpsignal) {
+        $fpname($url, $action);
+    }
+
+    Redirect($url);
+}
+
+/**
+ * CMD页面结束前的跳转函数Script版本.
+ *
+ * @api Filter_Plugin_Cmd_Redirect
+ */
+function Redirect_cmd_end_by_script($url)
+{
+    global $zbp, $action;
+
+    foreach ($GLOBALS['hooks']['Filter_Plugin_Cmd_Redirect'] as $fpname => &$fpsignal) {
+        $fpname($url, $action);
+    }
+
+    RedirectByScript($url);
 }
 
 //###############################################################################################################
@@ -2131,7 +2168,6 @@ function SaveSetting()
             || $key == 'ZC_COMMENT_REVERSE_ORDER'
             || $key == 'ZC_COMMENT_AUDIT'
             || $key == 'ZC_DISPLAY_SUBCATEGORYS'
-            || $key == 'ZC_GZIP_ENABLE'
             || $key == 'ZC_SYNTAXHIGHLIGHTER_ENABLE'
             || $key == 'ZC_COMMENT_VERIFY_ENABLE'
             || $key == 'ZC_CLOSE_SITE'

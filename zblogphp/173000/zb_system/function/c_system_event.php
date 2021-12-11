@@ -99,6 +99,11 @@ function Logout()
 
 //###############################################################################################################
 
+function Redirect_to_search()
+{
+    Redirect_cmd_to_search(0);
+}
+
 function Redirect_cmd_to_search($post_type = 0)
 {
     global $zbp, $action;

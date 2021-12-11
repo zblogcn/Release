@@ -1396,7 +1396,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
 
     if (!empty($route) || $isrewrite == true) {
         if (isset($object[0]) && !isset($object['page']) && (!isset($object['verify_permalink']) || (isset($object['verify_permalink']) && $object['verify_permalink'] != false))) {
-            if (!(stripos(urldecode($article->Url), $object[0]) !== false)) {
+            if (!(stripos(urldecode($article->Url), '/' . $object[0]) !== false)) {
                 //$zbp->ShowError(2, __FILE__, __LINE__);
                 return false;
             }

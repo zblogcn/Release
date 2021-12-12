@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 事件操作相关函数.
  */
@@ -1231,6 +1232,7 @@ function BatchComment()
                     continue;
                 }
             }
+
             $cmt->Del();
             if (!$cmt->IsChecking) {
                 CountPostArray(array($cmt->LogID), -1);
@@ -1352,8 +1354,10 @@ function PostCategory()
     FilterCategory($cate);
 
     // 此处用作刷新分类内文章数据使用，不作更改
-    if ($cate->ID > 0) {
-        CountCategory($cate, null, $cate->Type);
+    if ($zbp->option['ZC_LARGE_DATA'] == false) {
+        if ($cate->ID > 0) {
+            CountCategory($cate, null, $cate->Type);
+        }
     }
 
     $cate->Save();
@@ -1664,7 +1668,9 @@ function PostMember()
 
     FilterMember($mem);
 
-    CountMember($mem, array(null, null, null, null));
+    if ($zbp->option['ZC_LARGE_DATA'] == false) {
+        CountMember($mem, array(null, null, null, null));
+    }
 
     // 查询同名
     if (isset($data['Name'])) {

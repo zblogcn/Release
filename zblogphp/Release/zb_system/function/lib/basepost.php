@@ -350,9 +350,11 @@ class BasePost extends Base
                     $toptype = 'index';
                 }
                 if ($this->IsTop == 4) {
+                    $toptype = 'categorys';
+                }
+                if ($this->IsTop == 8) {
                     $toptype = 'category';
                 }
-
                 return $toptype;
             case 'TypeName':
                 return $zbp->GetPostType($this->Type, 'name');

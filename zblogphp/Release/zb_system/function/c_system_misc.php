@@ -70,6 +70,7 @@ function misc_statistic()
         $all_articles = $zbp->cache->all_article_nums;
         $all_pages = $zbp->cache->all_page_nums;
         $all_members = $zbp->cache->all_member_nums;
+        $all_comments = $zbp->cache->all_comment_nums;
         $check_comment_nums = $zbp->cache->check_comment_nums;
     }
     if ($zbp->option['ZC_LARGE_DATA'] == true || $zbp->option['ZC_VIEWNUMS_TURNOFF'] == true) {

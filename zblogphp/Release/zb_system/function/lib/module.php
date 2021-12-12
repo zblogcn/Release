@@ -158,8 +158,6 @@ class Module extends Base
      */
     public function Del()
     {
-        global $zbp;
-
         foreach ($GLOBALS['hooks']['Filter_Plugin_Module_Del'] as $fpname => &$fpsignal) {
             $fpreturn = $fpname($this);
             if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
@@ -168,8 +166,6 @@ class Module extends Base
                 return $fpreturn;
             }
         }
-
-        $zbp->RemoveCache($this);
 
         if ($this->SourceType == 'themeinclude') {
             if (empty($this->FileName)) {

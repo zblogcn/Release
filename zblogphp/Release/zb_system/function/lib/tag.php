@@ -150,8 +150,6 @@ class Tag extends Base
      */
     public function Del()
     {
-        global $zbp;
-
         foreach ($GLOBALS['hooks']['Filter_Plugin_Tag_Del'] as $fpname => &$fpsignal) {
             $fpreturn = $fpname($this);
             if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
@@ -160,8 +158,6 @@ class Tag extends Base
                 return $fpreturn;
             }
         }
-
-        $zbp->RemoveCache($this);
 
         return parent::Del();
     }

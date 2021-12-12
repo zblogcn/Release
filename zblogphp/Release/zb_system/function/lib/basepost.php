@@ -162,15 +162,15 @@ class BasePost extends Base
                 return;
             case 'TopType':
                 if ($value == 'global') {
-                    $this->Top = 1;
+                    $this->IsTop = 1;
                 } elseif ($value == 'index') {
-                    $this->Top = 2;
+                    $this->IsTop = 2;
                 } elseif ($value == 'categorys') {
-                    $this->Top = 4;
+                    $this->IsTop = 4;
                 } elseif ($value == 'category') {
-                    $this->Top = 8;
+                    $this->IsTop = 8;
                 } elseif ($value == '' || $value == null) {
-                    $this->Top = 0;
+                    $this->IsTop = 0;
                 }
 
                 return;

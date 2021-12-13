@@ -529,6 +529,7 @@ function PostArticle()
     }
     if ($zbp->option['ZC_LARGE_DATA'] == false) {
         CountPostArray(array($article->ID));
+        $zbp->AddBuildModule('archives');
     }
     if ($orig_id == 0 && $article->IsTop == 0 && $article->Status == ZC_POST_STATUS_PUBLIC) {
         CountNormalArticleNums(+1);
@@ -549,7 +550,6 @@ function PostArticle()
     $zbp->AddBuildModule('previous');
     $zbp->AddBuildModule('calendar');
     $zbp->AddBuildModule('comments');
-    $zbp->AddBuildModule('archives');
     $zbp->AddBuildModule('tags');
     $zbp->AddBuildModule('authors');
 
@@ -606,9 +606,11 @@ function DelArticle()
         $zbp->AddBuildModule('previous');
         $zbp->AddBuildModule('calendar');
         $zbp->AddBuildModule('comments');
-        $zbp->AddBuildModule('archives');
         $zbp->AddBuildModule('tags');
         $zbp->AddBuildModule('authors');
+        if ($zbp->option['ZC_LARGE_DATA'] == false) {
+            $zbp->AddBuildModule('archives');
+        }
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_DelArticle_Succeed'] as $fpname => &$fpsignal) {
             $fpname($article);

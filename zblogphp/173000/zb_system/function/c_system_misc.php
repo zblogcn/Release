@@ -139,12 +139,13 @@ function misc_statistic()
     //增加模块内容（因模块模板改变）而刷新的机制
     try {
         if ($zbp->option['ZC_DEBUG_MODE']) {
+            if ($zbp->option['ZC_LARGE_DATA'] == false) {
+                $zbp->AddBuildModule('archives');
+            }
             $zbp->AddBuildModule('previous');
             $zbp->AddBuildModule('calendar');
             $zbp->AddBuildModule('comments');
-            $zbp->AddBuildModule('archives');
             $zbp->AddBuildModule('tags');
-            $zbp->AddBuildModule('authors');
             $zbp->AddBuildModule('catalog');
             $zbp->AddBuildModule('navbar');
         }

@@ -106,7 +106,7 @@ function api_system_get_info()
     global $zbp;
 
     ApiCheckAuth(true, 'admin');
-    
+
     $info = array(
         'environment' => $zbp->cache->system_environment,
         'version' => $GLOBALS['blogversion'],
@@ -119,7 +119,60 @@ function api_system_get_info()
         'members' => (int) $zbp->cache->all_member_nums,
         'theme' => $zbp->theme,
         'style' => $zbp->style,
+        'https' => (HTTP_SCHEME == 'https://') ? true : false,
+        'debugmode' => $zbp->isdebug,
     );
+
+
+    if (ApiCheckAuth(true, 'root', false) === true) {
+        $ajax = Network::Create();
+        $ssl = '';
+        if ($ajax) {
+            $ajax = substr(get_class($ajax), 9);
+        }
+        if ($ajax == 'curl') {
+            if (ini_get("safe_mode")) {
+                $ajax .= '-s';
+            }
+            if (ini_get("open_basedir")) {
+                $ajax .= '-o';
+            }
+            $array = curl_version();
+            $ajax .= $array['version'];
+        }
+        if (defined('OPENSSL_VERSION_TEXT')) {
+            $a = explode(' ', OPENSSL_VERSION_TEXT);
+            $ssl = GetValueInArray($a, 0) . GetValueInArray($a, 1);
+        }
+        $activedapps = $GLOBALS['activedapps'];
+        $apps = array();
+        foreach ($activedapps as $a) {
+            $app = new App();
+            if ($app->LoadInfoByXml('plugin', $a) == true || $app->LoadInfoByXml('theme', $a) == true) {
+                $apps[] = array('id' => $app->id, 'version' => $app->version ,'modified' => $app->modified);
+            }
+        }
+
+        $info2 = array(
+            'activedapps' => $apps,
+            'evn' => array(
+                'php' => GetPHPVersion(),
+                'system' => PHP_OS,
+                'webserver' => GetVars('SERVER_SOFTWARE', 'SERVER'),
+                'database' => $zbp->option['ZC_DATABASE_TYPE'] . $zbp->db->version,
+                'network' => $ajax,
+                'openssl' => $ssl,
+                'x64' => IS_X64,
+                'memory_limit' => ini_get('memory_limit'),
+                'max_execution_time' => ini_get('max_execution_time'),
+                'post_max_size' => ini_get('post_max_size'),
+                'upload_max_filesize' => ini_get('upload_max_filesize'),
+                'libs' => implode(',', get_loaded_extensions()),
+            ),
+        );
+
+        $info = array_merge($info, $info2);
+    }
 
     return array(
         'data' => array('info' => $info,),
@@ -229,7 +282,7 @@ function api_system_save_setting()
             $settingList[$key] = $zbp->option[$key];
         }
     }
-    
+
     return array(
         'data' => array('list' => $settingList,),
         'message' => $GLOBALS['lang']['msg']['operation_succeed'],

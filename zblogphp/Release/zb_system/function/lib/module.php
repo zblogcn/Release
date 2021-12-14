@@ -158,6 +158,8 @@ class Module extends Base
      */
     public function Del()
     {
+        global $zbp;
+
         foreach ($GLOBALS['hooks']['Filter_Plugin_Module_Del'] as $fpname => &$fpsignal) {
             $fpreturn = $fpname($this);
             if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
@@ -177,6 +179,7 @@ class Module extends Base
                 @unlink($f);
             }
 
+            $zbp->RemoveCache($this);
             return true;
         }
 
@@ -213,6 +216,26 @@ class Module extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetSideBarInUsed()
+    {
+        global $zbp;
+        $array = array();
+        $inused = array();
+        for ($i = 1; $i <= 9; $i++) {
+            $optionName = $i === 1 ? 'ZC_SIDEBAR_ORDER' : "ZC_SIDEBAR${i}_ORDER";
+            $array[$i] = $zbp->option[$optionName];
+        }
+        foreach ($array as $id => $s) {
+            if (stripos('|' . $s . '|', '|' . $this->FileName . '|') !== false) {
+                $inused[] = $id;
+            }
+        }
+        return $inused;
     }
 
 }

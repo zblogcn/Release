@@ -1426,7 +1426,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
 
     $pagebar = new Pagebar('javascript:zbp.comment.get(\'' . $article->ID . '\',\'{%page%}\');', false);
     $pagebar->PageCount = $zbp->commentdisplaycount;
-    $pagebar->PageNow = 1;
+    $pagebar->PageNow = max((int) GetVars('cmt_page', 'GET'), 1);
     $pagebar->PageBarCount = $zbp->pagebarcount;
     $pagebar->UrlRule->RulesObject = &$article;
 

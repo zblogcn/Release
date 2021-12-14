@@ -2419,6 +2419,11 @@ class ZBlogPHP
      */
     public function AddBuildModule($moduleFileName, $parameters = null)
     {
+        if ($moduleFileName == 'archives' && $this->option['ZC_LARGE_DATA'] == false && isset($this->modulesbyfilename['archives'])) {
+            if ($this->modulesbyfilename['archives']->GetSideBarInUsed() == array()) {
+                return;
+            }
+        }
         $p = func_get_args();
         call_user_func_array(array('ModuleBuilder', 'Add'), $p);
     }

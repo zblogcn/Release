@@ -546,14 +546,12 @@ function PostArticle()
         CountTopPost($article->Type, null, $article->ID);
     }
 
-    if ($zbp->isdebug == false && $zbp->option['ZC_LARGE_DATA'] == false) {
-        $zbp->AddBuildModule('archives');
-    }
     $zbp->AddBuildModule('previous');
     $zbp->AddBuildModule('calendar');
     $zbp->AddBuildModule('comments');
     $zbp->AddBuildModule('tags');
     $zbp->AddBuildModule('authors');
+    $zbp->AddBuildModule('archives');
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_PostArticle_Succeed'] as $fpname => &$fpsignal) {
         $fpname($article);
@@ -605,14 +603,12 @@ function DelArticle()
             CountTopPost($article->Type, null, $article->ID);
         }
 
-        if ($zbp->isdebug == false && $zbp->option['ZC_LARGE_DATA'] == false) {
-            $zbp->AddBuildModule('archives');
-        }
         $zbp->AddBuildModule('previous');
         $zbp->AddBuildModule('calendar');
         $zbp->AddBuildModule('comments');
         $zbp->AddBuildModule('tags');
         $zbp->AddBuildModule('authors');
+        $zbp->AddBuildModule('archives');
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_DelArticle_Succeed'] as $fpname => &$fpsignal) {
             $fpname($article);

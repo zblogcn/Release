@@ -144,9 +144,6 @@ function misc_statistic()
         $zbp->AddBuildModule('authors');
         $zbp->AddBuildModule('catalog');
         $zbp->AddBuildModule('navbar');
-        if ($zbp->isdebug && $zbp->option['ZC_LARGE_DATA'] == false) {
-            $zbp->AddBuildModule('archives');
-        }
     } catch (Exception $e) {
         $e->getMessage();
     }

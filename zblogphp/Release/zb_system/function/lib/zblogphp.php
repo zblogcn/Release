@@ -787,7 +787,7 @@ class ZBlogPHP
                 $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
             } elseif ($this->option['ZC_PERMANENT_DOMAIN_ENABLE'] == true) {
                 //消除16升级17又退回16后再升级17出的bug;
-                if (is_array($this->option['ZC_BLOG_HOST'])) {
+                if (is_array($this->option['ZC_BLOG_HOST']) && is_array($this->option['ZC_PERMANENT_DOMAIN_ENABLE'])) {
                     Fix_16_to_17_and_17_to_16_Error();
                 }
                 //如果ZC_PERMANENT_DOMAIN_ENABLE已开启的话

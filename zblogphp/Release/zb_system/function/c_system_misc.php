@@ -56,18 +56,18 @@ function misc_statistic()
 
     $r = null;
 
+    CountNormalArticleNums(null);
+
     //按条件统计或不统计
     if ($zbp->option['ZC_LARGE_DATA'] == false) {
-        CountNormalArticleNums(null);
-        CountTopPost(ZC_POST_TYPE_ARTICLE, null, null);
         CountCommentNums(null, null);
+        CountTopPost(ZC_POST_TYPE_ARTICLE, null, null);
         $all_articles = GetValueInArrayByCurrent($zbp->db->sql->get()->select($GLOBALS['table']['Post'])->count(array('*' => 'num'))->where(array('=', 'log_Type', '0'))->query, 'num');
         $all_pages = GetValueInArrayByCurrent($zbp->db->sql->get()->select($GLOBALS['table']['Post'])->count(array('*' => 'num'))->where(array('=', 'log_Type', '1'))->query, 'num');
         $all_members = GetValueInArrayByCurrent($zbp->db->sql->get()->select($GLOBALS['table']['Member'])->count(array('*' => 'num'))->query, 'num');
         $all_comments = $zbp->cache->all_comment_nums;
         $check_comment_nums = $zbp->cache->check_comment_nums;
     } else {
-        CountNormalArticleNums(null);
         $all_articles = $zbp->cache->all_article_nums;
         $all_pages = $zbp->cache->all_page_nums;
         $all_members = $zbp->cache->all_member_nums;

@@ -645,6 +645,6 @@ function misc_clearthumbcache()
     rrmdir($zbp->usersdir . '/cache/thumbs');
     $zbp->SetHint('good');
     if (isset($_SERVER["HTTP_REFERER"])) {
-        Redirect($_SERVER["HTTP_REFERER"]);
+        Redirect302($_SERVER["HTTP_REFERER"]);
     }
 }

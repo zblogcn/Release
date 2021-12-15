@@ -916,11 +916,18 @@ function RedirectByScript($url)
  *
  * @param string $url 跳转链接
  */
-function Redirect($url)
+function Redirect302($url)
 {
     SetHttpStatusCode(302);
     header('Location: ' . $url);
     die();
+}
+
+if (!function_exists('Redirect')) {
+    function Redirect($url)
+    {
+        Redirect302($url);
+    }
 }
 
 /**

@@ -109,7 +109,7 @@ function Redirect_cmd_to_search($post_type = 0)
 {
     global $zbp, $action;
     //$q = rawurlencode(trim(strip_tags(GetVars('q', 'POST'))));
-    //Redirect($zbp->searchurl . '?q=' . $q);
+    //Redirect302($zbp->searchurl . '?q=' . $q);
 
     $route = $zbp->GetPostType_Sub($post_type, 'routes', 'post_article_search');
     if (!empty($route)) {
@@ -162,7 +162,7 @@ function Redirect_cmd_end($url)
         $fpname($url, $action);
     }
 
-    Redirect($url);
+    Redirect302($url);
 }
 
 /**

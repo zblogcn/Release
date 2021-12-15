@@ -4221,7 +4221,7 @@ class ZBlogPHP
         if (!$this->option['ZC_DATABASE_TYPE']) {
             $s = $_SERVER['QUERY_STRING'];
             $s = empty($s) ? '' : '?' . $s;
-            Redirect('./zb_install/index.php' . $s);
+            Redirect302('./zb_install/index.php' . $s);
         }
     }
 

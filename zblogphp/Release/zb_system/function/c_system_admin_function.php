@@ -116,7 +116,7 @@ function Include_Admin_CheckWeakPassWord()
     }
 
     if ($action !== 'MemberEdt') {
-        Redirect($zbp->host . 'zb_system/cmd.php?act=MemberEdt&id=' . $zbp->user->ID);
+        Redirect302($zbp->host . 'zb_system/cmd.php?act=MemberEdt&id=' . $zbp->user->ID);
     }
 
     echo $zbp->ShowHint('bad', $zbp->langs->msg->change_default_password, 9999);

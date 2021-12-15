@@ -98,7 +98,7 @@ function ViewAuto()
                 if ($result == true) {
                     //如果开启伪静且$b_redirect，那么通过原动态访问的会跳转至$result
                     if ($b_redirect && is_string($result)) {
-                        Redirect($result);
+                        Redirect302($result);
                     }
                 }
                 return $result;
@@ -285,7 +285,7 @@ function ViewAuto_Process_Args_Merge(&$route)
 function ViewAuto_Call_Auto($route, $array)
 {
     if (isset($route['redirect_to'])) {
-        Redirect($route['redirect_to']);
+        Redirect302($route['redirect_to']);
         return;
     }
     if (isset($route['redirect301_to'])) {

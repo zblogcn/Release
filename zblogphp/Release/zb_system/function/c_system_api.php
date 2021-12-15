@@ -44,7 +44,6 @@ function ApiTokenVerify()
 function ApiDebugDisplay($error)
 {
     ApiResponse(null, $error);
-    die;
 }
 
 /**
@@ -127,7 +126,6 @@ function ApiCheckMods(&$mods_allow, &$mods_disallow)
 
     if (!empty($mods_allow) && $b == false) {
         $zbp->ShowError(96, __FILE__, __LINE__);
-        die;
     }
 
     $b = true;
@@ -151,7 +149,6 @@ function ApiCheckMods(&$mods_allow, &$mods_disallow)
 
     if (!empty($mods_disallow) && $b == false) {
         $zbp->ShowError(96, __FILE__, __LINE__);
-        die;
     }
     return true;
 }
@@ -164,7 +161,7 @@ function ApiCheckMods(&$mods_allow, &$mods_disallow)
  * @param int $code
  * @param string|null $message
  */
-function ApiResponse($data = null, $error = null, $code = 200, $message = null, $isreturn = false)
+function ApiResponse($data = null, $error = null, $code = 200, $message = null)
 {
     foreach ($GLOBALS['hooks']['Filter_Plugin_API_Pre_Response'] as $fpname => &$fpsignal) {
         $fpname($data, $error, $code, $message);
@@ -222,12 +219,7 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null, 
         }
     }
 
-    if ($isreturn == false) {
-        echo JsonEncode($response);
-    } else {
-        return JsonEncode($response);
-    }
-
+    echo JsonEncode($response);
 
     if (empty($error) && $code !== 200) {
         // 如果 code 不为 200，又不是系统抛出的错误，再来抛出一个 Exception，适配 phpunit
@@ -251,7 +243,6 @@ function ApiCheckAuth($loginRequire = false, $action = 'view', $throwException =
     if ($loginRequire && !$GLOBALS['zbp']->user->ID) {
         if ($throwException == true) {
             ApiResponse(null, null, 401, $GLOBALS['lang']['error']['6']);
-            die;
         } else {
             return false;
         }
@@ -261,7 +252,6 @@ function ApiCheckAuth($loginRequire = false, $action = 'view', $throwException =
     if (!$GLOBALS['zbp']->CheckRights($action)) {
         if ($throwException == true) {
             ApiResponse(null, null, 403, $GLOBALS['lang']['error']['6']);
-            die;
         } else {
             return false;
         }
@@ -517,7 +507,6 @@ function ApiVerifyCSRF($force_check = false)
 
         if (!$zbp->VerifyCSRFToken($csrf_token, 'api')) {
             ApiResponse(null, null, 419, $GLOBALS['lang']['error']['5']);
-            die;
         }
 
         return true;
@@ -542,7 +531,7 @@ function ApiLoadPostData()
  * @param string      $mod
  * @param string|null $act
  */
-function ApiDispatch($mods, $mod, $act, $isreturn = false)
+function ApiDispatch($mods, $mod, $act)
 {
     foreach ($GLOBALS['hooks']['Filter_Plugin_API_Dispatch'] as $fpname => &$fpsignal) {
         $fpname($mods, $mod, $act);
@@ -560,27 +549,16 @@ function ApiDispatch($mods, $mod, $act, $isreturn = false)
 
             ApiResultData($result);
 
-            $r = ApiResponse(
+            ApiResponse(
                 isset($result['data']) ? $result['data'] : null,
                 isset($result['error']) ? $result['error'] : null,
                 isset($result['code']) ? $result['code'] : 200,
-                isset($result['message']) ? $result['message'] : 'OK',
-                true
+                isset($result['message']) ? $result['message'] : 'OK'
             );
-            if ($isreturn == false) {
-                echo $r;
-            } else {
-                return $r;
-            }
         }
     }
 
-    $r = ApiResponse(null, null, 404, $GLOBALS['lang']['error']['96'], true);
-    if ($isreturn == false) {
-        echo $r;
-    } else {
-        return $r;
-    }
+    ApiResponse(null, null, 404, $GLOBALS['lang']['error']['96']);
 }
 
 /**
@@ -646,7 +624,6 @@ function ApiThrottle($name = 'default', $max_reqs = 60, $period = 60)
 
     if ($cached_req['hits'] >= $max_reqs) {
         ApiResponse(null, null, 429, 'Too many requests.');
-        die;
     }
 
     $cached_req['hits']++;
@@ -674,6 +651,5 @@ function ApiCheckHttpMethod($allow_method = 'GET|POST|PUT|DELETE')
 {
     if (isset($_SERVER['REQUEST_METHOD']) && stripos($allow_method, $_SERVER['REQUEST_METHOD']) === false) {
         ApiResponse(null, null, 405, $GLOBALS['lang']['error']['5']);
-        die;
     }
 }

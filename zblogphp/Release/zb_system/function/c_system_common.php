@@ -478,6 +478,7 @@ function RemoveMoreSpaces($s)
  */
 function GetGuid()
 {
+    mt_srand();
     $charid = strtolower(md5(uniqid(mt_rand(), true)));
 
     return $charid;
@@ -553,6 +554,11 @@ function GetCurrentHost($blogpath, &$cookiesPath)
     } else {
         $cookiesPath = '/';
         return '/';
+    }
+
+    if (IS_CLI == true) {
+        $cookiesPath = '/';
+        return $host . $cookiesPath;
     }
 
     if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) {
@@ -874,6 +880,18 @@ function SetHttpStatusCode($number, $force = false)
         415 => 'Unsupported Media Type',
         416 => 'Requested Range Not Satisfiable',
         417 => 'Expectation Failed',
+        418 => 'I\'m a teapot',
+        419 => 'Authorization Timeout',
+        421 => 'Misdirected Request',
+        422 => 'Unprocessable Entity',
+        423 => 'Locked',
+        424 => 'Failed Dependency',
+        425 => 'Too Early',
+        426 => 'Upgrade Required',
+        428 => 'Precondition Required',
+        429 => 'Too Many Requests',
+        431 => 'Request Header Fields Too Large',
+        440 => 'Too Many Requests',
         451 => 'Unavailable For Legal Reasons',
 
         // Server Error 5xx
@@ -888,6 +906,7 @@ function SetHttpStatusCode($number, $force = false)
         508 => 'Loop Detected',
         509 => 'Bandwidth Limit Exceeded',
         510 => 'Not Extended',
+        511 => 'Network Authentication Required',
     );
 
     if (isset($codes[$number])) {

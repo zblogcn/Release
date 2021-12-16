@@ -637,4 +637,10 @@ class ZBlogException
         return $result;
     }
 
+    public static function ThrowException($error)
+    {
+        $e = var_export($error, true);
+        throw new Exception($e);
+    }
+
 }

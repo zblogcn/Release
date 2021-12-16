@@ -23,6 +23,11 @@ define('PLUGIN_EXITSIGNAL_RETURN', 'return');
  * 插件中断方式：break
  */
 define('PLUGIN_EXITSIGNAL_BREAK', 'break');
+/*
+ * 插件中断方式：goto
+ */
+define('PLUGIN_EXITSIGNAL_GOTO', 'goto');
+
 
 //定义总插件激活列表
 $GLOBALS['plugins'] = array();
@@ -193,6 +198,23 @@ function Remove_Filter_Plugin($plugname, $functionname)
 
             return true;
         }
+    }
+
+    return false;
+}
+
+/**
+ * 清除Filter接口的所有挂载函数
+ *
+ * @param $plugname 接口名称
+ *
+ * @return boolean
+ */
+function Clear_Filter_Plugin($plugname)
+{
+    if (isset($GLOBALS['hooks'][$plugname])) {
+        $GLOBALS['hooks'][$plugname] = array();
+        return true;
     }
 
     return false;

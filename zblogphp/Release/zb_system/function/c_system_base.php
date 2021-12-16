@@ -106,7 +106,7 @@ define('IS_CADDY', PHP_SERVER === SERVER_CADDY);
 define('IS_BUILTIN', PHP_SERVER === SERVER_BUILTIN);
 define('IS_HHVM', PHP_ENGINE === ENGINE_HHVM);
 
-define('IS_WORKERMAN', class_exists('Workerman\Worker', false) === true);
+define('IS_WORKERMAN', IS_CLI && class_exists('Workerman\Worker', false) === true);
 define('IS_SWOOLE', defined('SWOOLE_VERSION') === true);
 /*
  * 定义文章类型

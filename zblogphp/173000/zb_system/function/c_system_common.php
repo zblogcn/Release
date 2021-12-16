@@ -910,10 +910,12 @@ function SetHttpStatusCode($number, $force = false)
     );
 
     if (isset($codes[$number])) {
-        header('HTTP/1.1 ' . $number . ' ' . $codes[$number]);
-        $status = $number;
+        if (!headers_sent()) {
+            header('HTTP/1.1 ' . $number . ' ' . $codes[$number]);
+            $status = $number;
 
-        return true;
+            return true;
+        }
     }
 
     return false;

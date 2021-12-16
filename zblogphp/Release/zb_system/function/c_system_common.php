@@ -2360,3 +2360,87 @@ function object_to_array($obj)
         return $arr;
     }
 }
+
+/**
+ * 将swoole和workerman下的$request数组转换为$GLOBALS全局数组
+ */
+function http_request_convert_to_global(&$request)
+{
+    if (!is_array($_GET)) {
+        $_GET = array();
+    }
+    if (!is_array($_POST)) {
+        $_POST = array();
+    }
+    if (!is_array($_COOKIE)) {
+        $_COOKIE = array();
+    }
+    if (!is_array($_FILES)) {
+        $_FILES = array();
+    }
+    if (!is_array($_ENV)) {
+        $_ENV = array();
+    }
+    if (!is_array($_REQUEST)) {
+        $_REQUEST = array();
+    }
+    
+    if (IS_WORKERMAN) {
+        foreach ($request->get() as $key => $value) {
+            $_GET[$key] = $value;
+        }
+        foreach ($request->post() as $key => $value) {
+            $_POST[$key] = $value;
+        }
+        foreach ($request->cookie() as $key => $value) {
+            $_COOKIE[$key] = $value;
+        }
+        foreach ($request->file() as $key => $value) {
+            $_FILES[$key] = $value;
+        }
+    } elseif (IS_SWOOLE) {
+        $_GET = $request->get;
+        $_POST = $request->post;
+        $_COOKIE = $request->cookie;
+        $_FILES = $request->files;
+        $_SERVER = array_replace($_SERVER, $request->server);
+    }
+
+    $ro = ini_get('request_order');
+    if (empty($ro)) {
+        $ro = 'GP';//variables_order "EGPCS"
+    }
+    $array = str_split($ro, 1);
+    foreach ($array as $a) {
+        if ($a == 'E') {
+            $_REQUEST = array_replace($_REQUEST, $_ENV);
+        }
+        if ($a == 'G') {
+            $_REQUEST = array_replace($_REQUEST, $_GET);
+        }
+        if ($a == 'P') {
+            $_REQUEST = array_replace($_REQUEST, $_POST);
+        }
+        if ($a == 'C') {
+            $_REQUEST = array_replace($_REQUEST, $_COOKIE);
+        }
+        if ($a == 'S') {
+            $_REQUEST = array_replace($_REQUEST, $_SERVER);
+        }
+    }    
+}
+
+/**
+ * 获取swoole或workerman或标准php环境下的原始post data
+ */
+function get_http_raw_post_data(&$request = null)
+{
+    if (IS_WORKERMAN) {
+        $data = $request->rawBody();
+    } elseif (IS_SWOOLE) {
+        $data = $request->rawContent();
+    } else {
+        $data = file_get_contents("php://input");
+    }
+    return $data;
+}

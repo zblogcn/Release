@@ -1,23 +1,26 @@
 <?php
 define('ZBP_ERRORPROCESSING', true);
 if (!isset($GLOBALS['zbp'])) {
-    exit;
+    //exit;
+    $GLOBALS['zbp'] = new stdClass();
+    $GLOBALS['zbp']->isdebug = (defined('ZBP_DEBUGMODE')) ? true : false;
 }
 $post_data = $_COOKIE;
 foreach ($post_data as $key => $value) {
-    if(stripos($key, 'username') !== false) {
+    if (stripos($key, 'username') !== false) {
         unset($post_data[$key]);
     }
-    if(stripos($key, 'password') !== false) {
+    if (stripos($key, 'password') !== false) {
         unset($post_data[$key]);
     }
-    if(stripos($key, 'token') !== false) {
+    if (stripos($key, 'token') !== false) {
         unset($post_data[$key]);
     }
 }
 unset($post_data['username']);
 unset($post_data['password']);
 unset($post_data['token']);
+unset($post_data['addinfo']);
 ?>
 <!doctype html>
 <html lang="<?php echo $GLOBALS['lang']['lang_bcp47']; ?>">
@@ -46,7 +49,7 @@ unset($post_data['token']);
         <div class="login loginw">
             <form id="frmLogin" method="post" action="#">
                 <?php
-                if (!$GLOBALS['option']['ZC_DEBUG_MODE']) {
+                if (!$GLOBALS['zbp']->isdebug) {
                     ?>
                     <div class="divHeader lessinfo" style="margin-bottom:10px;">
                         <b><?php echo FormatString($error->message, '[noscript]'); ?></b></div>
@@ -60,7 +63,7 @@ unset($post_data['token']);
                 }
                 ?>
     <?php
-    if ($GLOBALS['option']['ZC_DEBUG_MODE']) {
+    if ($GLOBALS['zbp']->isdebug) {
         ?>
                     <div class="divHeader moreinfo"
                          style="margin-bottom:10px;"><?php echo $GLOBALS['lang']['msg']['error_tips']; ?></div>
@@ -68,7 +71,7 @@ unset($post_data['token']);
                         <div>
                             <p><?php echo $GLOBALS['lang']['msg']['error_info']; ?></p>
         <?php
-        echo '(' . $error->type . ')' . $error->typeName . ' :   ' . (FormatString($error->messagefull, '[noscript]'));
+        echo '(' . $error->type . ')' . $error->getTypeName() . ' :   ' . (FormatString($error->messagefull, '[noscript]'));
         echo ' (' . ZC_VERSION_FULL . ') ';
         if (!in_array('Status: 404 Not Found', headers_list())) {
                 echo '(' . GetEnvironment(true) . ') ';
@@ -76,8 +79,8 @@ unset($post_data['token']);
         ?>
                         </div>
         <?php
-        if (is_array(ZBlogException::$error_debuginfo) && !empty(ZBlogException::$error_debuginfo)) {
-        ?>
+        if (is_array($error->moreinfo) && !empty($error->moreinfo)) {
+            ?>
                         <div>
                             <p><?php echo 'Debug Info'; ?></p>
 
@@ -86,7 +89,7 @@ unset($post_data['token']);
 
                     <?php
                     $i = 0;
-                    foreach (ZBlogException::$error_debuginfo as $key => $value) {
+                    foreach ($error->moreinfo as $key => $value) {
                         $i += 1;
                         ?>
                                     <tr>
@@ -100,7 +103,7 @@ unset($post_data['token']);
                                 </tbody>
                             </table>
                         </div>
-        <?php
+            <?php
         }
         ?>
 
@@ -130,7 +133,7 @@ unset($post_data['token']);
                             <table style='width:100%' class="table_striped">
                                 <tbody>
                     <?php
-                    foreach (debug_backtrace() as $iInt => $sData) {
+                    foreach ($error->getTrace() as $iInt => $sData) {
                         if ($iInt <= 2) { // 不显示错误捕捉部分
                             continue;
                         }

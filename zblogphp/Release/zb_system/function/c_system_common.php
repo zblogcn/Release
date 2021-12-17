@@ -229,6 +229,7 @@ function Logs($logString, $level = 'INFO', $source = 'system')
             $f = $zbp->logsdir . '' . md5($zbp->path) . '.txt';
         }
     }
+
     ZBlogException::SuspendErrorHook();
     $handle = @fopen($f, 'a+');
     if ($handle) {
@@ -239,6 +240,18 @@ function Logs($logString, $level = 'INFO', $source = 'system')
     ZBlogException::ResumeErrorHook();
 
     return true;
+}
+
+/**
+ * Logs指定的变量的值
+ */
+function Logs_Dump()
+{
+    $a = func_get_args();
+    foreach ($a as $key => $value) {
+        $s = call_user_func('print_r', $value, true);
+        Logs($s);
+    }
 }
 
 /**
@@ -267,11 +280,7 @@ function RunTime($isOutput = true)
 
     $_SERVER['_runtime_result'] = $rt;
 
-    if (array_key_exists('_end_time', $_SERVER)) {
-        return $rt;
-    } else {
-        $_SERVER['_end_time'] = $_end_time;
-    }
+    $_SERVER['_end_time'] = $_end_time;
 
     if (isset($zbp->option['ZC_RUNINFO_DISPLAY']) && $zbp->option['ZC_RUNINFO_DISPLAY'] == false) {
         return $rt;
@@ -282,6 +291,7 @@ function RunTime($isOutput = true)
         echo $rt['query'] . ' queries';
         echo ' , ' . $rt['memory'] . 'kb memory';
         echo ' , ' . $rt['error'] . ' error' . ($rt['error'] > 1 ? 's' : '');
+        //echo print_r($rt['error_detail'], true);
         echo '-->';
     }
 
@@ -543,6 +553,33 @@ function GetDbName()
 function GetCurrentHost($blogpath, &$cookiesPath)
 {
     $host = HTTP_SCHEME;
+
+    if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
+        $host = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
+        $cookiesPath = '/';
+        if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
+            $cookiesPath = constant('ZBP_PRESET_COOKIESPATH');
+        }
+        return $host . $cookiesPath;
+    }
+
+    if (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
+        $host = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
+        $cookiesPath = '/';
+        if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
+            $cookiesPath = getenv('ZBP_PRESET_COOKIESPATH');
+        }
+        return $host . $cookiesPath;
+    }
+
+    if (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
+        $host = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
+        $cookiesPath = '/';
+        if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
+            $cookiesPath = $_ENV['ZBP_PRESET_COOKIESPATH'];
+        }
+        return $host . $cookiesPath;
+    }
 
     if (isset($_SERVER['HTTP_HOST'])) {
         $host .= $_SERVER['HTTP_HOST'];
@@ -969,7 +1006,9 @@ function Redirect301($url)
 function Http404()
 {
     SetHttpStatusCode(404);
-    header("Status: 404 Not Found");
+    if (!headers_sent()) {
+        header("Status: 404 Not Found");
+    }
 }
 
 /**
@@ -1072,11 +1111,14 @@ function GetRequestUri()
             $url .= '?' . $_SERVER['REDIRECT_QUERY_STRIN'];
         }
     } else {
-        $url = str_replace('\\', '/' ,$_SERVER['PHP_SELF']);
+        $url = str_replace('\\', '/', $_SERVER['PHP_SELF']);
         if (strpos($url, ZBP_PATH) !== false) {
             $url = str_replace(ZBP_PATH, '/', $url);
             $url = ltrim($url, '/');
             $url = '/' . $url;
+        }
+        if (!isset($_SERVER['QUERY_STRING'])) {
+            $_SERVER['QUERY_STRING'] = '';
         }
         $url = $url . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
     }
@@ -2159,18 +2201,6 @@ function CheckIncludedFiles($file)
 }
 
 /**
- * Logs指定的变量的值
- */
-function Logs_Dump()
-{
-    $a = func_get_args();
-    foreach ($a as $key => $value) {
-        $s = print_r($value, true);
-        Logs($s);
-    }
-}
-
-/**
  * 中文与特殊字符友好的 JSON 编码.
  *
  * @param array $arr
@@ -2366,27 +2396,16 @@ function object_to_array($obj)
 /**
  * 将swoole和workerman下的$request数组转换为$GLOBALS全局数组
  */
-function http_request_convert_to_global(&$request)
+function http_request_convert_to_global($request)
 {
-    if (!is_array($_GET)) {
-        $_GET = array();
-    }
-    if (!is_array($_POST)) {
-        $_POST = array();
-    }
-    if (!is_array($_COOKIE)) {
-        $_COOKIE = array();
-    }
-    if (!is_array($_FILES)) {
-        $_FILES = array();
-    }
+    $_GET = array();
+    $_POST = array();
+    $_COOKIE = array();
+    $_FILES = array();
+    $_REQUEST = array();
     if (!is_array($_ENV)) {
         $_ENV = array();
     }
-    if (!is_array($_REQUEST)) {
-        $_REQUEST = array();
-    }
-    
     if (IS_WORKERMAN) {
         foreach ($request->get() as $key => $value) {
             $_GET[$key] = $value;
@@ -2400,12 +2419,35 @@ function http_request_convert_to_global(&$request)
         foreach ($request->file() as $key => $value) {
             $_FILES[$key] = $value;
         }
+        $_SERVER["HTTP_HOST"] = $request->host();
+        $_SERVER["REQUEST_URI"] = $request->uri();
+        $_SERVER["QUERY_STRING"] = $request->queryString();
+        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/' . $request->protocolVersion();
+        $_SERVER["REQUEST_METHOD"] = $request->method();
+
     } elseif (IS_SWOOLE) {
         $_GET = $request->get;
         $_POST = $request->post;
         $_COOKIE = $request->cookie;
         $_FILES = $request->files;
         $_SERVER = array_replace($_SERVER, $request->server);
+        $_GET = (!is_array($_GET)) ? array() : $_GET;
+        $_POST = (!is_array($_POST)) ? array() : $_POST;
+        $_COOKIE = (!is_array($_COOKIE)) ? array() : $_COOKIE;
+        $_FILES = (!is_array($_FILES)) ? array() : $_FILES;
+        $_SERVER["HTTP_HOST"] = $request->header['host'];
+        $_SERVER["REQUEST_URI"] = $request->server['request_uri'];
+        if (isset($request->server['query_string'])) {
+            $_SERVER["QUERY_STRING"] = $request->server['query_string'];
+            $_SERVER["REQUEST_URI"] .= '?' . $_SERVER["QUERY_STRING"];
+        } else {
+            $_SERVER["QUERY_STRING"] = '';
+        }
+        $_SERVER["REQUEST_METHOD"] = $request->server['request_method'];
+        $_SERVER['SERVER_PROTOCOL'] = $request->server['server_protocol'];
+        $_SERVER['SERVER_PORT'] = $request->server['server_port'];
+        $_SERVER["REMOTE_PORT"] = $request->server['remote_port'];
+        $_SERVER["REMOTE_ADDR"] = $request->server['remote_addr'];
     }
 
     $ro = ini_get('request_order');

@@ -21,8 +21,7 @@ defined('ZBP_SAFEMODE') || define('ZBP_SAFEMODE', false);
 //强制开启debug模式，需要开启时请打开注释
 //defined('ZBP_DEBUGMODE') || define('ZBP_DEBUGMODE', true);
 
-define('IS_CLI', strtolower(php_sapi_name()) === 'cli');
-if (ZBP_OBSTART && !IS_CLI) {
+if (ZBP_OBSTART) {
     ob_start();
 }
 
@@ -105,6 +104,8 @@ define('IS_KANGLE', PHP_SERVER === SERVER_KANGLE);
 define('IS_CADDY', PHP_SERVER === SERVER_CADDY);
 define('IS_BUILTIN', PHP_SERVER === SERVER_BUILTIN);
 define('IS_HHVM', PHP_ENGINE === ENGINE_HHVM);
+
+define('IS_CLI', strtolower(php_sapi_name()) === 'cli');
 
 define('IS_WORKERMAN', (IS_CLI && class_exists('Workerman\Worker')));
 define('IS_SWOOLE', (IS_CLI && defined('SWOOLE_VERSION')));
@@ -442,7 +443,7 @@ if (function_exists('get_magic_quotes_gpc') && PHP_VERSION_ID < 70400 && call_us
 /*
  * CLI Mock 处理
  */
-if (IS_CLI) {
+if (IS_CLI && !IS_WORKERMAN && !IS_SWOOLE) {
     if (isset($GLOBALS['argv'])) {
         $_SERVER["QUERY_STRING"] = implode('&', array_slice($GLOBALS['argv'], 1));
     } else {

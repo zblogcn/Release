@@ -55,6 +55,7 @@ function ApiShowError($errorCode, $errorText, $file = null, $line = null, $morei
     $zbe = ZBlogException::GetInstance();
     $zbe->ParseError($errorCode, $errorText, $file, $line);
     ApiResponse(null, $zbe, $httpcode, $errorText);
+    die;
 }
 
 /**
@@ -172,30 +173,30 @@ function ApiCheckMods(&$mods_allow, &$mods_disallow)
  * @param int $code
  * @param string|null $message
  */
-function ApiResponse($data = null, $error = null, $code = 200, $message = null, $isreturn = false)
+function ApiResponse($data = null, $error = null, $code = 200, $message = null, $isresponse = true)
 {
     foreach ($GLOBALS['hooks']['Filter_Plugin_API_Pre_Response'] as $fpname => &$fpsignal) {
-        $fpname($data, $error, $code, $message, $isreturn);
+        $fpname($data, $error, $code, $message, $isresponse);
     }
 
     if (!empty($error)) {
         $error_info = array(
-            'code' => ZBlogException::$error_id,
-            'type' => $error->type,
-            'message' => $error->message,
+            'code' => method_exists($error, 'getCode') ? $error->getCode() : $error->code,
+            'type' => property_exists($error, 'type') ? $error->type : $error->getCode(),
+            'message' => method_exists($error, 'getMessage') ? $error->getMessage() : $error->message,
         );
 
         if ($GLOBALS['zbp']->isdebug) {
-            $error_info['message_full'] = $error->messagefull;
-            $error_info['file'] = $error->file;
-            $error_info['line'] = $error->line;
+            $error_info['message_full'] = property_exists($error, 'messagefull') ? $error->messagefull : '';
+            $error_info['file'] = method_exists($error, 'getFile') ? $error->getFile() : $error->file;
+            $error_info['line'] = method_exists($error, 'getLine') ? $error->getLine() : $error->line;
         }
 
         if ($code === 200) {
             $code = 500;
         }
         if (empty($message)) {
-            $message = 'System error: ' . $error->message;
+            $message = 'System error: ' . (method_exists($error, 'getMessage') ? $error->getMessage() : $error->message);
         }
     }
 
@@ -210,7 +211,6 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null, 
     if (!defined('ZBP_API_IN_TEST') && $GLOBALS['option']['ZC_RUNINFO_DISPLAY']) {
         $runtime = RunTime(false);
         unset($runtime['error_detail']);
-        //$runtime = array_slice($runtime, 0, 3);
         $response['runtime'] = $runtime;
     }
 
@@ -218,8 +218,8 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null, 
         $fpname($response);
     }
 
-    if (!defined('ZBP_API_IN_TEST') && $isreturn == false) {
-        ob_end_clean();
+    if (!defined('ZBP_API_IN_TEST') && $isresponse == true) {
+        //ob_end_clean();
         if (!headers_sent()) {
             header('Content-Type: application/json; charset=utf-8');
         }
@@ -231,19 +231,16 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null, 
 
     $r = JsonEncode($response);
 
-    if ($isreturn == false) {
+    if ($isresponse == true) {
         echo $r;
-    } else {
-        return $r;
     }
+    return $r;
 
-    if (empty($error) && $code !== 200) {
+    //if (empty($error) && $code !== 200) {
         // 如果 code 不为 200，又不是系统抛出的错误，再来抛出一个 Exception，适配 phpunit
-        ZBlogException::SuspendErrorHook();
-        throw new Exception($message, $code);
-    }
-
-    die;
+        //ZBlogException::SuspendErrorHook();
+        //throw new Exception($message, $code);
+    //}
 }
 
 /**
@@ -547,10 +544,10 @@ function ApiLoadPostData()
  * @param string      $mod
  * @param string|null $act
  */
-function ApiDispatch($mods, $mod, $act, $isreturn = false)
+function ApiDispatch($mods, $mod, $act)
 {
     foreach ($GLOBALS['hooks']['Filter_Plugin_API_Dispatch'] as $fpname => &$fpsignal) {
-        $fpname($mods, $mod, $act, $isreturn);
+        $fpname($mods, $mod, $act);
     }
 
     if (empty($act)) {
@@ -569,20 +566,9 @@ function ApiDispatch($mods, $mod, $act, $isreturn = false)
                 isset($result['data']) ? $result['data'] : null,
                 isset($result['error']) ? $result['error'] : null,
                 isset($result['code']) ? $result['code'] : 200,
-                isset($result['message']) ? $result['message'] : 'OK',
-                true
+                isset($result['message']) ? $result['message'] : 'OK'
             );
 
-            if (!defined('ZBP_API_IN_TEST') && $isreturn == false) {
-                ob_end_clean();
-                if (!headers_sent()) {
-                    header('Content-Type: application/json; charset=utf-8');
-                }
-            }
-
-            if ($isreturn == false) {
-                echo $r;
-            }
             return $r;
         }
     }

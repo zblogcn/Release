@@ -2424,7 +2424,9 @@ function http_request_convert_to_global($request)
         $_SERVER["QUERY_STRING"] = $request->queryString();
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/' . $request->protocolVersion();
         $_SERVER["REQUEST_METHOD"] = $request->method();
-
+        $connection = func_get_arg(1);
+        $_SERVER["REMOTE_PORT"] = $connection->getRemotePort();
+        $_SERVER["REMOTE_ADDR"] = $connection->getRemoteIp();
     } elseif (IS_SWOOLE) {
         $_GET = $request->get;
         $_POST = $request->post;
@@ -2448,6 +2450,11 @@ function http_request_convert_to_global($request)
         $_SERVER['SERVER_PORT'] = $request->server['server_port'];
         $_SERVER["REMOTE_PORT"] = $request->server['remote_port'];
         $_SERVER["REMOTE_ADDR"] = $request->server['remote_addr'];
+    }
+    $_SERVER['SERVER_NAME'] = parse_url($_SERVER["HTTP_HOST"], PHP_URL_HOST);
+    $_SERVER['SERVER_PORT'] = parse_url($_SERVER["HTTP_HOST"], PHP_URL_PORT);
+    if (empty($_SERVER['SERVER_PORT'])) {
+        $_SERVER['SERVER_PORT'] = (HTTP_SCHEME == 'http://') ? 80 : 443;
     }
 
     $ro = ini_get('request_order');

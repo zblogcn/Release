@@ -140,7 +140,7 @@ function GetPost($idorname, $option = null)
     }
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_GetPost_Result'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($post);
+        $fpreturn = call_user_func($fpname, $post);
     }
 
     return $post;

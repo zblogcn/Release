@@ -11,6 +11,16 @@ if (!defined('ZBP_PATH')) {
 //###############################################################################################################
 
 /**
+ * API Check Enable
+ */
+function ApiCheckEnable()
+{
+    if (!$GLOBALS['option']['ZC_API_ENABLE']) {
+        $GLOBALS['zbp']->ShowError($GLOBALS['lang']['error']['95'], null, null, null, 503);
+    }
+}
+
+/**
  * API TokenVerify
  */
 function ApiTokenVerify()

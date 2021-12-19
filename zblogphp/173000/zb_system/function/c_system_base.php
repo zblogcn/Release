@@ -557,6 +557,20 @@ $GLOBALS['zbp']->Initialize();
  * 加载主题和插件APP
  */
 if (ZBP_SAFEMODE === false) {
+    $aps = GetVarsFromEnv('ZBP_PRESET_PLUGINS');
+    if ($aps != '') {
+        $aps = explode('|', $aps);
+        $aps = array_unique($aps);
+        foreach ($aps as $ap) {
+            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml')) {
+                $GLOBALS['activedapps'][] = $ap;
+            }
+            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php')) {
+                include $file_base;
+            }
+        }
+    }
+
     if (is_readable($file_base = $GLOBALS['usersdir'] . 'theme/' . $GLOBALS['blogtheme'] . '/theme.xml')) {
         $GLOBALS['activedapps'][] = $GLOBALS['blogtheme'];
 

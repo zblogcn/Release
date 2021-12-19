@@ -533,6 +533,24 @@ function GetVarsByDefault($name, $type = 'REQUEST', $default = null)
 }
 
 /**
+ * 从一系列指定的环境变量获得参数值
+ */
+function GetVarsFromEnv($name)
+{
+    $value = '';
+    if (defined($name) && constant($name) != '') {
+        $value = constant($name);
+    } elseif (function_exists('getenv') && getenv($name) != '') {
+        $value = getenv($name);
+    } elseif (isset($_ENV[$name]) && $_ENV[$name] != '') {
+        $value = $_ENV[$name];
+    } elseif (isset($_SERVER[$name]) && $_SERVER[$name] != '') {
+        $value = $_SERVER[$name];
+    }
+    return $value;
+}
+
+/**
  * 获取数据库名.
  *
  * @return string 返回一个随机的SQLite数据文件名
@@ -556,25 +574,10 @@ function GetCurrentHost($blogpath, &$cookiesPath)
 
     $preset_bloghost = '';
     $preset_cookiespath = '';
-    if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
-        $preset_bloghost = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
-        if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
-            $preset_cookiespath = constant('ZBP_PRESET_COOKIESPATH');
-        }
-    } elseif (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
-        $preset_bloghost = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
-        if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
-            $preset_cookiespath = getenv('ZBP_PRESET_COOKIESPATH');
-        }
-    } elseif (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
-        $preset_bloghost = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
-        if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
-            $preset_cookiespath = $_ENV['ZBP_PRESET_COOKIESPATH'];
-        }
-    } elseif (isset($_SERVER['ZBP_PRESET_BLOGPATH']) && $_SERVER['ZBP_PRESET_BLOGPATH'] != '') {
-        $preset_bloghost = rtrim($_SERVER['ZBP_PRESET_BLOGPATH'], '/');
-        if (isset($_SERVER['ZBP_PRESET_COOKIESPATH']) && $_SERVER['ZBP_PRESET_COOKIESPATH'] != '') {
-            $preset_cookiespath = $_SERVER['ZBP_PRESET_COOKIESPATH'];
+    if (GetVarsFromEnv('ZBP_PRESET_BLOGPATH') != '') {
+        $preset_bloghost = rtrim(GetVarsFromEnv('ZBP_PRESET_BLOGPATH'), '/');
+        if (GetVarsFromEnv('ZBP_PRESET_COOKIESPATH') != '') {
+            $preset_cookiespath = GetVarsFromEnv('ZBP_PRESET_COOKIESPATH');
         }
     }
     if ($preset_bloghost != '') {

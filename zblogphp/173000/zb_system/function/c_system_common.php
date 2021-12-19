@@ -2484,7 +2484,9 @@ function http_request_convert_to_global($request)
         if ($a == 'S') {
             $_REQUEST = array_replace($_REQUEST, $_SERVER);
         }
-    }    
+    }
+    $GLOBALS['bloghost'] = GetCurrentHost($GLOBALS['blogpath'], $GLOBALS['cookiespath']);
+    $GLOBALS['currenturl'] = GetRequestUri();
 }
 
 /**

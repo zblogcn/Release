@@ -293,7 +293,7 @@ function ViewAuto_Call_Auto($route, $array)
         return;
     }
     $function = $route['call'];
-    $array['route'] = $route;
+    $array['_route'] = $route;
     if (strpos($function, '::') !== false) {
         $func = explode('::', $function);
         return call_user_func(array($func[0], $func[1]), $array);
@@ -675,7 +675,7 @@ function ViewSearch()
             $q = $args['search'];
         }
         $page = GetValueInArray($args, 'page', 0);
-        $route = GetValueInArray($args, 'route', array());
+        $route = GetValueInArray($args, '_route', array());
         $disablebot = GetValueInArray($args, 'disablebot', true);
     } else {
         $return_url = false;
@@ -864,14 +864,14 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
         $tags = GetValueInArray($page, 'tags', null);
         $posttype = GetValueInArray($page, 'posttype', 0);
         $return_url = GetValueInArray($page, 'return_url', false);
-        $route = GetValueInArray($page, 'route', array());
+        $route = GetValueInArray($page, '_route', array());
         $page = GetValueInArray($page, 'page', null);
     } else {
         if (!is_array($object)) {
             $object = array();
         }
         $return_url = GetValueInArray($object, 'return_url', false);
-        $route = GetValueInArray($object, 'route', array());
+        $route = GetValueInArray($object, '_route', array());
         $posttype = GetValueInArray($object, 'posttype', 0);
     }
 
@@ -1322,7 +1322,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
         $isrewrite = true;
         $posttype = GetValueInArray($object, 'posttype', 0);
         $return_url = GetValueInArray($object, 'return_url', false);
-        $route = GetValueInArray($object, 'route', array());
+        $route = GetValueInArray($object, '_route', array());
         $alias = GetValueInArray($object, 'alias', null);
         $id = GetValueInArray($object, 'id', null);
         //从别名post中读取正确的$id或$alias
@@ -1342,7 +1342,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
             $object = array();
         }
         $return_url = GetValueInArray($object, 'return_url', false);
-        $route = GetValueInArray($object, 'route', array());
+        $route = GetValueInArray($object, '_route', array());
         $posttype = GetValueInArray($object, 'posttype', 0);
         if (is_array($id)) {
             $object = array_merge($object, $id);

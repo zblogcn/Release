@@ -777,28 +777,67 @@ class ZBlogPHP
             ZBlogException::$islogerror = true;
         }
 
-        //ZC_PERMANENT_DOMAIN_WHOLE_DISABLE不存在 或是 ZC_PERMANENT_DOMAIN_WHOLE_DISABLE存在但为假
-        $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_WHOLE_DISABLE');
-        if ($domain_disable == false) {
-            $forced_url = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_FORCED_URL');
-            if ($forced_url != '') {
-                //如果ZC_PERMANENT_DOMAIN_FORCED_URL存在 且不为空
-                $this->host = (string) $forced_url;
-                $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
-            } elseif ($this->option['ZC_PERMANENT_DOMAIN_ENABLE'] == true) {
-                //消除16升级17又退回16后再升级17出的bug;
-                if (is_array($this->option['ZC_BLOG_HOST']) && is_array($this->option['ZC_PERMANENT_DOMAIN_ENABLE'])) {
-                    Fix_16_to_17_and_17_to_16_Error();
-                }
-                //如果ZC_PERMANENT_DOMAIN_ENABLE已开启的话
-                $this->host = $this->option['ZC_BLOG_HOST'];
-                $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
+        //消除16升级17又退回16后再升级17出的bug;
+        if (is_array($this->option['ZC_BLOG_HOST']) && is_array($this->option['ZC_PERMANENT_DOMAIN_ENABLE'])) {
+            Fix_16_to_17_and_17_to_16_Error();
+        }
+
+        $preset_bloghost = '';
+        $preset_cookiespath = '';
+        if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
+            $preset_bloghost = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
+            if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
+                $preset_cookiespath = constant('ZBP_PRESET_COOKIESPATH');
+            }
+        } elseif (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
+            $preset_bloghost = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
+            if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
+                $preset_cookiespath = getenv('ZBP_PRESET_COOKIESPATH');
+            }
+        } elseif (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
+            $preset_bloghost = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
+            if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
+                $preset_cookiespath = $_ENV['ZBP_PRESET_COOKIESPATH'];
+            }
+        } elseif (isset($_SERVER['ZBP_PRESET_BLOGPATH']) && $_SERVER['ZBP_PRESET_BLOGPATH'] != '') {
+            $preset_bloghost = rtrim($_SERVER['ZBP_PRESET_BLOGPATH'], '/');
+            if (isset($_SERVER['ZBP_PRESET_COOKIESPATH']) && $_SERVER['ZBP_PRESET_COOKIESPATH'] != '') {
+                $preset_cookiespath = $_SERVER['ZBP_PRESET_COOKIESPATH'];
+            }
+        }
+        if ($preset_bloghost != '') {
+            //如果环境变量已预设了bloghost
+            $this->host = $preset_bloghost;
+            $this->host = rtrim($this->host, '/') . '/';
+            if ($preset_cookiespath != '') {
+                $this->cookiespath = $preset_cookiespath;
             } else {
-                //默认自动识别域名
-                $this->option['ZC_BLOG_HOST'] = $this->host;
+                $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
             }
         } else {
-            $this->option['ZC_BLOG_HOST'] = $this->host;
+            //ZC_PERMANENT_DOMAIN_WHOLE_DISABLE不存在 或是 ZC_PERMANENT_DOMAIN_WHOLE_DISABLE存在但为假
+            $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_WHOLE_DISABLE');
+            if ($domain_disable == false) {
+                $forced_url = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_FORCED_URL');
+                if ($forced_url != '') {
+                    //如果ZC_PERMANENT_DOMAIN_FORCED_URL存在 且不为空
+                    $forced_url = rtrim($forced_url, '/') . '/';
+                    $this->host = (string) $forced_url;
+                    $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
+                } elseif ($this->option['ZC_PERMANENT_DOMAIN_ENABLE'] == true) {
+                    //如果ZC_PERMANENT_DOMAIN_ENABLE已开启的话
+                    $this->host = $this->option['ZC_BLOG_HOST'];
+                    $this->host = rtrim($this->host, '/') . '/';
+                    $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
+                } else {
+                    //默认自动识别域名
+                    $this->host = rtrim($this->host, '/') . '/';
+                    $this->option['ZC_BLOG_HOST'] = $this->host;
+                }
+            } else {
+                $this->host = rtrim($this->host, '/') . '/';
+                $this->option['ZC_BLOG_HOST'] = $this->host;
+            }
         }
 
         $this->option['ZC_BLOG_PRODUCT'] = 'Z-BlogPHP';

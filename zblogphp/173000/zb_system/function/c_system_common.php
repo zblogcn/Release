@@ -554,33 +554,6 @@ function GetCurrentHost($blogpath, &$cookiesPath)
 {
     $host = HTTP_SCHEME;
 
-    if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
-        $host = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
-        $cookiesPath = '/';
-        if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
-            $cookiesPath = constant('ZBP_PRESET_COOKIESPATH');
-        }
-        return $host . $cookiesPath;
-    }
-
-    if (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
-        $host = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
-        $cookiesPath = '/';
-        if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
-            $cookiesPath = getenv('ZBP_PRESET_COOKIESPATH');
-        }
-        return $host . $cookiesPath;
-    }
-
-    if (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
-        $host = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
-        $cookiesPath = '/';
-        if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
-            $cookiesPath = $_ENV['ZBP_PRESET_COOKIESPATH'];
-        }
-        return $host . $cookiesPath;
-    }
-
     if (isset($_SERVER['HTTP_HOST'])) {
         $host .= $_SERVER['HTTP_HOST'];
     } elseif (isset($_SERVER["SERVER_NAME"])) {

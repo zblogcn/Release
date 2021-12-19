@@ -358,7 +358,7 @@ switch ($zbp->action) {
         ob_clean();
 
         $miscType = GetVars('type', 'GET');
-        $miscType = ($miscType === 'phpinfo') ? 'php_zbp_info' : $miscType;
+        $miscType = ($miscType === 'php' . 'info') ? 'php_zbp_info' : $miscType;
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_Misc_Begin'] as $fpname => &$fpsignal) {
             $fpname($miscType);

@@ -482,7 +482,7 @@ class ZBlogPHP
      */
     public $autofill_template_htmltags = true;
 
-    const OPTION_RESERVE_KEYS = 'ZC_DATABASE_TYPE|ZC_SQLITE_NAME|ZC_SQLITE_PRE|ZC_MYSQL_SERVER|ZC_MYSQL_USERNAME|ZC_MYSQL_PASSWORD|ZC_MYSQL_NAME|ZC_MYSQL_CHARSET|ZC_MYSQL_COLLATE|ZC_MYSQL_PRE|ZC_MYSQL_ENGINE|ZC_MYSQL_PORT|ZC_MYSQL_PERSISTENT|ZC_MYSQL_PORT|ZC_PGSQL_SERVER|ZC_PGSQL_USERNAME|ZC_PGSQL_PASSWORD|ZC_PGSQL_NAME|ZC_PGSQL_CHARSET|ZC_PGSQL_PRE|ZC_PGSQL_PORT|ZC_PGSQL_PERSISTENT|ZC_CLOSE_WHOLE_SITE|ZC_PERMANENT_DOMAIN_FORCED_URL|ZC_PERMANENT_DOMAIN_WHOLE_DISABLE';
+    const OPTION_RESERVE_KEYS = 'ZC_DATABASE_TYPE|ZC_SQLITE_NAME|ZC_SQLITE_PRE|ZC_MYSQL_SERVER|ZC_MYSQL_USERNAME|ZC_MYSQL_PASSWORD|ZC_MYSQL_NAME|ZC_MYSQL_CHARSET|ZC_MYSQL_COLLATE|ZC_MYSQL_PRE|ZC_MYSQL_ENGINE|ZC_MYSQL_PORT|ZC_MYSQL_PERSISTENT|ZC_MYSQL_PORT|ZC_PGSQL_SERVER|ZC_PGSQL_USERNAME|ZC_PGSQL_PASSWORD|ZC_PGSQL_NAME|ZC_PGSQL_CHARSET|ZC_PGSQL_PRE|ZC_PGSQL_PORT|ZC_PGSQL_PERSISTENT|ZC_CLOSE_WHOLE_SITE|ZC_PERMANENT_DOMAIN_FORCED_URL|ZC_PERMANENT_DOMAIN_FORCED_DISABLE';
 
     /**
      * ZBP魔术方法函数**************************************************************.
@@ -782,38 +782,10 @@ class ZBlogPHP
             Fix_16_to_17_and_17_to_16_Error();
         }
 
-        $preset_bloghost = '';
-        $preset_cookiespath = '';
-        if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
-            $preset_bloghost = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
-            if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
-                $preset_cookiespath = constant('ZBP_PRESET_COOKIESPATH');
-            }
-        } elseif (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
-            $preset_bloghost = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
-            if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
-                $preset_cookiespath = getenv('ZBP_PRESET_COOKIESPATH');
-            }
-        } elseif (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
-            $preset_bloghost = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
-            if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
-                $preset_cookiespath = $_ENV['ZBP_PRESET_COOKIESPATH'];
-            }
-        } elseif (isset($_SERVER['ZBP_PRESET_BLOGPATH']) && $_SERVER['ZBP_PRESET_BLOGPATH'] != '') {
-            $preset_bloghost = rtrim($_SERVER['ZBP_PRESET_BLOGPATH'], '/');
-            if (isset($_SERVER['ZBP_PRESET_COOKIESPATH']) && $_SERVER['ZBP_PRESET_COOKIESPATH'] != '') {
-                $preset_cookiespath = $_SERVER['ZBP_PRESET_COOKIESPATH'];
-            }
-        }
-        if ($preset_bloghost != '') {
+        if (defined('ZBP_PRESET_BLOGPATH_USED')) {
             //如果环境变量已预设了bloghost
-            $this->host = $preset_bloghost;
             $this->host = rtrim($this->host, '/') . '/';
-            if ($preset_cookiespath != '') {
-                $this->cookiespath = $preset_cookiespath;
-            } else {
-                $this->cookiespath = strstr(str_replace('://', '', $this->host), '/');
-            }
+            $this->option['ZC_BLOG_HOST'] = $this->host;
         } else {
             //ZC_PERMANENT_DOMAIN_WHOLE_DISABLE不存在 或是 ZC_PERMANENT_DOMAIN_WHOLE_DISABLE存在但为假
             $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_WHOLE_DISABLE');
@@ -1453,8 +1425,9 @@ class ZBlogPHP
     {
         $this->option['ZC_BLOG_CLSID'] = $this->guid;
 
-        unset($this->option['ZC_PERMANENT_DOMAIN_WHOLE_DISABLE']);
+        unset($this->option['ZC_PERMANENT_DOMAIN_FORCED_DISABLE']);
         unset($this->option['ZC_PERMANENT_DOMAIN_FORCED_URL']);
+        unset($this->option['ZC_CLOSE_WHOLE_SITE']);
 
         $reserve_keys = explode('|', self::OPTION_RESERVE_KEYS);
 
@@ -4876,7 +4849,7 @@ class ZBlogPHP
      */
     public function RedirectPermanentDomain()
     {
-        $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_WHOLE_DISABLE');
+        $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_FORCED_DISABLE');
         if ($domain_disable == true) {
             return;
         }

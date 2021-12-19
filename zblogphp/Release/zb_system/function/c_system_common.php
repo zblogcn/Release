@@ -554,6 +554,41 @@ function GetCurrentHost($blogpath, &$cookiesPath)
 {
     $host = HTTP_SCHEME;
 
+    $preset_bloghost = '';
+    $preset_cookiespath = '';
+    if (defined('ZBP_PRESET_BLOGPATH') && constant('ZBP_PRESET_BLOGPATH') != '') {
+        $preset_bloghost = rtrim(constant('ZBP_PRESET_BLOGPATH'), '/');
+        if (defined('ZBP_PRESET_COOKIESPATH') && constant('ZBP_PRESET_COOKIESPATH') != '') {
+            $preset_cookiespath = constant('ZBP_PRESET_COOKIESPATH');
+        }
+    } elseif (function_exists('getenv') && getenv('ZBP_PRESET_BLOGPATH') != '') {
+        $preset_bloghost = rtrim(getenv('ZBP_PRESET_BLOGPATH'), '/');
+        if (getenv('ZBP_PRESET_COOKIESPATH') != '') {
+            $preset_cookiespath = getenv('ZBP_PRESET_COOKIESPATH');
+        }
+    } elseif (isset($_ENV['ZBP_PRESET_BLOGPATH']) && $_ENV['ZBP_PRESET_BLOGPATH'] != '') {
+        $preset_bloghost = rtrim($_ENV['ZBP_PRESET_BLOGPATH'], '/');
+        if (isset($_ENV['ZBP_PRESET_COOKIESPATH']) && $_ENV['ZBP_PRESET_COOKIESPATH'] != '') {
+            $preset_cookiespath = $_ENV['ZBP_PRESET_COOKIESPATH'];
+        }
+    } elseif (isset($_SERVER['ZBP_PRESET_BLOGPATH']) && $_SERVER['ZBP_PRESET_BLOGPATH'] != '') {
+        $preset_bloghost = rtrim($_SERVER['ZBP_PRESET_BLOGPATH'], '/');
+        if (isset($_SERVER['ZBP_PRESET_COOKIESPATH']) && $_SERVER['ZBP_PRESET_COOKIESPATH'] != '') {
+            $preset_cookiespath = $_SERVER['ZBP_PRESET_COOKIESPATH'];
+        }
+    }
+    if ($preset_bloghost != '') {
+        defined('ZBP_PRESET_BLOGPATH_USED') || define('ZBP_PRESET_BLOGPATH_USED', true);
+        $host = $preset_bloghost;
+        $host = rtrim($host, '/');
+        $cookiesPath = '/';
+        if ($preset_cookiespath != '') {
+            $cookiesPath = $preset_cookiespath;
+            $cookiesPath = rtrim($cookiesPath, '/') . '/';
+        }
+        return $host . $cookiesPath;
+    }
+
     if (isset($_SERVER['HTTP_HOST'])) {
         $host .= $_SERVER['HTTP_HOST'];
     } elseif (isset($_SERVER["SERVER_NAME"])) {

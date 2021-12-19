@@ -4849,24 +4849,6 @@ class ZBlogPHP
      */
     public function RedirectPermanentDomain()
     {
-        $domain_disable = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_FORCED_DISABLE');
-        if ($domain_disable == true) {
-            return;
-        }
-
-        $forced = GetValueInArray($this->option, 'ZC_PERMANENT_DOMAIN_FORCED_URL');
-        if ($this->option['ZC_PERMANENT_DOMAIN_ENABLE'] == false && $forced == '') {
-            return;
-        }
-
-        $host = str_replace(array('https://', 'http://'), array('', ''), GetCurrentHost(ZBP_PATH, $null));
-        $host2 = str_replace(array('https://', 'http://'), array('', ''), $this->host);
-
-        if ($host != $host2) {
-            $u = GetRequestUri();
-            $u = $this->host . substr($u, 1);
-            Redirect301($u);
-        }
     }
 
     /**

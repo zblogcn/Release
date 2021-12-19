@@ -562,10 +562,11 @@ if (ZBP_SAFEMODE === false) {
         $aps = explode('|', $aps);
         $aps = array_unique($aps);
         foreach ($aps as $ap) {
-            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml')) {
+            $ap_in_actived = !in_array($ap, $GLOBALS['activedapps']);
+            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml') && $ap_in_actived) {
                 $GLOBALS['activedapps'][] = $ap;
             }
-            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php')) {
+            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php') && $ap_in_actived) {
                 include $file_base;
             }
         }
@@ -585,10 +586,11 @@ if (ZBP_SAFEMODE === false) {
 
     $aps = $GLOBALS['zbp']->GetPreActivePlugin();
     foreach ($aps as $ap) {
-        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml')) {
+        $ap_in_actived = !in_array($ap, $GLOBALS['activedapps']);
+        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml') && $ap_in_actived) {
             $GLOBALS['activedapps'][] = $ap;
         }
-        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php')) {
+        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php') && $ap_in_actived) {
             include $file_base;
         }
     }
@@ -600,7 +602,7 @@ if (ZBP_SAFEMODE === false) {
     }
 }
 
-unset($file_base, $aps, $fn, $ap, $op_users, $opk, $opv);
+unset($file_base, $aps, $fn, $ap, $op_users, $opk, $opv, $ap_in_actived);
 
 //1.7新加入的
 $GLOBALS['zbp']->PreLoad();

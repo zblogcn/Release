@@ -572,14 +572,8 @@ function GetCurrentHost($blogpath, &$cookiesPath)
 {
     $host = HTTP_SCHEME;
 
-    $preset_bloghost = '';
-    $preset_cookiespath = '';
-    if (GetVarsFromEnv('ZBP_PRESET_BLOGPATH') != '') {
-        $preset_bloghost = rtrim(GetVarsFromEnv('ZBP_PRESET_BLOGPATH'), '/');
-        if (GetVarsFromEnv('ZBP_PRESET_COOKIESPATH') != '') {
-            $preset_cookiespath = GetVarsFromEnv('ZBP_PRESET_COOKIESPATH');
-        }
-    }
+    $preset_bloghost = GetVarsFromEnv('ZBP_PRESET_BLOGPATH');
+    $preset_cookiespath = GetVarsFromEnv('ZBP_PRESET_COOKIESPATH');
     if ($preset_bloghost != '') {
         defined('ZBP_PRESET_BLOGPATH_USED') || define('ZBP_PRESET_BLOGPATH_USED', true);
         $host = $preset_bloghost;

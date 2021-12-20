@@ -2405,6 +2405,7 @@ function object_to_array($obj)
  */
 function http_request_convert_to_global($request)
 {
+    $args = func_get_args();
     $_GET = array();
     $_POST = array();
     $_COOKIE = array();
@@ -2466,9 +2467,9 @@ function http_request_convert_to_global($request)
         $_SERVER['SERVER_PORT'] = (HTTP_SCHEME == 'https://') ? 443 : 80;
     }
 
-    $ro = ini_get('request_order');
+    $ro = call_user_func('ini_get', 'request_order');
     if (empty($ro)) {
-        $ro = 'GP';//variables_order "EGPCS"
+        $ro = 'GP'; //variables_order "EGPCS"
     }
     $array = str_split($ro, 1);
     foreach ($array as $a) {
@@ -2488,8 +2489,16 @@ function http_request_convert_to_global($request)
             $_REQUEST = array_replace($_REQUEST, $_SERVER);
         }
     }
-    $GLOBALS['bloghost'] = GetCurrentHost($GLOBALS['blogpath'], $GLOBALS['cookiespath']);
+    static $already_set = false;
+    if (!$already_set) {
+        $GLOBALS['bloghost'] = GetCurrentHost($GLOBALS['blogpath'], $GLOBALS['cookiespath']);
+        $already_set = true;
+    }
     $GLOBALS['currenturl'] = GetRequestUri();
+
+    foreach ($GLOBALS['hooks']['Filter_Plugin_Http_Request_Convert_To_Global'] as $fpname => &$fpsignal) {
+        call_user_func_array($fpname, $args);
+    }
 }
 
 /**

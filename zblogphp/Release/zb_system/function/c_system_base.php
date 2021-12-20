@@ -41,6 +41,7 @@ require ZBP_PATH . 'zb_system/function/c_system_api.php';
 /**
  * 指定加载类的目录并注册加载函数到系统
  */
+RunTime_Begin();
 $GLOBALS['autoload_class_dirs'] = array();
 AddAutoloadClassDir(ZBP_PATH . 'zb_system/function/lib');
 spl_autoload_register('AutoloadClass');
@@ -404,17 +405,6 @@ $GLOBALS['datainfo'] = array(
         'Meta'       => array('ul_Meta', 'string', '', ''),
     ),
 );
-
-/*
- * 初始化统计信息
- */
-$_SERVER['_start_time'] = microtime(true); //RunTime
-$_SERVER['_query_count'] = 0;
-$_SERVER['_memory_usage'] = 0;
-$_SERVER['_error_count'] = 0;
-if (function_exists('memory_get_usage')) {
-    $_SERVER['_memory_usage'] = memory_get_usage();
-}
 
 /*
  * 版本兼容处理

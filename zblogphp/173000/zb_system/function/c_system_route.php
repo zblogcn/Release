@@ -810,40 +810,42 @@ function ViewSearch()
         $results[] = $r;
     }
 
-    if ($zbp->template->isdisplayed === true) {
-        $zbp->template = $zbp->PrepareTemplate();
+    if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+        $template = clone $zbp->template;
+    } else {
+        $template = &$zbp->template;
     }
     if ($disablebot) {
-        $zbp->template->SetTags('header', $zbp->template->GetTags('header') . '    <meta name="robots" content="noindex,nofollow,noarchive" />' . "\r\n");
+        $template->SetTags('header', $template->GetTags('header') . '    <meta name="robots" content="noindex,nofollow,noarchive" />' . "\r\n");
     }
-    $zbp->template->SetTags('title', str_replace(array('<span>', '</span>'), '', $article->Title));
-    $zbp->template->SetTags('article', $article);
-    $zbp->template->SetTags('articles', $results);
-    $zbp->template->SetTags('search', $q);
-    $zbp->template->SetTags('page', $page);
-    $zbp->template->SetTags('pagebar', $pagebar);
-    $zbp->template->SetTags('comments', array());
-    $zbp->template->SetTags('issearch', true);
-    $zbp->template->SetTags('posttype', $posttype);
+    $template->SetTags('title', str_replace(array('<span>', '</span>'), '', $article->Title));
+    $template->SetTags('article', $article);
+    $template->SetTags('articles', $results);
+    $template->SetTags('search', $q);
+    $template->SetTags('page', $page);
+    $template->SetTags('pagebar', $pagebar);
+    $template->SetTags('comments', array());
+    $template->SetTags('issearch', true);
+    $template->SetTags('posttype', $posttype);
     if (is_object($pagebar) && isset($pagebar->buttons[$pagebar->PageNow])) {
-        $zbp->template->SetTags('url', $pagebar->buttons[$pagebar->PageNow]);
+        $template->SetTags('url', $pagebar->buttons[$pagebar->PageNow]);
     } else {
-        $zbp->template->SetTags('url', $zbp->host);
+        $template->SetTags('url', $zbp->host);
     }
-    $zbp->template->SetTags('args', $fpargs);
-    $zbp->template->SetTags('route', $route);
+    $template->SetTags('args', $fpargs);
+    $template->SetTags('route', $route);
 
     //1.6统一改为search模式
-    $zbp->template->SetTags('type', 'search');
+    $template->SetTags('type', 'search');
     //1.7指定搜索模板为优先为search或是index
-    if ($zbp->template->HasTemplate($zbp->GetPostType($posttype, 'search_template'))) {
-        $zbp->template->SetTemplate($zbp->GetPostType($posttype, 'search_template'));
+    if ($template->HasTemplate($zbp->GetPostType($posttype, 'search_template'))) {
+        $template->SetTemplate($zbp->GetPostType($posttype, 'search_template'));
     } else {
-        $zbp->template->SetTemplate($zbp->GetPostType($posttype, 'list_template'));
+        $template->SetTemplate($zbp->GetPostType($posttype, 'list_template'));
     }
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewSearch_Template'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($zbp->template);
+        $fpreturn = $fpname($template);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
             $fpsignal = PLUGIN_EXITSIGNAL_NONE;
 
@@ -852,10 +854,10 @@ function ViewSearch()
     }
 
     if ($return_url == true) {
-        return $zbp->template->GetTags('url');
+        return $template->GetTags('url');
     }
 
-    $zbp->template->Display();
+    $template->Display();
     return true;
 }
 
@@ -972,7 +974,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
             if (0 == $posttype) {
                 $pagebar->Count = $zbp->cache->normal_article_nums;
             }
-            $template = $zbp->GetPostType($posttype, 'list_template');
+            $list_template = $zbp->GetPostType($posttype, 'list_template');
             if ($page == 1) {
                 $zbp->title = $zbp->subname;
             } else {
@@ -1019,7 +1021,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
             } else {
                 $zbp->title = $category->Name . ' ' . str_replace('%num%', $page, $zbp->lang['msg']['number_page']);
             }
-            $template = $category->Template;
+            $list_template = $category->Template;
 
             if (!$zbp->option['ZC_DISPLAY_SUBCATEGORYS']) {
                 $w[] = array('=', 'log_CateID', $category->ID);
@@ -1078,7 +1080,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
             } else {
                 $zbp->title = $author->StaticName . ' ' . str_replace('%num%', $page, $zbp->lang['msg']['number_page']);
             }
-            $template = $author->Template;
+            $list_template = $author->Template;
             $w[] = array('=', 'log_AuthorID', $author->ID);
             //$pagebar->Count = $author->Articles;
             $pagebar->UrlRule->Rules['{%id%}'] = $author->ID;
@@ -1146,7 +1148,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
 
             $zbp->modulesbyfilename['calendar']->Content = ModuleBuilder::Calendar(date('Y', $datetime) . '-' . date('n', $datetime));
 
-            $template = $zbp->GetPostType($posttype, 'date_template');
+            $list_template = $zbp->GetPostType($posttype, 'date_template');
 
             if ($hasDay) {
                 $w[] = array('BETWEEN', 'log_PostTime', $datetime, strtotime('+1 day', $datetime));
@@ -1198,7 +1200,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
                 $zbp->title = $tag->Name . ' ' . str_replace('%num%', $page, $zbp->lang['msg']['number_page']);
             }
 
-            $template = $tag->Template;
+            $list_template = $tag->Template;
             $w[] = array('LIKE', 'log_Tag', '%{' . $tag->ID . '}%');
             $pagebar->UrlRule->Rules['{%id%}'] = $tag->ID;
             $pagebar->UrlRule->Rules['{%alias%}'] = $tag->Alias == '' ? rawurlencode($tag->Name) : $tag->Alias;
@@ -1214,7 +1216,7 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
     $pagebar->UrlRule->Rules['{%page%}'] = $page;
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewList_Core'] as $fpname => &$fpsignal) {
-        $fpname($type, $page, $category, $author, $datetime, $tag, $w, $pagebar, $template);
+        $fpname($type, $page, $category, $author, $datetime, $tag, $w, $pagebar, $list_template);
     }
 
     if ($zbp->option['ZC_LISTONTOP_TURNOFF'] == false) {
@@ -1279,41 +1281,43 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
 
     $zbp->LoadMembersInList($articles);
 
-    if ($zbp->template->isdisplayed === true) {
-        $zbp->template = $zbp->PrepareTemplate();
+    if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+        $template = clone $zbp->template;
+    } else {
+        $template = &$zbp->template;
     }
-    $zbp->template->SetTags('title', $zbp->title);
-    $zbp->template->SetTags('articles', $articles);
+    $template->SetTags('title', $zbp->title);
+    $template->SetTags('articles', $articles);
     if ($pagebar->PageAll == 0) {
         $pagebar = null;
     }
 
-    $zbp->template->SetTags('posttype', $posttype);
-    $zbp->template->SetTags('pagebar', $pagebar);
-    $zbp->template->SetTags('type', $type);
-    $zbp->template->SetTags('page', $page);
+    $template->SetTags('posttype', $posttype);
+    $template->SetTags('pagebar', $pagebar);
+    $template->SetTags('type', $type);
+    $template->SetTags('page', $page);
 
-    $zbp->template->SetTags('date', $datetime);
-    $zbp->template->SetTags('tag', $tag);
-    $zbp->template->SetTags('author', $author);
-    $zbp->template->SetTags('category', $category);
+    $template->SetTags('date', $datetime);
+    $template->SetTags('tag', $tag);
+    $template->SetTags('author', $author);
+    $template->SetTags('category', $category);
 
     if (is_object($pagebar) && isset($pagebar->buttons[$pagebar->PageNow])) {
-        $zbp->template->SetTags('url', $pagebar->buttons[$pagebar->PageNow]);
+        $template->SetTags('url', $pagebar->buttons[$pagebar->PageNow]);
     } else {
-        $zbp->template->SetTags('url', $zbp->host);
+        $template->SetTags('url', $zbp->host);
     }
-    $zbp->template->SetTags('args', $fpargs);
-    $zbp->template->SetTags('route', $route);
+    $template->SetTags('args', $fpargs);
+    $template->SetTags('route', $route);
 
-    if ($zbp->template->hasTemplate($template)) {
-        $zbp->template->SetTemplate($template);
+    if ($template->hasTemplate($list_template)) {
+        $template->SetTemplate($list_template);
     } else {
-        $zbp->template->SetTemplate('index');
+        $template->SetTemplate('index');
     }
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewList_Template'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($zbp->template);
+        $fpreturn = $fpname($template);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
             $fpsignal = PLUGIN_EXITSIGNAL_NONE;
 
@@ -1322,10 +1326,10 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
     }
 
     if ($return_url == true) {
-        return $zbp->template->GetTags('url');
+        return $template->GetTags('url');
     }
 
-    $zbp->template->Display();
+    $template->Display();
     return true;
 }
 
@@ -1549,35 +1553,37 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
 
     $zbp->LoadMembersInList($comments);
 
-    if ($zbp->template->isdisplayed === true) {
-        $zbp->template = $zbp->PrepareTemplate();
+    if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+        $template = clone $zbp->template;
+    } else {
+        $template = &$zbp->template;
     }
-    $zbp->template->SetTags('posttype', $article->Type);
-    $zbp->template->SetTags('title', ($article->Status == 0 ? '' : '[' . $zbp->lang['post_status_name'][$article->Status] . ']') . $article->Title);
-    $zbp->template->SetTags('url', $article->Url);
-    $zbp->template->SetTags('article', $article);
-    $zbp->template->SetTags('type', $article->TypeName);
-    $zbp->template->SetTags('page', 1);
+    $template->SetTags('posttype', $article->Type);
+    $template->SetTags('title', ($article->Status == 0 ? '' : '[' . $zbp->lang['post_status_name'][$article->Status] . ']') . $article->Title);
+    $template->SetTags('url', $article->Url);
+    $template->SetTags('article', $article);
+    $template->SetTags('type', $article->TypeName);
+    $template->SetTags('page', 1);
 
     if ($pagebar->PageAll == 0 || $pagebar->PageAll == 1) {
         $pagebar = null;
     }
-    $zbp->template->SetTags('pagebar', $pagebar);
-    $zbp->template->SetTags('commentspagebar', $pagebar);
-    $zbp->template->SetTags('commentspage', 1);
-    $zbp->template->SetTags('comments', $comments);
+    $template->SetTags('pagebar', $pagebar);
+    $template->SetTags('commentspagebar', $pagebar);
+    $template->SetTags('commentspage', 1);
+    $template->SetTags('comments', $comments);
 
-    $zbp->template->SetTags('args', $fpargs);
-    $zbp->template->SetTags('route', $route);
+    $template->SetTags('args', $fpargs);
+    $template->SetTags('route', $route);
 
-    if ($zbp->template->hasTemplate($article->Template)) {
-        $zbp->template->SetTemplate($article->Template);
+    if ($template->hasTemplate($article->Template)) {
+        $template->SetTemplate($article->Template);
     } else {
-        $zbp->template->SetTemplate($zbp->option['ZC_POST_DEFAULT_TEMPLATE']);
+        $template->SetTemplate($zbp->option['ZC_POST_DEFAULT_TEMPLATE']);
     }
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewPost_Template'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($zbp->template);
+        $fpreturn = $fpname($template);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
             $fpsignal = PLUGIN_EXITSIGNAL_NONE;
 
@@ -1586,10 +1592,10 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
     }
 
     if ($return_url == true) {
-        return $zbp->template->GetTags('url');
+        return $template->GetTags('url');
     }
 
-    $zbp->template->Display();
+    $template->Display();
     return true;
 }
 
@@ -1610,7 +1616,7 @@ function ViewComments($postid, $page)
     $post = new Post();
     $post = $zbp->GetPostByID($postid);
     $page = $page == 0 ? 1 : $page;
-    $template = 'comments';
+    $cmt_template = 'comments';
 
     $pagebar = new Pagebar('javascript:zbp.comment.get(\'' . $post->ID . '\',\'{%page%}\');');
     $pagebar->PageCount = $zbp->commentdisplaycount;
@@ -1663,29 +1669,31 @@ function ViewComments($postid, $page)
         }
     }
 
-    if ($zbp->template->isdisplayed === true) {
-        $zbp->template = $zbp->PrepareTemplate();
+    if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+        $template = clone $zbp->template;
+    } else {
+        $template = &$zbp->template;
     }
-    $zbp->template->SetTags('title', $zbp->title);
-    $zbp->template->SetTags('article', $post);
-    $zbp->template->SetTags('type', 'comment');
+    $template->SetTags('title', $zbp->title);
+    $template->SetTags('article', $post);
+    $template->SetTags('type', 'comment');
 
     if ($pagebar->PageAll == 1) {
         $pagebar = null;
     }
 
-    $zbp->template->SetTags('pagebar', $pagebar);
-    $zbp->template->SetTags('commentspagebar', $pagebar);
-    $zbp->template->SetTags('commentspage', $page);
-    $zbp->template->SetTags('comments', $comments);
+    $template->SetTags('pagebar', $pagebar);
+    $template->SetTags('commentspagebar', $pagebar);
+    $template->SetTags('commentspage', $page);
+    $template->SetTags('comments', $comments);
 
-    $zbp->template->SetTemplate($template);
+    $template->SetTemplate($cmt_template);
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewComments_Template'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($zbp->template);
+        $fpreturn = $fpname($template);
     }
 
-    $s = $zbp->template->Output();
+    $s = $template->Output();
 
     $a = explode('<label id="AjaxCommentBegin"></label>', $s);
     $s = $a[1];
@@ -1710,7 +1718,7 @@ function ViewComment($id)
 {
     global $zbp;
 
-    $template = 'comment';
+    $cmt_template = 'comment';
     /* @var Comment $comment */
     $comment = $zbp->GetCommentByID($id);
     $post = new Post();
@@ -1721,21 +1729,23 @@ function ViewComment($id)
         $comment->Content .= '<label id="AjaxComment' . $comment->ID . '"></label>';
     }
 
-    if ($zbp->template->isdisplayed === true) {
-        $zbp->template = $zbp->PrepareTemplate();
+    if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+        $template = clone $zbp->template;
+    } else {
+        $template = &$zbp->template;
     }
-    $zbp->template->SetTags('title', $zbp->title);
-    $zbp->template->SetTags('comment', $comment);
-    $zbp->template->SetTags('article', $post);
-    $zbp->template->SetTags('type', 'comment');
-    $zbp->template->SetTags('page', 1);
-    $zbp->template->SetTemplate($template);
+    $template->SetTags('title', $zbp->title);
+    $template->SetTags('comment', $comment);
+    $template->SetTags('article', $post);
+    $template->SetTags('type', 'comment');
+    $template->SetTags('page', 1);
+    $template->SetTemplate($cmt_template);
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewComment_Template'] as $fpname => &$fpsignal) {
-        $fpreturn = $fpname($zbp->template);
+        $fpreturn = $fpname($template);
     }
 
-    $zbp->template->Display();
+    $template->Display();
 
     return true;
 }

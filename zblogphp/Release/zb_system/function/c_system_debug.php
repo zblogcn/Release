@@ -153,7 +153,7 @@ function Debug_Error_Handler($errno, $errstr, $errfile, $errline)
         return true;
     }
 
-    $zbe = ZBlogException::GetNewException();
+    $zbe = ZBlogException::GetInstance();
     $zbe->ParseError($errno, $errstr, $errfile, $errline);
     $zbe->Display();
 
@@ -192,7 +192,7 @@ function Debug_Exception_Handler($exception)
         );
     }
 
-    $zbe = ZBlogException::GetNewException();
+    $zbe = ZBlogException::GetInstance();
     $zbe->ParseException($exception);
     $zbe->Display();
 
@@ -226,7 +226,7 @@ function Debug_Shutdown_Handler()
             return true;
         }
 
-        $zbe = ZBlogException::GetNewException();
+        $zbe = ZBlogException::GetInstance();
         $zbe->ParseShutdown($error);
         $zbe->Display();
     }
@@ -380,30 +380,30 @@ class ZBlogException
         throw new Exception($e);
     }
 
+    public static function GetNewException()
+    {
+        $z = new self();
+        $z->moreinfo = self::$error_moreinfo;
+        self::$error_moreinfo = null;
+        return $z;
+    }
+
     /**
      * 获取新实例进$private_zbe_list队列里.
      *
      * @return ZBlogException
      */
-    public static function GetNewException()
+    public static function GetInstance()
     {
-
         $z = new self();
         if (count(self::$private_zbe_list) > 0) {
             $z->previous = end(self::$private_zbe_list);
-        } else {
-            $z->previous = $z;
         }
         $z->moreinfo = self::$error_moreinfo;
         self::$error_moreinfo = null;
         self::$private_zbe_list[]= $z;
 
         return $z;
-    }
-
-    public static function GetInstance()
-    {
-        return self::GetNewException();
     }
 
     /**

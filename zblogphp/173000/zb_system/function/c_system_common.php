@@ -302,7 +302,7 @@ function RunTime($isOutput = true)
 
     if ($isOutput) {
         echo '<!--' . $rt['time'] . ' ms , ';
-        echo $rt['query'] . ' queries';
+        echo $rt['query'] . ($rt['query'] > 1 ? ' queries' : ' query');
         echo ' , ' . $rt['memory'] . 'kb memory';
         echo ' , ' . $rt['error'] . ' error' . ($rt['error'] > 1 ? 's' : '');
         //echo print_r($rt['error_detail'], true);

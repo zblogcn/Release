@@ -136,6 +136,7 @@ function ViewAuto()
             $b = $b && (($r != '' && preg_match($r, $url, $m) == 1) || ($r == '' && $url == '') || ($r == '' && $url == 'index.php') || ($r == '/(?J)^index\.php\/$/' && $url == ''));
             if ($b) {
                 $array = $m;
+                ViewAuto_Process_Args_get($array, GetValueInArray($route, 'args_get', array()), $route);
                 ViewAuto_Process_Args($array, $parameters, $m);
                 ViewAuto_Process_Args_with($array, GetValueInArray($route, 'args_with', array()), $route);
                 ViewAuto_Process_Args_Merge($route);
@@ -160,6 +161,7 @@ function ViewAuto()
         if ($b) {
             $array = array();
             ViewAuto_Process_Args_get($array, GetValueInArray($route, 'args_get', array()), $route);
+            ViewAuto_Process_Args($array, $parameters, $m);
             ViewAuto_Process_Args_with($array, GetValueInArray($route, 'args_with', array()), $route);
             ViewAuto_Process_Args_Merge($route);
             $result = ViewAuto_Check_Redirect_To($route);
@@ -213,7 +215,10 @@ function ViewAuto_Process_Args_get(&$array, $args_get, $route)
 
     if (isset($args_get) && is_array($args_get)) {
         foreach ($get as $key => $value) {
-            $args_get[] = $value;
+            $value = trim($value);
+            if ($value !== '') {
+                $args_get[] = $value;
+            }
         }
         foreach ($args_get as $key => $value) {
             if (isset($_GET[$value])) {
@@ -249,7 +254,7 @@ function ViewAuto_Process_Args_with(&$array, $args_with, $route)
         $array['posttype'] = $route['posttype'];
     }
     if (isset($route['verify_permalink'])) {
-        $array['verify_permalink'] = $route['verify_permalink'];
+        $array['_verify_permalink'] = $route['verify_permalink'];
     }
     return $array;
 }
@@ -447,6 +452,10 @@ function ViewAuto_Check_Get_And_Not_Get_And_Must_Get($get, $notget, $mustget)
             $get = array_merge($get, $mustget);
             foreach ($get as $key => $value) {
                 if (isset($_GET[$value])) {
+                    $b = true;
+                    break;
+                }
+                if ($value === '') {
                     $b = true;
                     break;
                 }
@@ -1460,7 +1469,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
     }
 
     if (!empty($route) || $isrewrite == true) {
-        if (isset($object[0]) && !isset($object['page']) && (!isset($object['verify_permalink']) || (isset($object['verify_permalink']) && $object['verify_permalink'] != false))) {
+        if (isset($object[0]) && !isset($object['page']) && (!isset($object['_verify_permalink']) || (isset($object['_verify_permalink']) && $object['_verify_permalink'] != false))) {
             if (!(stripos(urldecode($article->Url), '/' . $object[0]) !== false)) {
                 //$zbp->ShowError(2, __FILE__, __LINE__);
                 return false;

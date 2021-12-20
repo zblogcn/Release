@@ -91,14 +91,19 @@ function ViewAuto()
                 ViewAuto_Process_Args_with($array, GetValueInArray($route, 'args_with', array()), $route);
                 ViewAuto_Process_Args_Merge($route);
                 $b_redirect = ViewAuto_Check_To_Permalink($route, $array);
+                $result = ViewAuto_Check_Redirect_To($route);
+                if (is_array($result)) {
+                    return $result;
+                }
                 $result = ViewAuto_Call_Auto($route, $array);
                 if ($result === false) {
                     continue;
                 }
-                if ($result == true) {
-                    //如果开启伪静且$b_redirect，那么通过原动态访问的会跳转至$result
-                    if ($b_redirect && is_string($result)) {
-                        Redirect302($result);
+                //如果开启伪静且$b_redirect=true和返回array，那么通过原动态访问的会跳转至$result
+                if ($b_redirect == true && is_array($result)) {
+                    $result2 = ViewAuto_Check_Redirect_To($result);
+                    if (is_array($result2)) {
+                        return $result2;
                     }
                 }
                 return $result;
@@ -135,6 +140,10 @@ function ViewAuto()
                 ViewAuto_Process_Args_with($array, GetValueInArray($route, 'args_with', array()), $route);
                 ViewAuto_Process_Args_Merge($route);
                 //var_dump($match_with_page_value, $route['urlrule'], $r, $url, $m, $array);//die;
+                $result = ViewAuto_Check_Redirect_To($route);
+                if (is_array($result)) {
+                    return $result;
+                }
                 $result = ViewAuto_Call_Auto($route, $array);
                 if ($result === false) {
                     continue;
@@ -153,6 +162,10 @@ function ViewAuto()
             ViewAuto_Process_Args_get($array, GetValueInArray($route, 'args_get', array()), $route);
             ViewAuto_Process_Args_with($array, GetValueInArray($route, 'args_with', array()), $route);
             ViewAuto_Process_Args_Merge($route);
+            $result = ViewAuto_Check_Redirect_To($route);
+            if (is_array($result)) {
+                return $result;
+            }
             $result = ViewAuto_Call_Auto($route, $array);
             if ($result === false) {
                 continue;
@@ -282,16 +295,32 @@ function ViewAuto_Process_Args_Merge(&$route)
 /**
  * ViewAuto的辅助函数
  */
-function ViewAuto_Call_Auto($route, $array)
+function ViewAuto_Check_Redirect_To($route)
 {
+    if (isset($route['StatusCode']) && isset($route['Location'])) {
+        if ($route['StatusCode'] == 301) {
+            Redirect301($route['Location']);
+        } else {
+            Redirect302($route['Location']);
+        }
+        return array('StatusCode'=>$route['StatusCode'], 'Location' => $route['Location']);
+    }
     if (isset($route['redirect_to'])) {
-        Redirect302($route['redirect_to']);
-        return;
+        Redirect($route['redirect_to']);
+        return array('StatusCode'=>302, 'Location' => $route['redirect_to']);
     }
     if (isset($route['redirect301_to'])) {
         Redirect301($route['redirect301_to']);
-        return;
+        return array('StatusCode'=>301, 'Location' => $route['redirect_to']);
     }
+    return false;
+}
+
+/**
+ * ViewAuto的辅助函数
+ */
+function ViewAuto_Call_Auto($route, $array)
+{
     $function = $route['call'];
     $array['_route'] = $route;
     if (strpos($function, '::') !== false) {
@@ -343,7 +372,7 @@ function ViewAuto_Check_To_Permalink($route, &$array)
     }
     $r = UrlRule::OutputUrlRegEx_Route($route, $match_with_page);
     if ($r != '') {
-        $array['return_url'] = true;
+        $array['_return_url'] = true;
         return true;
     }
     return false;
@@ -668,7 +697,7 @@ function ViewSearch()
 
     $args = GetValueInArray($fpargs, 0, null);
     if (is_array($args)) {
-        $return_url = GetValueInArray($args, 'return_url', false);
+        $return_url = GetValueInArray($args, '_return_url', false);
         $posttype = GetValueInArray($args, 'posttype', 0);
         $q = GetValueInArray($args, 'q', '');
         if (isset($args['search']) && $args['search']) {
@@ -863,14 +892,14 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
         $date = GetValueInArray($page, 'date', null);
         $tags = GetValueInArray($page, 'tags', null);
         $posttype = GetValueInArray($page, 'posttype', 0);
-        $return_url = GetValueInArray($page, 'return_url', false);
+        $return_url = GetValueInArray($page, '_return_url', false);
         $route = GetValueInArray($page, '_route', array());
         $page = GetValueInArray($page, 'page', null);
     } else {
         if (!is_array($object)) {
             $object = array();
         }
-        $return_url = GetValueInArray($object, 'return_url', false);
+        $return_url = GetValueInArray($object, '_return_url', false);
         $route = GetValueInArray($object, '_route', array());
         $posttype = GetValueInArray($object, 'posttype', 0);
     }
@@ -1321,7 +1350,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
         $object = $id;
         $isrewrite = true;
         $posttype = GetValueInArray($object, 'posttype', 0);
-        $return_url = GetValueInArray($object, 'return_url', false);
+        $return_url = GetValueInArray($object, '_return_url', false);
         $route = GetValueInArray($object, '_route', array());
         $alias = GetValueInArray($object, 'alias', null);
         $id = GetValueInArray($object, 'id', null);
@@ -1341,7 +1370,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
         if (!is_array($object)) {
             $object = array();
         }
-        $return_url = GetValueInArray($object, 'return_url', false);
+        $return_url = GetValueInArray($object, '_return_url', false);
         $route = GetValueInArray($object, '_route', array());
         $posttype = GetValueInArray($object, 'posttype', 0);
         if (is_array($id)) {

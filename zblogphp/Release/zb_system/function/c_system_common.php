@@ -983,13 +983,13 @@ function Redirect302($url)
 {
     SetHttpStatusCode(302);
     header('Location: ' . $url);
-    die();
 }
 
 if (!function_exists('Redirect')) {
     function Redirect($url)
     {
         Redirect302($url);
+        die();
     }
 }
 
@@ -1002,7 +1002,6 @@ function Redirect301($url)
 {
     SetHttpStatusCode(301);
     header('Location: ' . $url);
-    die();
 }
 
 /**

@@ -982,7 +982,9 @@ function RedirectByScript($url)
 function Redirect302($url)
 {
     SetHttpStatusCode(302);
-    header('Location: ' . $url);
+    if (!headers_sent()) {
+        header('Location: ' . $url);
+    }
 }
 
 if (!function_exists('Redirect')) {
@@ -1001,7 +1003,9 @@ if (!function_exists('Redirect')) {
 function Redirect301($url)
 {
     SetHttpStatusCode(301);
-    header('Location: ' . $url);
+    if (!headers_sent()) {
+        header('Location: ' . $url);
+    }
 }
 
 /**

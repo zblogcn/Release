@@ -801,8 +801,11 @@ function ViewSearch()
         $results[] = $r;
     }
 
+    if ($zbp->template->isdisplayed === true) {
+        $zbp->template = $zbp->PrepareTemplate();
+    }
     if ($disablebot) {
-        $zbp->header .= '    <meta name="robots" content="noindex,nofollow,noarchive" />' . "\r\n";
+        $zbp->template->SetTags('header', $zbp->template->GetTags('header') . '    <meta name="robots" content="noindex,nofollow,noarchive" />' . "\r\n");
     }
     $zbp->template->SetTags('title', str_replace(array('<span>', '</span>'), '', $article->Title));
     $zbp->template->SetTags('article', $article);
@@ -1267,6 +1270,9 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
 
     $zbp->LoadMembersInList($articles);
 
+    if ($zbp->template->isdisplayed === true) {
+        $zbp->template = $zbp->PrepareTemplate();
+    }
     $zbp->template->SetTags('title', $zbp->title);
     $zbp->template->SetTags('articles', $articles);
     if ($pagebar->PageAll == 0) {
@@ -1534,6 +1540,9 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
 
     $zbp->LoadMembersInList($comments);
 
+    if ($zbp->template->isdisplayed === true) {
+        $zbp->template = $zbp->PrepareTemplate();
+    }
     $zbp->template->SetTags('posttype', $article->Type);
     $zbp->template->SetTags('title', ($article->Status == 0 ? '' : '[' . $zbp->lang['post_status_name'][$article->Status] . ']') . $article->Title);
     $zbp->template->SetTags('url', $article->Url);
@@ -1645,6 +1654,9 @@ function ViewComments($postid, $page)
         }
     }
 
+    if ($zbp->template->isdisplayed === true) {
+        $zbp->template = $zbp->PrepareTemplate();
+    }
     $zbp->template->SetTags('title', $zbp->title);
     $zbp->template->SetTags('article', $post);
     $zbp->template->SetTags('type', 'comment');
@@ -1700,6 +1712,9 @@ function ViewComment($id)
         $comment->Content .= '<label id="AjaxComment' . $comment->ID . '"></label>';
     }
 
+    if ($zbp->template->isdisplayed === true) {
+        $zbp->template = $zbp->PrepareTemplate();
+    }
     $zbp->template->SetTags('title', $zbp->title);
     $zbp->template->SetTags('comment', $comment);
     $zbp->template->SetTags('article', $post);

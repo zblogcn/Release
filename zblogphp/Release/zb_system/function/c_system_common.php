@@ -2371,6 +2371,14 @@ function rawurlencode_without_backslash($s)
 
 /**
  * 检查移动端
+ */
+function zbp_is_mobile()
+{
+    return CheckIsMobile();
+}
+
+/**
+ * 检查移动端
  *
  * @return boolean
  */

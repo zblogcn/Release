@@ -2374,7 +2374,7 @@ function rawurlencode_without_backslash($s)
  *
  * @return boolean
  */
-function CheckIsMoblie()
+function CheckIsMobile()
 {
     $ua = GetGuestAgent();
     if (preg_match('/(Android|Web0S|webOS|iPad|iPhone|Mobile|Windows\sPhone|Kindle|BlackBerry|Opera\sMini)/', $ua)) {

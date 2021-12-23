@@ -586,11 +586,10 @@ if (ZBP_SAFEMODE === false) {
     }
 
     foreach ($aps as $ap) {
-        $ap_in_actived = !in_array($ap, $GLOBALS['activedapps']);
-        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml') && $ap_in_actived) {
+        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml')) {
             $GLOBALS['activedapps'][] = $ap;
         }
-        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php') && $ap_in_actived) {
+        if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php')) {
             include $file_base;
         }
     }
@@ -603,7 +602,7 @@ if (ZBP_SAFEMODE === false) {
 }
 
 unset($file_base, $aps, $aps2, $fn, $ap, $op_users, $opk, $opv);
-unset($theme_name, $theme_iclude, $ap_in_actived, $theme_preset, $style_preset);
+unset($theme_name, $theme_iclude, $theme_preset, $style_preset);
 
 //1.7新加入的
 $GLOBALS['zbp']->PreLoad();

@@ -548,34 +548,43 @@ $GLOBALS['zbp']->Initialize();
  * 加载主题和插件APP
  */
 if (ZBP_SAFEMODE === false) {
-    $aps = GetVarsFromEnv('ZBP_PRESET_PLUGINS');
-    if ($aps != '') {
-        $aps = explode('|', $aps);
-        $aps = array_unique($aps);
-        foreach ($aps as $ap) {
-            $ap_in_actived = !in_array($ap, $GLOBALS['activedapps']);
-            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml') && $ap_in_actived) {
-                $GLOBALS['activedapps'][] = $ap;
-            }
-            if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/include.php') && $ap_in_actived) {
-                include $file_base;
-            }
+
+    $theme_preset = GetVarsFromEnv('ZBP_PRESET_THEME');
+    if ($theme_preset != '') {
+        $GLOBALS['blogtheme'] = $theme_preset;
+        $style_preset = GetVarsFromEnv('ZBP_PRESET_THEME_STYLE');
+        if ($style_preset != '') {
+            $GLOBALS['blogstyle'] = $style_preset;
         }
     }
+    $theme_name = $GLOBALS['blogtheme'];
+    $file_base = $GLOBALS['usersdir'] . 'theme/' . $GLOBALS['blogtheme'] . '/theme.xml';
+    $theme_include = $GLOBALS['usersdir'] . 'theme/' . $GLOBALS['blogtheme'] . '/include.php';
 
-    if (is_readable($file_base = $GLOBALS['usersdir'] . 'theme/' . $GLOBALS['blogtheme'] . '/theme.xml')) {
-        $GLOBALS['activedapps'][] = $GLOBALS['blogtheme'];
+    if (is_readable($file_base)) {
+        $GLOBALS['activedapps'][] = $theme_name;
 
         // 读主题版本信息
-        $GLOBALS['zbp']->themeapp = $GLOBALS['zbp']->LoadApp('theme', $GLOBALS['blogtheme']);
+        $GLOBALS['zbp']->themeapp = $GLOBALS['zbp']->LoadApp('theme', $theme_name);
         $GLOBALS['zbp']->themeinfo = $GLOBALS['zbp']->themeapp->GetInfoArray();
 
-        if ($GLOBALS['zbp']->themeapp->isloaded && is_readable($file_base = $GLOBALS['usersdir'] . 'theme/' . $GLOBALS['blogtheme'] . '/include.php')) {
-            include $file_base;
+        if ($GLOBALS['zbp']->themeapp->isloaded && is_readable($theme_include)) {
+            include $theme_include;
         }
     }
 
-    $aps = $GLOBALS['zbp']->GetPreActivePlugin();
+    $aps = GetVarsFromEnv('ZBP_PRESET_PLUGINS');
+    $aps2 = $GLOBALS['zbp']->GetPreActivePlugin();
+    if ($aps != '') {
+        $aps = explode('|', $aps);
+        foreach ($aps2 as $ap) {
+            $aps[] = $ap;
+        }
+        $aps = array_unique($aps);
+    } else {
+        $aps = $aps2;
+    }
+
     foreach ($aps as $ap) {
         $ap_in_actived = !in_array($ap, $GLOBALS['activedapps']);
         if (is_readable($file_base = $GLOBALS['usersdir'] . 'plugin/' . $ap . '/plugin.xml') && $ap_in_actived) {
@@ -593,7 +602,8 @@ if (ZBP_SAFEMODE === false) {
     }
 }
 
-unset($file_base, $aps, $fn, $ap, $op_users, $opk, $opv, $ap_in_actived);
+unset($file_base, $aps, $aps2, $fn, $ap, $op_users, $opk, $opv);
+unset($theme_name, $theme_iclude, $ap_in_actived, $theme_preset, $style_preset);
 
 //1.7新加入的
 $GLOBALS['zbp']->PreLoad();

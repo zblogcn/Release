@@ -784,7 +784,7 @@ class ZBlogPHP
             Fix_16_to_17_and_17_to_16_Error();
         }
 
-        if (defined('ZBP_PRESET_BLOGPATH_USED')) {
+        if (defined('ZBP_PRESET_HOST_USED')) {
             //如果环境变量已预设了bloghost
             $this->host = rtrim($this->host, '/') . '/';
             $this->option['ZC_BLOG_HOST'] = $this->host;

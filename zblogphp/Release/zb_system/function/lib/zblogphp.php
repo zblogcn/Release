@@ -2518,15 +2518,8 @@ class ZBlogPHP
         foreach ($array as $a) {
             $l = new Base($table, $datainfo);
             $l->LoadInfoByAssoc($a);
-            $id = $l->GetIdName();
-            if ($this->CheckCache('Base', $l->$id) == false) {
-                $this->AddCache($l);
-                $list[] = $l;
-            } else {
-                $n = &$this->GetCache('Base', $l->$id);
-                $list[] = $n;
-            }
-            unset($l, $n);
+            $list[] = $l;
+            unset($l);
         }
 
         return $list;
@@ -2580,21 +2573,10 @@ class ZBlogPHP
             $array = $array2;
         }
 
-        $array = array_unique($array);
-        $cache = &$this->GetCache('Base');
-        foreach ($cache as $o) {
-            $v1 = $o->$field_name;
-            foreach ($array as $k2 => $v2) {
-                if ($v1 == $v2) {
-                    unset($array[$k2]);
-                    $list[] = $o;
-                    break;
-                }
-            }
-        }
         if (empty($array)) {
             return $list;
         }
+        $array = array_unique($array);
 
         $where[] = array('IN', $datainfo[$field_name][0], implode(',', $array));
         $sql = $this->db->sql->Select($table, '*', $where);
@@ -2605,15 +2587,8 @@ class ZBlogPHP
         foreach ($objects as $a) {
             $l = new Base($table, $datainfo);
             $l->LoadInfoByAssoc($a);
-            $id = $l->GetIdName();
-            if ($this->CheckCache('Base', $l->$id) == false) {
-                $this->AddCache($l);
-                $list[] = $l;
-            } else {
-                $n = &$this->GetCache('Base', $l->$id);
-                $list[] = $n;
-            }
-            unset($l, $n);
+            $list[] = $l;
+            unset($l);
         }
 
         return $list;

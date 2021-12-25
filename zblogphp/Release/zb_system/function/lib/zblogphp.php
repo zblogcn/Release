@@ -1135,6 +1135,11 @@ class ZBlogPHP
                 break;
             case 'postgresql':
             case 'pdo_postgresql':
+                if ($this->option['ZC_DATABASE_TYPE'] == 'postgresql') {
+                    if (!extension_loaded('pgsql') && extension_loaded('pdo_pgsql')) {
+                        $this->option['ZC_DATABASE_TYPE'] = 'pdo_postgresql';
+                    }
+                }
                 $this->db = self::InitializeDB($this->option['ZC_DATABASE_TYPE']);
                 if ($this->db->Open(
                     array(
@@ -1155,7 +1160,7 @@ class ZBlogPHP
             case 'mysqli':
             case 'pdo_mysql':
             default:
-                if ($this->option['ZC_DATABASE_TYPE'] == 'mysql' && version_compare(PHP_VERSION, '7.0.0') >= 0) {
+                if ($this->option['ZC_DATABASE_TYPE'] == 'mysql' && (version_compare(PHP_VERSION, '7.0.0') >= 0) || !extension_loaded('mysql')) {
                     if (extension_loaded('mysqli')) {
                         $this->option['ZC_DATABASE_TYPE'] = 'mysqli';
                     } elseif (extension_loaded('pdo_mysql')) {

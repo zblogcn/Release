@@ -2729,4 +2729,4 @@ DefinePluginFilter('Filter_Plugin_API_Result_Data');
 '调用:
 '**************************************************>
  */
-DefinePluginFilter('Filter_Plugin_Api_Post_List_Core');
+DefinePluginFilter('Filter_Plugin_API_Post_List_Core');

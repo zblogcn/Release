@@ -1115,6 +1115,13 @@ class ZBlogPHP
             case 'sqlite':
             case 'sqlite3':
             case 'pdo_sqlite':
+                if ($this->option['ZC_DATABASE_TYPE'] == 'sqlite' && version_compare(PHP_VERSION, '5.4.0') >= 0) {
+                    if (extension_loaded('sqlite3')) {
+                        $this->option['ZC_DATABASE_TYPE'] = 'sqlite3';
+                    } elseif (extension_loaded('pdo_sqlite')) {
+                        $this->option['ZC_DATABASE_TYPE'] = 'pdo_sqlite';
+                    }
+                }
                 $this->db = self::InitializeDB($this->option['ZC_DATABASE_TYPE']);
                 if ($this->db->Open(
                     array(

@@ -1160,7 +1160,7 @@ class ZBlogPHP
             case 'mysqli':
             case 'pdo_mysql':
             default:
-                if ($this->option['ZC_DATABASE_TYPE'] == 'mysql' && (version_compare(PHP_VERSION, '7.0.0') >= 0) || !extension_loaded('mysql')) {
+                if ($this->option['ZC_DATABASE_TYPE'] == 'mysql' && (version_compare(PHP_VERSION, '7.0.0') >= 0) || (!extension_loaded('mysql') && version_compare(PHP_VERSION, '7.0.0') < 0)) {
                     if (extension_loaded('mysqli')) {
                         $this->option['ZC_DATABASE_TYPE'] = 'mysqli';
                     } elseif (extension_loaded('pdo_mysql')) {

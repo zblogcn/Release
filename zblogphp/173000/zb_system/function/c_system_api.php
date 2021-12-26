@@ -183,10 +183,10 @@ function ApiCheckMods(&$mods_allow, &$mods_disallow)
  * @param int $code
  * @param string|null $message
  */
-function ApiResponse($data = null, $error = null, $code = 200, $message = null, $isresponse = true)
+function ApiResponse($data = null, $error = null, $code = 200, $message = null, $should_resp = true)
 {
     foreach ($GLOBALS['hooks']['Filter_Plugin_API_Pre_Response'] as $fpname => &$fpsignal) {
-        $fpname($data, $error, $code, $message, $isresponse);
+        $fpname($data, $error, $code, $message, $should_resp);
     }
 
     if (!empty($error)) {
@@ -228,29 +228,30 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null, 
         $fpname($response);
     }
 
-    if (!defined('ZBP_API_IN_TEST') && $isresponse == true) {
+    if (!defined('ZBP_API_IN_TEST') && $should_resp == true) {
         //ob_end_clean();
         if (!headers_sent()) {
             header('Content-Type: application/json; charset=utf-8');
         }
     }
 
-    if (!empty($error)) {
+    if ($code === 500) {
         SetHttpStatusCode(500);
     }
 
     $r = JsonEncode($response);
 
-    if ($isresponse == true) {
+    if ($should_resp == true) {
         echo $r;
     }
-    return $r;
 
-    //if (empty($error) && $code !== 200) {
+    if (empty($error) && $code !== 200) {
         // 如果 code 不为 200，又不是系统抛出的错误，再来抛出一个 Exception，适配 phpunit
-        //ZBlogException::SuspendErrorHook();
-        //throw new Exception($message, $code);
-    //}
+        ZBlogException::SuspendErrorHook();
+        throw new Exception($message, $code);
+    }
+
+    return $r;
 }
 
 /**

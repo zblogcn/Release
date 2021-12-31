@@ -45,6 +45,8 @@ class Network__filegetcontents implements Network__Interface
 
     private $private_boundary = '';
 
+    private $timeout = 30;
+
     /**
      * @param $property_name
      * @param $value
@@ -199,9 +201,13 @@ class Network__filegetcontents implements Network__Interface
 
         $this->option['header'] = implode("\r\n", $this->httpheader);
         //$this->httpheader[] = 'Referer: ' . 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $this->option['ignore_errors'] = true;
+        if (!isset($this->option['timeout'])) {
+            $this->option['timeout'] = $this->timeout;
+        }
 
         if ($this->maxredirs > 0) {
-            $this->option['follow_location'] = true;
+            $this->option['follow_location'] = 1;
             //补一个数字 要大于1才跳转
             $this->option['max_redirects'] = ($this->maxredirs + 1);
         } else {
@@ -214,6 +220,9 @@ class Network__filegetcontents implements Network__Interface
         }
         $http_response_header = null;
         $this->responseText = file_get_contents(($this->isgzip == true ? 'compress.zlib://' : '') . $this->url, false, stream_context_create(array('http' => $this->option, 'ssl' => array('verify_peer' => false,'verify_peer_name' => false))));
+        if (is_bool($this->responseText) && !$this->responseText) {
+            $this->responseText = '';
+        }
         $this->responseHeader = $http_response_header;
         if (defined('ZBP_PATH')) {
             ZBlogException::ResumeErrorHook();

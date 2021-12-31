@@ -189,7 +189,7 @@ class Network__filegetcontents implements Network__Interface
 
             if (!isset($this->httpheader['Content-Type'])) {
                 if ($this->private_isBinary) {
-                    $this->httpheader['Content-Type'] = 'Content-Type:  multipart/form-data; boundary=' . $this->private_boundary;
+                    $this->httpheader['Content-Type'] = 'Content-Type: multipart/form-data; boundary=' . $this->private_boundary;
                 } else {
                     $this->httpheader['Content-Type'] = 'Content-Type: application/x-www-form-urlencoded';
                 }
@@ -209,11 +209,15 @@ class Network__filegetcontents implements Network__Interface
             $this->option['max_redirects'] = 0;
         }
 
-        ZBlogException::SuspendErrorHook();
+        if (defined('ZBP_PATH')) {
+            ZBlogException::SuspendErrorHook();
+        }
         $http_response_header = null;
-        $this->responseText = file_get_contents(($this->isgzip == true ? 'compress.zlib://' : '') . $this->url, false, stream_context_create(array('http' => $this->option)));
+        $this->responseText = file_get_contents(($this->isgzip == true ? 'compress.zlib://' : '') . $this->url, false, stream_context_create(array('http' => $this->option, 'ssl' => array('verify_peer' => false,'verify_peer_name' => false))));
         $this->responseHeader = $http_response_header;
-        ZBlogException::ResumeErrorHook();
+        if (defined('ZBP_PATH')) {
+            ZBlogException::ResumeErrorHook();
+        }
 
         if (!is_array($this->responseHeader)) {
             return;

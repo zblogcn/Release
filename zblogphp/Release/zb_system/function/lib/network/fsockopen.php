@@ -226,15 +226,32 @@ class Network__fsockopen implements Network__Interface
 
         $this->option['header'] = implode("\r\n", $this->httpheader);
 
-        ZBlogException::SuspendErrorHook();
-        $socket = fsockopen(
+
+        /*$socket = fsockopen(
             ($this->scheme == 'https' ? 'ssl://' : '') . $this->parsed_url['host'],
             $this->port,
             $this->errno,
             $this->errstr,
             $this->timeout
+        );*/
+        
+        $contextOptions = array('ssl' => array('verify_peer' => false,'verify_peer_name' => false));
+        $context = stream_context_create($contextOptions);
+
+        if (defined('ZBP_PATH')) {
+            ZBlogException::SuspendErrorHook();
+        }
+        $socket = stream_socket_client(
+            (($this->scheme == 'https' ? 'ssl://' : '') . $this->parsed_url['host']) . ':' . $this->port,
+            $this->errno,
+            $this->errstr,
+            $this->timeout,
+            STREAM_CLIENT_CONNECT,
+            $context
         );
-        ZBlogException::SuspendErrorHook();
+        if (defined('ZBP_PATH')) {
+            ZBlogException::ResumeErrorHook();
+        }
         if (!$socket) {
             return;
         }

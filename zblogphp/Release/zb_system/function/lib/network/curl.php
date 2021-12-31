@@ -306,7 +306,6 @@ class Network__curl implements Network__Interface
      */
     public function addBinary($name, $entity, $filename = null, $mime = '')
     {
-        global $zbp;
         $this->private_isBinary = true;
 
         if (!is_file($entity)) {
@@ -364,7 +363,6 @@ class Network__curl implements Network__Interface
      */
     private function reinit()
     {
-        global $zbp;
         $this->readyState = 0; //状态
         $this->responseBody = null; //返回的二进制
         $this->responseStream = null; //返回的数据流
@@ -386,7 +384,12 @@ class Network__curl implements Network__Interface
         $this->errno = 0;
 
         $this->ch = curl_init();
-        $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (' . $zbp->cache->system_environment . ') Z-BlogPHP/' . $GLOBALS['blogversion']);
+
+        if (defined('ZBP_PATH')) {
+            $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (' . $GLOBALS['zbp']->cache->system_environment . ') Z-BlogPHP/' . $GLOBALS['zbp']->version);
+        } else {
+            $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (compatible; ZBP_NetWork)');
+        }
         $this->setMaxRedirs(1);
     }
 
@@ -406,6 +409,50 @@ class Network__curl implements Network__Interface
     public function setMaxRedirs($n = 0)
     {
         $this->maxredirs = (int) $n;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->status;
+    }
+
+    public function getStatusText()
+    {
+        return $this->statusText;
+    }
+
+    public function getReasonPhrase()
+    {
+        return substr($this->statusText, 13);
+    }
+
+    public function withStatus($code, $reasonPhrase = '')
+    {
+    }
+
+    public function getBody()
+    {
+        return $this->responseText;
+    }
+
+    public function getHeaders()
+    {
+        $headers = array();
+        foreach ($this->responseHeader as $h) {
+            $array = explode(': ', $h, 2);
+            if (count($array) > 1) {
+                $headers[$array[0]] = $array[1];
+            }
+        }
+        return $headers;
+    }
+
+    public function getHeader($name)
+    {
+        $headers = $this->getHeaders();
+        if (isset($headers[$name])) {
+            return $headers[$name];
+        }
     }
 
 }

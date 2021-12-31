@@ -453,7 +453,6 @@ class Network__fsockopen implements Network__Interface
 
     private function reinit()
     {
-        global $zbp;
         $this->httpheader = array();
 
         if (!$this->canreinit) {
@@ -480,7 +479,12 @@ class Network__fsockopen implements Network__Interface
         $this->errstr = '';
         $this->errno = 0;
 
-        $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (' . $zbp->cache->system_environment . ') Z-BlogPHP/' . $GLOBALS['blogversion']);
+        if (defined('ZBP_PATH')) {
+            $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (' . $GLOBALS['zbp']->cache->system_environment . ') Z-BlogPHP/' . $GLOBALS['zbp']->version);
+        } else {
+            $this->setRequestHeader('User-Agent', 'Mozilla/5.0 (compatible; ZBP_NetWork)');
+        }
+
         $this->setMaxRedirs(1);
     }
 
@@ -553,6 +557,50 @@ class Network__fsockopen implements Network__Interface
     public function setMaxRedirs($n = 0)
     {
         $this->maxredirs = $n;
+    }
+
+    public function getStatusCode()
+    {
+        return $this->status;
+    }
+
+    public function getStatusText()
+    {
+        return $this->statusText;
+    }
+
+    public function getReasonPhrase()
+    {
+        return substr($this->statusText, 13);
+    }
+
+    public function withStatus($code, $reasonPhrase = '')
+    {
+    }
+
+    public function getBody()
+    {
+        return $this->responseText;
+    }
+
+    public function getHeaders()
+    {
+        $headers = array();
+        foreach ($this->responseHeader as $h) {
+            $array = explode(': ', $h, 2);
+            if (count($array) > 1) {
+                $headers[$array[0]] = $array[1];
+            }
+        }
+        return $headers;
+    }
+
+    public function getHeader($name)
+    {
+        $headers = $this->getHeaders();
+        if (isset($headers[$name])) {
+            return $headers[$name];
+        }
     }
 
 }

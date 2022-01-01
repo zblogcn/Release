@@ -584,6 +584,7 @@ class ZBlogPHP
      */
     public static function GetInstance()
     {
+        ZBlogException::ClearList();
         if (!isset(self::$private_zbp)) {
             if (isset($GLOBALS['option']['ZC_GODZBP_FILE']) && isset($GLOBALS['option']['ZC_GODZBP_NAME']) && is_readable(ZBP_PATH . $GLOBALS['option']['ZC_GODZBP_FILE'])) {
                 include ZBP_PATH . $GLOBALS['option']['ZC_GODZBP_FILE'];
@@ -4217,10 +4218,14 @@ class ZBlogPHP
             $errorText = $this->lang['error'][$errorText];
         }
 
-        ZBlogException::$error_id = $errorCode;
-        ZBlogException::$error_file = $file;
-        ZBlogException::$error_line = $line;
-        ZBlogException::$error_moreinfo = $moreinfo;
+        $zbe = ZBlogException::GetInstance();
+        $zbe->message = $errorText;
+        $zbe->messagefull = $errorText . ' (set_exception_handler) ';
+        $zbe->type = $errorCode;
+        $zbe->code = $errorCode;
+        $zbe->file = $file;
+        $zbe->line = $line;
+        $zbe->moreinfo = $moreinfo;
 
         if (stripos('{' . sha1('mustshowerror') . '}', $errorText) === 0) {
             $errorText = str_replace('{' . sha1('mustshowerror') . '}', '', $errorText);

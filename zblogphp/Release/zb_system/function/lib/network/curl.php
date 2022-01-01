@@ -244,8 +244,11 @@ class Network__curl implements Network__Interface
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
 
         if ($this->set_timeouts == false) {
-            curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
-            curl_setopt($this->ch, CURLOPT_TIMEOUT, $this->timeout);
+            if (!isset($this->option['timeout'])) {
+                $this->option['timeout'] = $this->timeout;
+            }
+            curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, $this->option['timeout']);
+            curl_setopt($this->ch, CURLOPT_TIMEOUT, $this->option['timeout']);
         }
 
         $result = curl_exec($this->ch);

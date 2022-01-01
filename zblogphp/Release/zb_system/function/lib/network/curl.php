@@ -398,6 +398,7 @@ class Network__curl implements Network__Interface
         $this->timeout = 30;
         $this->errstr = '';
         $this->errno = 0;
+        $this->set_timeouts = false;
 
         $this->ch = curl_init();
 

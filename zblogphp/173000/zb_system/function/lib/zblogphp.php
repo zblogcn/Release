@@ -584,7 +584,6 @@ class ZBlogPHP
      */
     public static function GetInstance()
     {
-        ZBlogException::ClearList();
         if (!isset(self::$private_zbp)) {
             if (isset($GLOBALS['option']['ZC_GODZBP_FILE']) && isset($GLOBALS['option']['ZC_GODZBP_NAME']) && is_readable(ZBP_PATH . $GLOBALS['option']['ZC_GODZBP_FILE'])) {
                 include ZBP_PATH . $GLOBALS['option']['ZC_GODZBP_FILE'];
@@ -895,6 +894,16 @@ class ZBlogPHP
             Add_Filter_Plugin('Filter_Plugin_Zbp_PreLoad', 'ApiTokenVerify');
         }
 
+        return true;
+    }
+
+    /**
+     * Reset
+     */
+    public function Reset()
+    {
+        ZBlogException::ClearList();
+        RunTime_Begin();
         return true;
     }
 

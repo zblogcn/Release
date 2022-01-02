@@ -898,16 +898,6 @@ class ZBlogPHP
     }
 
     /**
-     * Reset
-     */
-    public function Reset()
-    {
-        ZBlogException::ClearList();
-        RunTime_Begin();
-        return true;
-    }
-
-    /**
      * 读取系统预设文件里的PostType配置
      */
     public function LoadPostType()

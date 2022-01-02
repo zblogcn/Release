@@ -363,8 +363,7 @@ class ZBlogException
     public static function GetNewException()
     {
         $z = new self();
-        $zbearray = self::GetList();
-        $lastzbe = end($zbearray);
+        $lastzbe = end(self::$private_zbe_list);
         if (is_object($lastzbe)) {
             $z->moreinfo = $lastzbe->moreinfo;
         }
@@ -378,6 +377,9 @@ class ZBlogException
      */
     public static function GetInstance()
     {
+        if (IS_CLI && (IS_WORKERMAN || IS_SWOOLE)) {
+            self::$private_zbe_list[] = array();
+        }
         $z = new self();
         if (count(self::$private_zbe_list) > 0) {
             $z->previous = end(self::$private_zbe_list);
@@ -560,8 +562,7 @@ class ZBlogException
         $this->file = $exception->getFile();
         $this->line = $exception->getLine();
 
-        $zbearray = self::GetList();
-        $lastzbe = end($zbearray);
+        $lastzbe = end(self::$private_zbe_list);
         if (is_object($lastzbe)) {
             if ($lastzbe->file !== null) {
                 $this->file = $lastzbe->file;
@@ -647,8 +648,7 @@ class ZBlogException
         global $bloghost;
         $result = '';
 
-        $zbearray = self::GetList();
-        $lastzbe = end($zbearray);
+        $lastzbe = end(self::$private_zbe_list);
         $error_id = 0;
         if (is_object($lastzbe)) {
             $error_id = $lastzbe->code;

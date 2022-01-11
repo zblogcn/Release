@@ -37,8 +37,8 @@
             "channel": "normal,beta,alpha"
         },
         {
-            "version": 173005,
-            "name": "1.7.2 Tenet",
+            "version": 172995,
+            "name": "1.7.1 Tenet",
             "php" : 5.2,
             "channel": "normal,beta,alpha"
         }

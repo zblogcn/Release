@@ -613,10 +613,7 @@ class Network__fsockopen implements Network__Interface
         foreach ($this->responseHeader as $h) {
             $array = explode(': ', $h, 2);
             if (count($array) > 1) {
-                if (isset($headers[$array[0]]) == false) {
-                    $headers[$array[0]] = array();
-                }
-                $headers[$array[0]][] = $array[1];
+                $headers[$array[0]] = $array[1];
             }
         }
         return $headers;
@@ -628,13 +625,6 @@ class Network__fsockopen implements Network__Interface
         if (isset($headers[$name])) {
             return $headers[$name];
         }
-        return array();
-    }
-
-    public function hasHeader($name)
-    {
-        $headers = $this->getHeaders();
-        return isset($headers[$name]);
     }
 
 }

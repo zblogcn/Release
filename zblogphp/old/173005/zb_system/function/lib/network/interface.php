@@ -134,9 +134,5 @@ interface Network__Interface
      * @return mixed
      */
     public function getHeader($name);
-    /**
-     * @return mixed
-     */
-    public function hasHeader($name);
 
 }

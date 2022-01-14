@@ -4199,6 +4199,10 @@ class ZBlogPHP
             $errorText = $this->lang['error'][$errorText];
         }
 
+        if ($errorCode == 2) {
+            Http404();
+        }
+
         $zbe = ZBlogException::GetInstance();
         $zbe->message = $errorText;
         $zbe->messagefull = $errorText . ' (set_exception_handler) ';
@@ -4227,10 +4231,6 @@ class ZBlogPHP
 
                 return $fpreturn;
             }
-        }
-
-        if ($errorCode == 2) {
-            Http404();
         }
 
         throw new Exception($errorText);

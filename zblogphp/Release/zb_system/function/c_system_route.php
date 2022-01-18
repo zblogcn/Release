@@ -149,7 +149,7 @@ function ViewAuto()
             $array_for = array();
             $match_with_page = $parameters = $m = array();
             //如果指定了规则就检查匹配，没有指定就任意匹配生效
-            if (((isset($route['urlrule_regex']) && trim($route['urlrule_regex']) != '') || (isset($route['urlrule']) && trim($route['urlrule']) != ''))) {
+            if (isset($route['args']) && !empty($route['args'])) {
                 ViewAuto_Get_Parameters_And_Match_with_page($route, $parameters, $match_with_page);
                 foreach ($match_with_page as $match) {
                     $r = ViewAuto_Get_Compiled_Urlrule($route, $match);

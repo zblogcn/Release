@@ -326,7 +326,7 @@ function DelPost()
         if (!$zbp->CheckRights($post->TypeActions['all']) && $post->AuthorID != $zbp->user->ID) {
             $zbp->ShowError(6, __FILE__, __LINE__);
         }
-        
+
         foreach ($GLOBALS['hooks']['Filter_Plugin_DelPost_Core'] as $fpname => &$fpsignal) {
             $fpname($post);
         }
@@ -904,9 +904,9 @@ function PostComment()
 
     if (isset($_GET['postid'])) {
         $_POST['LogID'] = $_GET['postid'];
-    } elseif ($_POST['postid']) {
+    } elseif (isset($_POST['postid'])) {
         $_POST['LogID'] = $_POST['postid'];
-    } elseif ($_POST['LogID']) {
+    } elseif (isset($_POST['LogID'])) {
         $_POST['LogID'] = $_POST['LogID'];
     } else {
         $_POST['LogID'] = 0;
@@ -1988,13 +1988,15 @@ function PostUpload()
     }
     if (isset($upload)) {
         CountMemberArray(array($upload->AuthorID), array(0, 0, 0, +1));
+
+        foreach ($GLOBALS['hooks']['Filter_Plugin_PostUpload_Succeed'] as $fpname => &$fpsignal) {
+            $fpname($upload);
+        }
+
+        return $upload;
     }
 
-    foreach ($GLOBALS['hooks']['Filter_Plugin_PostUpload_Succeed'] as $fpname => &$fpsignal) {
-        $fpname($upload);
-    }
-
-    return $upload;
+    return false;
 }
 
 /**

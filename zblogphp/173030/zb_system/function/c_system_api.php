@@ -53,7 +53,9 @@ function ApiTokenVerify()
  */
 function ApiDebugDisplay($error)
 {
+    $GLOBALS['hooks']['Filter_Plugin_Debug_Display']['ApiDebugDisplay'] = PLUGIN_EXITSIGNAL_RETURN;
     ApiResponse(null, $error);
+    //die;
 }
 
 /**
@@ -61,7 +63,7 @@ function ApiDebugDisplay($error)
  */
 function ApiShowError($errorCode, $errorText, $file = null, $line = null, $moreinfo = array(), $httpcode = 200)
 {
-    $GLOBALS['hooks']['Filter_Plugin_Zbp_ShowError']['ApiDebugDisplay'] = PLUGIN_EXITSIGNAL_RETURN;
+    $GLOBALS['hooks']['Filter_Plugin_Zbp_ShowError']['ApiShowError'] = PLUGIN_EXITSIGNAL_RETURN;
     //如果是$errorCode == 2就是http 404
     if ($errorCode == 2 && $httpcode == 200) {
         $httpcode = 404;
@@ -239,7 +241,7 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null)
     }
 
     if (!defined('ZBP_API_IN_TEST')) {
-        //ob_end_clean();
+        ob_end_clean();
         if (!headers_sent()) {
             header('Content-Type: application/json; charset=utf-8');
         }
@@ -276,7 +278,7 @@ function ApiResponseRaw($raw, $raw_type = 'application/json')
     }
 
     if (!defined('ZBP_API_IN_TEST')) {
-        //ob_end_clean();
+        ob_end_clean();
         if (!headers_sent()) {
             header('Content-Type: ' . $raw_type . '; charset=utf-8');
         }

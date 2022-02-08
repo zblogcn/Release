@@ -61,15 +61,9 @@ if (stripos($s,'ZBlogPHP')!==false){
 
 foreach ($json->builds as $key => $value) {
   if(stripos($value->channel, $channel_name) !== false && version_compare($php, $value->php) >= 0){
-    if ($old < 162200) {
-      $target->build = '162210';
-      $target->name = '1.6.8 Valyria';
-      $target->php = $value->php;
-    } else {
       $target->build = $value->version;
       $target->name = $value->name;
       $target->php = $value->php;
-    }
   }
 }
 $result->source = $source;

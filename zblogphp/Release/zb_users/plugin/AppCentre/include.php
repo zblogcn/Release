@@ -444,7 +444,7 @@ function AppCentre_VerifyV2($appid, $type = 'plugin')
 
 function AppCentre_UpdateCSP(&$csp)
 {
-    $urls = " *.zblogcn.com";
+    $urls = " *.zblogcn.com *.zblogcn.net";
     $items = array('default-src', 'img-src', 'script-src', 'style-src');
     foreach ($items as $item) {
         if (isset($csp[$item])) {

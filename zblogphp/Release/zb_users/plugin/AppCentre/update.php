@@ -119,15 +119,10 @@ if (isset($_GET['updatedb'])) {
     if ($zbp->version >= 162090 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
         updatedb_15to16();
     }
-    if (defined(ZC_VERSION_MAJOR) && defined(ZC_VERSION_MINOR)) {
-        if (ZC_VERSION_MAJOR === '1' && ZC_VERSION_MINOR === '5') {
-            if (is_dir($zbp->path . '/zb_system/api')) {
-                @rrmdir($zbp->path . '/zb_system/api'); // Fix bug!!!
-            }
-        }
-    }
-
     $zbp->SetHint('good');
+    if (function_exists('sleep')) {
+        sleep(1);
+    }
     Redirect('./update.php?ok');
     return;
 }
@@ -138,6 +133,9 @@ if (GetVars('update', 'GET') != '') {
     $xml = simplexml_load_string($f);
     if ($xml) {
         foreach ($xml->children() as $file) {
+            if ($file->GetName() != 'file') {
+                continue;
+            }
             $full = $zbp->path . str_replace('\\', '/', $file['name']);
             $dir = dirname($full);
             if (!file_exists($dir . '/')) {
@@ -147,7 +145,17 @@ if (GetVars('update', 'GET') != '') {
             $f = base64_decode($file);
             @file_put_contents($full, $f);
         }
+        foreach ($xml->children() as $file) {
+            if ($file->GetName() != 'delfile') {
+                continue;
+            }
+            $full = $zbp->path . str_replace('\\', '/', $file['name']);
+            @unlink($full);
+        }
         $zbp->SetHint('good');
+    }
+    if (function_exists('sleep')) {
+        sleep(2);
     }
     Redirect('./update.php?updatedb');
 }
@@ -225,10 +233,10 @@ AppCentre_SubMenus(3);
 <p>
 <?php
 if ($zbp->version >= 150101 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
-    echo '<input id="updatenow" type="button" onclick="location.href=\'?updatedb\'" value="' . $zbp->lang['AppCentre']['database_update'] . '" />';
+    echo '<input id="updatenow" type="button" onclick="location.href=\'?updatedb\';$(this).hide();" value="' . $zbp->lang['AppCentre']['database_update'] . '" />';
 }
 if ($zbp->version >= 162090 && (int) $zbp->option['ZC_LAST_VERSION'] < 162090) {
-    echo '<input id="updatenow" type="button" onclick="location.href=\'?updatedb\'" value="' . $zbp->lang['AppCentre']['database_update'] . '" />';
+    echo '<input id="updatenow" type="button" onclick="location.href=\'?updatedb\';$(this).hide();" value="' . $zbp->lang['AppCentre']['database_update'] . '" />';
 }
 ?>
               </p><hr/>
@@ -255,7 +263,7 @@ if (defined('ZC_VERSION_FULL')) {
 
 <?php
 if (($newbuild - $nowbuild) > 0) {
-    echo '<input id="updatenow" type="button" onclick="location.href=\'?update=' . $nowbuild . '-' . $newbuild . '\'" value="' . $zbp->lang['AppCentre']['upgrade_program'] . '" />';
+    echo '<input id="updatenow" type="button" onclick="location.href=\'?update=' . $nowbuild . '-' . $newbuild . '\';$(this).hide();" value="' . $zbp->lang['AppCentre']['upgrade_program'] . '" />';
 }
 ?>
               </p>

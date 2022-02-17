@@ -265,7 +265,7 @@ function RunTime_Begin()
     $_SERVER['_error_count'] = 0;
     if (function_exists('memory_get_usage')) {
         $_SERVER['_memory_usage'] = memory_get_usage();
-    } 
+    }
 }
 
 /**
@@ -548,10 +548,11 @@ function GetVarsByDefault($name, $type = 'REQUEST', $default = null)
 
 /**
  * 从一系列指定的环境变量获得参数值
+ * $source = all,constant,getenv,env,server
  */
-function GetVarsFromEnv($name, $source = '')
+function GetVarsFromEnv($name, $source = '', $default = '')
 {
-    $value = '';
+    $value = $default;
     $type = strtolower($source);
     if ($type == '' || $type == 'all') {
         $type = 'constant|getenv|env|server';
@@ -562,6 +563,10 @@ function GetVarsFromEnv($name, $source = '')
         return $value;
     }
     if ((strpos($type, '|getenv|') !== false) && function_exists('getenv') && getenv($name) != '') {
+        $value = getenv($name);
+        return $value;
+    }
+    if ((strpos($type, '|env|') !== false) && function_exists('getenv') && getenv($name) != '') {
         $value = getenv($name);
         return $value;
     }
@@ -1014,11 +1019,13 @@ function Redirect302($url)
 }
 
 if (!function_exists('Redirect')) {
+
     function Redirect($url)
     {
         Redirect302($url);
         die();
     }
+
 }
 
 /**

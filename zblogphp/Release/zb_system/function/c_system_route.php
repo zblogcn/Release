@@ -845,7 +845,7 @@ function ViewSearch()
             $r->Intro = str_replace($q, '<strong>' . $q . '</strong>', $t);
             $r->Content = $a->Content;
         }
-        $r->Title = str_replace($q, '<strong>' . $q . '</strong>', $r->Title);
+        $r->Title = str_ireplace($q, '<strong>' . $q . '</strong>', $r->Title);
         $article->Content .= '<a href="' . $a->Url . '">' . $a->Url . '</a><br/></p>';
         $results[] = $r;
     }
@@ -1533,7 +1533,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
 
     if (!empty($route) || $isrewrite == true) {
         if (isset($object[0]) && !isset($object['page']) && (!isset($object['_verify_permalink']) || (isset($object['_verify_permalink']) && $object['_verify_permalink'] != false))) {
-            if (!(stripos(urldecode($article->Url), '/' . $object[0]) !== false)) {
+            if (strcasecmp($zbp->host . $object[0], urldecode($article->Url)) != 0) {
                 //$zbp->ShowError(2, __FILE__, __LINE__);
                 return false;
             }

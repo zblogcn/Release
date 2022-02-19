@@ -72,6 +72,7 @@ $zbpvers['162090'] = '1.6.0 Valyria Build 162090';
 $zbpvers['162210'] = '1.6.8 Valyria Build 162210';
 $zbpvers['172900'] = '1.7.0 Tenet Build 172900';
 $zbpvers['172980'] = '1.7.1 Tenet Build 172980';
+$zbpvers['173000'] = '1.7.2 Tenet Build 173000';
 
 if (!isset($zbpvers[$GLOBALS['blogversion']])) {
     if (defined('ZC_VERSION_FULL')) {

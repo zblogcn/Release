@@ -714,8 +714,9 @@ function ViewFeed()
         }
     }
 
+    @ob_clean();
     if (!headers_sent()) {
-        header("Content-type:text/xml; Charset=utf-8");
+        header("Content-type:text/xml; charset=UTF-8");
     }
 
     echo $rss2->saveXML();

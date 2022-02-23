@@ -126,4 +126,5 @@ return array(
     'enable_plugin_sort'=>'Enable plugin sort',
     'non_root_prohibit_operation'=>'Non-root administrators prohibit this operation',
     'please_open_debugmode'=>'Please turn on the debugging mode',
+    'force_enable_https'=>'Force enable Https',
 );

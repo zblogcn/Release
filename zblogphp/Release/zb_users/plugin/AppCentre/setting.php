@@ -35,6 +35,7 @@ if (GetVars('act') == 'save') {
     $zbp->Config('AppCentre')->enablepluginsort = trim(GetVars("app_enablepluginsort"));
     $zbp->Config('AppCentre')->enablemultidownload = trim(GetVars("app_enablemultidownload"));
     $zbp->Config('AppCentre')->app_ignores = GetVars("app_ignores");
+    $zbp->Config('AppCentre')->forcehttps = (int) GetVars("app_forcehttps");
     $zbp->SaveConfig('AppCentre');
 
     $zbp->SetHint('good');
@@ -130,6 +131,10 @@ foreach ($aps as $key => $value) {
 <label><input name="app_firstdomain" type="radio" value="zblogcn.com" <?php echo $zbp->Config('AppCentre')->firstdomain == 'zblogcn.com' ? 'checked="checked"' : ''; ?> />app.zblogcn.com(<?php echo $zbp->lang['msg']['default']; ?>)</label>&nbsp;&nbsp;&nbsp;&nbsp;
 <label><input name="app_firstdomain" type="radio" value="zblogcn.net" <?php echo $zbp->Config('AppCentre')->firstdomain == 'zblogcn.net' ? 'checked="checked"' : ''; ?> />app.zblogcn.net</label>&nbsp;&nbsp;&nbsp;&nbsp;
                   </td>
+                </tr>
+                <tr height="32">
+                  <td width="30%" align="left"><p><b>· <?php echo $zbp->lang['AppCentre']['force_enable_https']; ?></p></td>
+                  <td><input id="app_forcehttps" name="app_forcehttps" type="text" value="<?php echo $zbp->Config('AppCentre')->forcehttps; ?>" class="checkbox"/></td>
                 </tr>
 
               </table>

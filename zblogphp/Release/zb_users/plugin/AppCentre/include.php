@@ -42,7 +42,7 @@ if ($domain == '' || stripos(APPCENTRE_DOMAINS, $domain) === false) {
 
 define('APPCENTRE_DOMAIN', 'app.' . $domain);
 
-if (stripos($GLOBALS['bloghost'], 'https://') !== false) {
+if (stripos($GLOBALS['bloghost'], 'https://') !== false || $GLOBALS['zbp']->Config('AppCentre')->forcehttps) {
     define('APPCENTRE_URL', 'https://' . APPCENTRE_DOMAIN . '/client/');
     define('APPCENTRE_CMD_URL', 'https://' . APPCENTRE_DOMAIN . '/zb_system/cmd.php?');
     define('APPCENTRE_SYSTEM_UPDATE', 'https://update.' . $domain . '/zblogphp/');

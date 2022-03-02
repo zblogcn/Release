@@ -16,14 +16,12 @@ if(strpos(__DIR__,'/alpha')!==false){
   $channel_name = 'alpha';
 }
 
-if (is_readable('../../build.json')) {
-  $json = json_decode(file_get_contents('../../build.json'));
-}
-elseif (is_readable('../build.json')) {
-  $json = json_decode(file_get_contents('../build.json'));
-}
-elseif (is_readable('./build.json')) {
-  $json = json_decode(file_get_contents('./build.json'));
+if (is_readable('./build.json')) {
+    $json = json_decode(file_get_contents('./build.json'));
+} elseif (is_readable('../build.json')) {
+    $json = json_decode(file_get_contents('../build.json'));
+} elseif (is_readable('../../build.json')) {
+    $json = json_decode(file_get_contents('../../build.json'));
 }
 
 $target = new stdClass;

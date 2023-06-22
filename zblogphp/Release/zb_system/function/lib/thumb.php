@@ -60,14 +60,14 @@ class Thumb
     /**
      * 图片句柄.
      *
-     * @var resource
+     * @var GdImage
      */
     protected $srcRes;
 
     /**
      * 临时图片句柄.
      *
-     * @var resource|null
+     * @var GdImage
      */
     protected $tmpRes;
 
@@ -165,11 +165,18 @@ class Thumb
             if (! $image) {
                 continue;
             }
-			if (PHP_SYSTEM === SYSTEM_WINDOWS) {
-				$image = iconv("UTF-8", "GBK//IGNORE", $image);
-			}
+            if (PHP_SYSTEM === SYSTEM_WINDOWS) {
+                $image = iconv("UTF-8", "GBK//IGNORE", $image);
+            }
             $ext = GetFileExt($image);
-            if (! in_array($ext, array('jpeg', 'jpg', 'png', 'gif', 'bmp'))) {
+            $ext_arr = array('jpeg', 'jpg', 'png', 'gif', 'bmp');
+            if (function_exists('imageavif')) {
+                $ext_arr[] = 'avif';
+            }
+            if (function_exists('imagewebp')) {
+                $ext_arr[] = 'webp';
+            }
+            if (! in_array($ext, $ext_arr)) {
                 continue;
             }
             if (count($parsed_url = parse_url($image)) === 1 && isset($parsed_url['path'])) {
@@ -195,7 +202,7 @@ class Thumb
             }
             $thumb = new self;
 
-            ZbpErrorContrl::SuspendErrorHook();
+            ZbpErrorControl::SuspendErrorHook();
             try {
                 if (! CheckUrlIsLocal($image)) {
                     $thumb->loadSrcByExternalUrl($image);
@@ -203,12 +210,12 @@ class Thumb
                     $thumb->loadSrcByPath($img_path);
                 }
             } catch (Exception $e) {
-                ZbpErrorContrl::ResumeErrorHook();
+                ZbpErrorControl::ResumeErrorHook();
                 if (self::$defaultImg) {
                     $thumb->loadSrcByPath(self::$defaultImg);
                 }
             }
-            ZbpErrorContrl::ResumeErrorHook();
+            ZbpErrorControl::ResumeErrorHook();
 
             if ($thumb->loadedCompletely) {
                 $thumb->shouldClip($clip)->setWidth($width)->setHeight($height)->setDstImagePath($thumb_path)->handle();
@@ -471,6 +478,9 @@ class Thumb
                 break;
             case 'webp':
                 imagewebp($this->srcRes, $this->dstImagePath, self::$quality);
+                break;
+            case 'avif':
+                imageavif($this->srcRes, $this->dstImagePath, self::$quality);
                 break;
             case 'bmp':
                 if (function_exists('imagebmp')) {

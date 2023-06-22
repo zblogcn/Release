@@ -56,6 +56,9 @@ function ApiDebugHandler($error)
     $GLOBALS['hooks']['Filter_Plugin_Debug_Handler_ZEE']['ApiDebugHandler'] = PLUGIN_EXITSIGNAL_RETURN;
     //全局拦截error,exception
     echo ApiResponse(null, $error);
+    if (!IS_CLI) {
+        exit(1);
+    }
     return true;
 }
 
@@ -373,7 +376,7 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null)
     );
 
     // 显示 Runtime 调试信息
-    if (defined('ZBP_API_IN_TEST') || $GLOBALS['option']['ZC_RUNINFO_DISPLAY']) {
+    if (!defined('ZBP_API_IN_TEST') && $GLOBALS['option']['ZC_RUNINFO_DISPLAY']) {
         $runtime = RunTime(false);
         if ($GLOBALS['zbp']->isdebug) {
             $runtime['env'] = GetEnvironment();
@@ -415,7 +418,7 @@ function ApiResponse($data = null, $error = null, $code = 200, $message = null)
 
     //if (is_null($error) && $code !== 200) {
         // 如果 code 不为 200，又不是系统抛出的错误，再来抛出一个 Exception，适配 phpunit
-        //ZbpErrorContrl::SuspendErrorHook();
+        //ZbpErrorControl::SuspendErrorHook();
         //throw new Exception($message, $code);
     //}
 
@@ -758,20 +761,8 @@ function ApiDispatch($mods, $mod, $act)
         include_once $mod_file;
         $func = 'api_' . $mod . '_' . $act;
         if (function_exists($func)) {
-            //$result = call_user_func($func);
-            try {
-                $result = call_user_func($func);
-            } catch (Throwable $e) {
-                $_SERVER['_error_count'] = ($_SERVER['_error_count'] + 1);
-                $r = ApiResponse(null, $e);
-                echo $r;
-                return $r;
-            } catch (Exception $e) {
-                $_SERVER['_error_count'] = ($_SERVER['_error_count'] + 1);
-                $r = ApiResponse(null, $e);
-                echo $r;
-                return $r;
-            }
+
+            $result = call_user_func($func);
 
             ApiResultData($result);
 

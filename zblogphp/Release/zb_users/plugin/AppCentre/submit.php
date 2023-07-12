@@ -48,7 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (substr($url, 0, 4) == 'http') {
         Redirect($url);
     } else {
-        echo '<script type="text/javascript">alert(\'' . $url . '\')</script>';
+        $res = json_decode($url, true);
+        if (isset($res['err']['msg'])) {
+            echo '<script type="text/javascript">alert(\'' . $res['err']['msg'] . '\')</script>';
+        } else {
+            echo '<script type="text/javascript">alert(\'未知错误\')</script>';
+        }
     }
 }
 
@@ -84,6 +89,11 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <tr><td><p><b>· <?php echo $zbp->lang['AppCentre']['app_author']; ?></b></p></td><td><p>&nbsp;<input id="zblog_app_user" name="zblog_app_user" style="width:550px;"  type="text" value="" readonly /></p></td></tr>
 <tr><td><p><b>· <?php echo $zbp->lang['AppCentre']['latest_update']; ?></b></p></td><td><p>&nbsp;<input id="zblog_app_date" name="zblog_app_date" style="width:550px;"  type="text" value="" readonly /></p></td></tr>
 <tr><td><p><b>· <?php echo $zbp->lang['AppCentre']['latest_version']; ?></b></p></td><td><p>&nbsp;<input id="zblog_app_ver" name="zblog_app_ver" style="width:550px;"  type="text" value="" readonly /></p></td></tr>
+</table>
+
+
+<table class="tableFull tableBorder tableBorder-thcenter">
+<tr><td class="td30"><p><b>· <?php echo $zbp->lang['AppCentre']['tfa_verification']; ?></b></p></td><td><p>&nbsp;<input id="tfa_verification" name="tfa_verification" style="width:550px;"  type="text" value="" placeholder="<?php echo $zbp->lang['AppCentre']['tfa_verification_placeholder']; ?>" /></p></td></tr>
 </table>
 <script type="text/javascript">
 var jsoninfo=eval(<?php echo $t; ?>);

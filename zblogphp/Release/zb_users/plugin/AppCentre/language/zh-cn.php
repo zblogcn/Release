@@ -127,4 +127,6 @@ return array(
     'non_root_prohibit_operation'=>'非root级别的管理员禁止该操作',
     'please_open_debugmode'=>'应用中心客户端的开发者模式已开启，请开启系统的调试模式',
     'force_enable_https'=>'强制开启HTTPS访问',
+    'tfa_verification' => "两步验证",
+    'tfa_verification_placeholder' => '请输入Z-Blog账号的两步验证6位数字验证码',
 );

@@ -282,6 +282,8 @@ return array(
         'change_default_password'           => 'Please change the default password immediately.',
         'delete_member_with_alldata'        => 'Delete user and delete user\'s data',
         'api_display_count'                 => 'API Displays the Number of Posts',
+        'enable_login_csrfcheck'            => 'Enable Login CSRF Token Verification',
+        'enable_login_verify'               => 'Enable Login Captcha',
         ''                                  => '',
     ),
 
@@ -514,7 +516,7 @@ return array(
         '63' => 'Disable browse draft post.',
         '64' => 'Activate failed, the application does not apply to Z-BlogPHP.',
         '65' => 'Windows Phone users upgrade to Windows Phone 8.1 before uploading files.',
-        '66' => 'Username and password cannot be empty.',
+        '66' => 'Username and password or validcode cannot be empty.',
         '67' => 'MySQL database is not connected.',
         '68' => 'SQLite database could not be opened.',
         '69' => 'Not query to relevant data.',
@@ -556,7 +558,7 @@ return array(
     'offical_urls' => array(
         'more_help' => 'https://www.zblogcn.com/help/?id={%id%}&message={%message%}',
         'bing_help' => 'https://cn.bing.com/search?q={%message%}',
-        'office_docs' => 'https://docs.zblogcn.com/php/#/books/start-faq',
+        'office_docs' => 'https://docs.zblogcn.com/php/#/books/start-25-faq',
         'office_bbs' => 'https://bbs.zblogcn.com/',
     ),
 

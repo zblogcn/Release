@@ -127,4 +127,6 @@ return array(
     'non_root_prohibit_operation'=>'Non-root administrators prohibit this operation',
     'please_open_debugmode'=>'Please turn on the debugging mode',
     'force_enable_https'=>'Force enable Https',
+    'tfa_verification' => "TFA Verification",
+    'tfa_verification_placeholder' => 'Please enter a 6-digit verification code for your Z-Blog account from TFA',
 );

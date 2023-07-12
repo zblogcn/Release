@@ -127,4 +127,6 @@ return array(
     'non_root_prohibit_operation'=>'非root級别的管理員禁止該操作',
     'please_open_debugmode'=>'發者模式已開啟，請開啟系統的調試模式',
     'force_enable_https'=>'強製開啟HTTPS訪問',
+    'tfa_verification' => "兩步驗證",
+    'tfa_verification_placeholder' => '請輸入Z-Blog帳號的兩步驗證6比特數位驗證碼',
 );

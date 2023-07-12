@@ -224,6 +224,7 @@ function Server_Open($method)
             $app = new App;
             $app->LoadInfoByXml($_GET['type'], $_GET['id']);
             $data["zba"] = $app->Pack();
+            $data["tfa_verification"] = $_POST['tfa_verification'];
             $s = Server_SendRequest(APPCENTRE_URL . '?submit=' . urlencode(GetVars('id')), $data);
             return $s;
         case 'shopvaild':

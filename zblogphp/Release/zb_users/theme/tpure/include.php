@@ -58,13 +58,17 @@ function tpure_LoginHeader()
     echo <<<CSSJS
     <style>
         .bg { height:100%; background:url({$zbp->host}zb_users/theme/tpure/style/images/banner.jpg) no-repeat center top; background-size:cover; }
-        .logo { width:100%; height:120px; margin:0 auto 40px; padding-top:24px; text-align:center; border-bottom:1px solid #eee; }
-        .logo img { background:none; }
-        #wrapper { width:400px; min-height:350px;height:auto; border-radius:8px; background:#fff; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
+        .logo { width:100%; height:70px; margin:0 auto 32px; text-align:center; border-bottom:1px solid #eee; }
+        .logo a { width:0.1%; height:70px; margin:0 auto; display:table-cell; vertical-align:middle; }
+        .logo img { width:auto; height:40px; background:none; vertical-align:middle; }
+        #wrapper { width:400px; height:auto; padding-bottom:10px; border-radius:8px; background:#fff; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
         .login { width:auto; }
-        .login input[type="text"], .login input[type="password"] { width:240px; border:1px solid #e4e8eb; outline:0; border-radius:3px; }
+        .login input[type="text"], .login input[type="password"] { width:240px; float:left; border:1px solid #e4e8eb; outline:0; border-radius:3px; }
         .login input[type="text"]:focus, .login input[type="password"]:focus { color:#0188fb; background-color:#fff; border-color:#aab7c1; outline:0; box-shadow:0 0 0 0.2rem rgba(31,73,119,0.1); }
-        .login dd.submit, .login dd.password, .login dd.username { width:auto; overflow:visible; }
+        .login dl { height:auto; }
+        .login dd.submit, .login dd.password, .login dd.username, .login dd.validcode { width:auto; overflow:visible; }
+        .login dd.validcode { position:relative; }
+        .login dd.validcode img { position:absolute; top:2px; right:2px; }
         .login dd.checkbox { width:170px; }
         .login label { padding-right:15px; }
         .logintitle { font-size:24px; line-height:76px; position:relative; display:inline-block; }
@@ -72,11 +76,23 @@ function tpure_LoginHeader()
         .logintitle:before { right:auto; left:-70px; }
         .button { border-radius:3px; background:#0188fb; }
         .button:hover { background:#0188fb; }
-        @media only screen and (max-width: 768px){
-            .login dd { float:left; margin-bottom:20px; }
-            .login dd.username label, .login dd.password label { width:100px; text-align:right; }
-            .login dd.checkbox { width:175px; margin-left:95px; padding:0; }
+        @media only screen and (max-width: 800px){
+            .login dd { float:left; margin-bottom:20px; padding:0; }
+            .login dd.username label, .login dd.password label, .login dd.validcode label { width:100px; text-align:right; }
+            .login dd.checkbox { width:175px; margin:0 0 10px 95px; padding:0; }
             .login dd.submit { float:left; padding:0; }
+            .login dd.validcode { height:40px; }
+        }
+        @media only screen and (max-width: 420px){
+            #wrapper { width:90%; padding:0; }
+            .login dd.submit, .login dd.password, .login dd.username, .login dd.validcode { width:100%; }
+            .login dd.username label, .login dd.password label, .login dd.validcode label { width:90px; }
+            .login input[type="text"], .login input[type="password"] { width:calc(100% - 120px); }
+            .login dd.validcode { margin-bottom:8px; }
+            .login dd.validcode img { width:70px; right:32px; }
+            .login dd.checkbox { margin-left:85px; }
+            .login dd.submit { margin:0; }
+            .login dd.submit .button { width:90%; height:40px; float:none; margin:0 auto 30px; border:0; display:block; }
         }
         </style>
         <script>

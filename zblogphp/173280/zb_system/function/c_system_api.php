@@ -707,6 +707,7 @@ function ApiVerifyCSRF($force_check = false)
             }
 
             foreach ($skip_acts as $api_act) {
+                $api_act = array_map('strtolower', $api_act);
                 if (!isset($api_act['mod'])) {
                     continue;
                 }
@@ -761,7 +762,6 @@ function ApiDispatch($mods, $mod, $act)
         include_once $mod_file;
         $func = 'api_' . $mod . '_' . $act;
         if (function_exists($func)) {
-
             $result = call_user_func($func);
 
             ApiResultData($result);

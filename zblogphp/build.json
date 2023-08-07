@@ -43,7 +43,7 @@
             "channel": "beta,alpha"
         },
         {
-            "version": 173270,
+            "version": 173280,
             "name": "1.7.3 Finch",
             "php" : 5.2,
             "channel": "normal,beta,alpha"

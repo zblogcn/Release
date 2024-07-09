@@ -1867,6 +1867,10 @@ function PostComment()
         $zbp->ShowError(43, __FILE__, __LINE__);
     }
 
+    if ($zbp->option['ZC_COMMENT_TURNOFF']) {
+        $zbp->ShowError(40, __FILE__, __LINE__);
+    }
+
     if ($zbp->option['ZC_COMMENT_VERIFY_ENABLE']) {
         if (!$zbp->CheckRights('NoValidCode')) {
             if ($zbp->CheckValidCode($_POST['verify'], 'cmt') == false) {
@@ -1923,6 +1927,14 @@ function PostComment()
         if (isset($_POST[$key])) {
             $cmt->$key = GetVars($key, 'POST');
         }
+    }
+
+    //判断文章表里ID是否存在
+    $post = $zbp->GetPostByID($cmt->LogID);
+    if (empty($post->ID)) {
+        $zbp->ShowError(2, __FILE__, __LINE__);
+
+        return false;
     }
 
     if ($zbp->option['ZC_COMMENT_AUDIT'] && !$zbp->CheckRights('root')) {

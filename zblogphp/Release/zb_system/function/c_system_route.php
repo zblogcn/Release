@@ -1186,7 +1186,10 @@ function ViewList($page = null, $cate = null, $auth = null, $date = null, $tags 
                 $zbp->title = $datetitle . ' ' . str_replace('%num%', $page, $zbp->lang['msg']['number_page']);
             }
 
-            $zbp->modulesbyfilename['calendar']->Content = ModuleBuilder::Calendar(date('Y', $datetime) . '-' . date('n', $datetime));
+            $calendar_sidebarinused = $zbp->modulesbyfilename['calendar']->GetSideBarInUsed();
+            if (!empty($calendar_sidebarinused)) {
+                $zbp->modulesbyfilename['calendar']->Content = ModuleBuilder::Calendar(date('Y', $datetime) . '-' . date('n', $datetime));
+            }
 
             $list_template = $zbp->GetPostType($posttype, 'date_template');
 
@@ -1564,7 +1567,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
                 array('=', 'comm_RootID', 0),
                 array('=', 'comm_IsChecking', 0),
             ),
-            array('comm_ID' => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
+            array(($zbp->option['ZC_COMMENT_ORDERBY_TIME'] ? 'comm_PostTime' : 'comm_ID') => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
             array(($pagebar->PageNow - 1) * $pagebar->PageCount, $pagebar->PageCount),
             array('pagebar' => $pagebar)
         );
@@ -1579,7 +1582,7 @@ function ViewPost($id = null, $alias = null, $isrewrite = false, $object = array
                 array('IN', 'comm_RootID', $rootid),
                 array('=', 'comm_IsChecking', 0),
             ),
-            array('comm_ID' => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
+            array(($zbp->option['ZC_COMMENT_ORDERBY_TIME'] ? 'comm_PostTime' : 'comm_ID') => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
             null,
             null
         );
@@ -1680,7 +1683,7 @@ function ViewComments($postid, $page)
             array('=', 'comm_RootID', 0),
             array('=', 'comm_IsChecking', 0),
         ),
-        array('comm_ID' => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
+        array(($zbp->option['ZC_COMMENT_ORDERBY_TIME'] ? 'comm_PostTime' : 'comm_ID') => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
         array(($pagebar->PageNow - 1) * $pagebar->PageCount, $pagebar->PageCount),
         array('pagebar' => $pagebar)
     );
@@ -1695,7 +1698,7 @@ function ViewComments($postid, $page)
             array('array', $rootid),
             array('=', 'comm_IsChecking', 0),
         ),
-        array('comm_ID' => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
+        array(($zbp->option['ZC_COMMENT_ORDERBY_TIME'] ? 'comm_PostTime' : 'comm_ID') => ($zbp->option['ZC_COMMENT_REVERSE_ORDER'] ? 'DESC' : 'ASC')),
         null,
         null
     );
@@ -1708,12 +1711,14 @@ function ViewComments($postid, $page)
         if ($zbp->autofill_template_htmltags && strpos($zbp->template->templates['comment'], 'id="AjaxComment') === false) {
             $comment->Content .= '<label id="AjaxComment' . $comment->ID . '"></label>';
         }
+        $comment->HomePage = ReplaceExternalLink($comment->HomePage);
     }
     foreach ($comments2 as &$comment) {
         $comment->Content = FormatString($comment->Content, '[enter]');
         if ($zbp->autofill_template_htmltags && strpos($zbp->template->templates['comment'], 'id="AjaxComment') === false) {
             $comment->Content .= '<label id="AjaxComment' . $comment->ID . '"></label>';
         }
+        $comment->HomePage = ReplaceExternalLink($comment->HomePage);
     }
 
     $template = &$zbp->GetTemplate();
@@ -1766,6 +1771,7 @@ function ViewComment($id)
     $post = new Post();
     $post = $zbp->GetPostByID($comment->LogID);
 
+    $comment->HomePage = ReplaceExternalLink($comment->HomePage);
     $comment->Content = FormatString(htmlspecialchars($comment->Content), '[enter]');
     if ($zbp->autofill_template_htmltags && strpos($zbp->template->templates['comment'], 'id="AjaxComment') === false) {
         $comment->Content .= '<label id="AjaxComment' . $comment->ID . '"></label>';
@@ -1781,6 +1787,44 @@ function ViewComment($id)
     $template->SetTemplate($cmt_template);
 
     foreach ($GLOBALS['hooks']['Filter_Plugin_ViewComment_Template'] as $fpname => &$fpsignal) {
+        $fpreturn = $fpname($template);
+    }
+
+    $template->Display();
+
+    return true;
+}
+
+function ViewExternalLink()
+{
+    global $zbp;
+
+    $args = func_get_arg(0);
+    $ok = true;
+
+    // 检查来源
+    $referer = GetVars('HTTP_REFERER', 'SERVER');
+    if (!is_null($referer) && strpos($referer, $zbp->host) !== 0) {
+        $ok = false;
+    }
+
+    if (!isset($args['_route']['args'][0]) || $args['_route']['args'][0]['name'] !== 'external_link') {
+        $ok = false;
+    }
+    $link = $args['_route']['args'][0]['value'];
+    $parsed_url = parse_url($link);
+    if (!isset($parsed_url['host'])) {
+        $ok = false;
+    }
+    $link = FormatString($link, '[nohtml][noscript]');
+
+    $template = &$zbp->GetTemplate();
+    $template->SetTags('title', $zbp->title);
+    $template->SetTags('ok', $ok);
+    $template->SetTags('link', $link);
+    $template->SetTemplate('external-link');
+
+    foreach ($GLOBALS['hooks']['Filter_Plugin_ViewExternalLink_Template'] as $fpname => &$fpsignal) {
         $fpreturn = $fpname($template);
     }
 

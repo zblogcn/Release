@@ -158,6 +158,24 @@ class ValidateCode
         if ($zc_height > 0) {
             $this->height = $zc_height;
         }
+        $zc_codelen = (int) $zbp->option['ZC_VERIFYCODE_LENGTH'];
+        if ($zc_codelen > 0) {
+            $this->codelen = $zc_codelen;
+        }
+        //$this->setMaxBehindLines(5);
+        //$this->setMaxFrontLines(5);
+        if (isset($zbp->option['ZC_VERIFYCODE_MAXANGLE'])) {
+            $zc_maxangle = (int) $zbp->option['ZC_VERIFYCODE_MAXANGLE'];
+            if ($zc_maxangle > 0) {
+                $this->setMaxAngle($zc_maxangle);
+            }
+        }
+        if (isset($zbp->option['ZC_VERIFYCODE_MAXOFFSET'])) {
+            $zc_maxoffset = (int) $zbp->option['ZC_VERIFYCODE_MAXOFFSET'];
+            if ($zc_maxoffset > 0) {
+                $this->setMaxOffset($zc_maxoffset);
+            }
+        }
     }
 
     /**

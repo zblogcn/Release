@@ -31,6 +31,8 @@ class Network__curl implements Network__Interface
 
     private $url = '';
 
+    private $getdata = array();
+
     private $postdata = array();
 
     private $httpheader = array();
@@ -198,6 +200,43 @@ class Network__curl implements Network__Interface
     }
 
     /**
+     * 处理 querystring 到 url.
+     */
+    private function load_query_to_url()
+    {
+        $url = curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
+
+        $this->parsed_url = parse_url($url);
+
+        $breforedata = array();
+        if (isset($this->parsed_url['query'])) {
+            parse_str($this->parsed_url['query'], $breforedata);
+        }
+
+        $newdata = array_merge($breforedata, $this->getdata);
+        $query_string = http_build_query($newdata);
+
+        $fragment = '';
+        if (stripos($url, '#') !== false) {
+            $url = SplitAndGet($url, '#');
+            $fragment = '#' . SplitAndGet($url, '#', 1);
+        }
+        $url = SplitAndGet($url, '?');
+        curl_setopt($this->ch, CURLOPT_URL, $url . '?' . $query_string . $fragment);
+    }
+
+    /**
+     * 新增查询.
+     *
+     * @param string $name
+     * @param string $entity
+     */
+    public function addQuery($name, $entity)
+    {
+        $this->getdata[$name] = $entity;
+    }
+
+    /**
      * 发送数据.
      *
      * @param string $varBody
@@ -210,18 +249,16 @@ class Network__curl implements Network__Interface
         }
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->httpheader);
 
-        if ($this->option['method'] == 'POST') {
+        $this->load_query_to_url();
+
+        if ($this->option['method'] == 'POST' || $this->option['method'] == 'PUT') {
             if (is_string($varBody) && count($this->postdata) > 0) {
                 parse_str($varBody, $data);
                 $data = ($data + $this->postdata);
             } elseif (is_array($varBody) && count($this->postdata) > 0) {
                 $data = ($varBody + $this->postdata);
             }
-            if ($this->private_isBinary) {
-                curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            } else {
-                curl_setopt($this->ch, CURLOPT_POST, 1);
-            }
+            curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $this->option['method']);
             curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
         } else {
             curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $this->option['method']);
@@ -375,6 +412,17 @@ class Network__curl implements Network__Interface
     }
 
     /**
+     * @param string $name
+     * @param string $entity
+     *
+     * @return void
+     */
+    public function addFormParam($name, $entity)
+    {
+        $this->addText($name, $entity);
+    }
+
+    /**
      * 重置.
      */
     private function reinit()
@@ -391,6 +439,7 @@ class Network__curl implements Network__Interface
 
         $this->option = array();
         $this->url = '';
+        $this->getdata = array();
         $this->postdata = array();
         $this->httpheader = array();
         $this->responseHeader = array();

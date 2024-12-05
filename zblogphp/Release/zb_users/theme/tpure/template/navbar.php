@@ -1,4 +1,4 @@
-{*Template Name:页头导航栏公共区*}
+{* Template Name:页头导航栏公共区(勿选) *}
 <div class="header{if $zbp->Config('tpure')->PostFIXMENUON=='1'} fixed{/if}">
     <div class="wrap">
 {if $zbp->Config('tpure')->PostLOGOON == '1'}
@@ -11,22 +11,22 @@
             <div class="menu">
                 <ul{if $zbp->Config('tpure')->PostSEARCHON=='0'} class="nosch"{/if}>
                     {module:navbar}
-
-{if $zbp->Config('tpure')->PostSEARCHON=='1'}
-                    <div class="schico statefixed">
-                        <a href="javascript:;"></a>
-                        <div class="schfixed">
-                            <form method="post" name="search" action="{$host}zb_system/cmd.php?act=search">
-                                <input type="text" name="q" placeholder="{if $zbp->Config('tpure')->PostSCHTXT}{$zbp->Config('tpure')->PostSCHTXT}{else}{$lang['tpure']['schtxt']}{/if}" class="schinput">
-                                <button type="submit" class="btn"></button>
-                            </form>
-                        </div>
-                    </div>
-{/if}
                 </ul>
 {if $zbp->Config('tpure')->PostSEARCHON=='1'}
+                <div class="schico statefixed">
+                    <a href="javascript:;"></a>
+                    <div class="schfixed">
+                        <form method="post" name="search" action="{$host}zb_system/cmd.php?act=search">
+                            <input type="text" name="q" placeholder="{if $zbp->Config('tpure')->PostSCHTXT}{$zbp->Config('tpure')->PostSCHTXT}{else}{$lang['tpure']['schtxt']}{/if}" class="schinput" autocomplete="off">
+                            <button type="submit" class="btn"></button>
+                        </form>
+                    </div>
+                </div>
+{/if}
+
+{if $zbp->Config('tpure')->PostSEARCHON=='1'}
                 <form method="post" name="search" action="{$host}zb_system/cmd.php?act=search" class="sch-m">
-                    <input type="text" name="q" placeholder="{if $zbp->Config('tpure')->PostSCHTXT}{$zbp->Config('tpure')->PostSCHTXT}{else}{$lang['tpure']['schtxt']}{/if}" class="schinput">
+                    <input type="text" name="q" placeholder="{if $zbp->Config('tpure')->PostSCHTXT}{$zbp->Config('tpure')->PostSCHTXT}{else}{$lang['tpure']['schtxt']}{/if}" class="schinput" autocomplete="off">
                     <button type="submit" class="btn"></button>
                 </form>
 {/if}

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xml:lang="{$lang['lang_bcp47']}" lang="{$lang['lang_bcp47']}">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Language" content="{$language}" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="renderer" content="webkit">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 {php}
 $SEOON = $zbp->Config('tpure')->SEOON;
 $SEOTITLE = $zbp->Config('tpure')->SEOTITLE;
@@ -87,9 +86,9 @@ if(isset($SEOON) && $SEOON == '1'){
     }elseif($type == 'article'){
         if($article->Metas->singletitle){
             $ThisTitle = $article->Metas->singletitle;
-        }else{          
+        }else{
             $ThisTitle = $article->Title.' - '.$article->Category->Name.' - '.$zbp->name;
-        }   
+        }
             if($article->Metas->singlekeywords){
             $keywords = $article->Metas->singlekeywords;
         }else{
@@ -146,39 +145,37 @@ if(isset($SEOON) && $SEOON == '1'){
     <title>{if isset($SEOON) && $SEOON == '1'}{$ThisTitle}{else}{$name} - {$title}{/if}</title>
 {if isset($SEOON) && $SEOON == '1'}
 {if $keywords}
-    <meta name="keywords" content="{$keywords}" />
+    <meta name="keywords" content="{$keywords}">
 {/if}
 {if $description}
-    <meta name="description" content="{$description}"/>
+    <meta name="description" content="{$description}">
 {/if}
 {/if}
-    {if $zbp->Config('tpure')->PostFAVICONON}<link rel="shortcut icon" href="{$zbp->Config('tpure')->PostFAVICON}" type="image/x-icon" />{/if}
-    <meta name="generator" content="{$zblogphp}" />
+    {if $zbp->Config('tpure')->PostFAVICONON}<link rel="shortcut icon" href="{$zbp->Config('tpure')->PostFAVICON}" type="image/x-icon">{/if}
+    <meta name="generator" content="{$zblogphp}">
 {if $type=='article'}
-    <link rel="canonical" href="{$article.Url}"/>
+    <link rel="canonical" href="{$article.Url}">
 {/if}
-    <link rel="stylesheet" rev="stylesheet" href="{$host}zb_users/theme/{$theme}/style/{$style}.css" type="text/css" media="all"/>
+    <link rel="stylesheet" rev="stylesheet" href="{$host}zb_users/theme/{$theme}/style/{$style}.css" type="text/css" media="all">
 {if $zbp->Config('tpure')->PostCOLORON == '1'}
-    <link rel="stylesheet" rev="stylesheet" href="{$host}zb_users/theme/{$theme}/include/skin.css" type="text/css" media="all"/>
+    <link rel="stylesheet" rev="stylesheet" href="{$host}zb_users/theme/{$theme}/include/skin.css" type="text/css" media="all">
 {/if}
-    <script src="{$host}zb_system/script/jquery-2.2.4.min.js" type="text/javascript"></script>
-    <script src="{$host}zb_system/script/zblogphp.js" type="text/javascript"></script>
-    <script src="{$host}zb_system/script/c_html_js_add.php" type="text/javascript"></script>
-    <script type="text/javascript" src="{$host}zb_users/theme/{$theme}/script/common.js"></script>
-    <script type="text/javascript">window.tpure={{if $zbp->Config('tpure')->PostBANNERDISPLAYON=='1'}bannerdisplay:'on',{/if}{if $zbp->Config('tpure')->PostVIEWALLON=='1'}viewall:'on',{/if}{if $zbp->Config('tpure')->PostVIEWALLSTYLE}viewallstyle:'1',{else}viewallstyle:'0',{/if}{if $zbp->Config('tpure')->PostVIEWALLHEIGHT}viewallheight:'{$zbp->Config('tpure')->PostVIEWALLHEIGHT}',{/if}{if $zbp->Config('tpure')->PostSINGLEKEY=='1'}singlekey:'on',{/if}{if $zbp->Config('tpure')->PostPAGEKEY=='1'}pagekey:'on',{/if}{if $zbp->Config('tpure')->PostREMOVEPON=='1'}removep:'on',{/if}{if $zbp->Config('tpure')->PostBACKTOTOPON=='1'}backtotop:'on'{/if}}</script>
+    <script src="{$host}zb_system/script/jquery-2.2.4.min.js"></script>
+    <script src="{$host}zb_system/script/zblogphp.js"></script>
+    <script src="{$host}zb_system/script/c_html_js_add.php"></script>
+    <script src="{$host}zb_users/theme/{$theme}/script/common.js"></script>
+    <script>window.tpure={{if $zbp->Config('tpure')->PostBANNERDISPLAYON=='1'}bannerdisplay:'on',{/if}{if $zbp->Config('tpure')->PostVIEWALLON=='1'}viewall:'on',{/if}{if $zbp->Config('tpure')->PostVIEWALLSTYLE}viewallstyle:'1',{else}viewallstyle:'0',{/if}{if $zbp->Config('tpure')->PostVIEWALLHEIGHT}viewallheight:'{$zbp->Config('tpure')->PostVIEWALLHEIGHT}',{/if}{if $zbp->Config('tpure')->PostSINGLEKEY=='1'}singlekey:'on',{/if}{if $zbp->Config('tpure')->PostPAGEKEY=='1'}pagekey:'on',{/if}{if $zbp->Config('tpure')->PostREMOVEPON=='1'}removep:'on',{/if}{if $zbp->Config('tpure')->PostBACKTOTOPON=='1'}backtotop:'on'{/if}}</script>
 {if $zbp->Config('tpure')->PostBLANKON=='1'}
-    <base target="_blank" />
+    <base target="_blank">
 {/if}
 {if $zbp->Config('tpure')->PostGREYON=='1'}
 <style>html {filter: grayscale(100%);}</style>
 {/if}
-{if $type=='article'}
-    <link rel="canonical" href="{$article.Url}"/>
-{/if}
+    {if $type=='article'}<link rel="canonical" href="{$article.Url}">{/if}
 {$header}
 {if $type=='index'&&$page=='1'}
-    <link rel="alternate" type="application/rss+xml" href="{$feedurl}" title="{$name}" />
-    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="{$host}zb_system/xml-rpc/?rsd" />
-    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{$host}zb_system/xml-rpc/wlwmanifest.xml" />
+    <link rel="alternate" type="application/rss+xml" href="{$feedurl}" title="{$name}">
+    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="{$host}zb_system/xml-rpc/?rsd">
+    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{$host}zb_system/xml-rpc/wlwmanifest.xml">
 {/if}
 </head>

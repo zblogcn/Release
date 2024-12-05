@@ -102,7 +102,7 @@ return array(
     'app_embedding_page' => 'Built-in app embedding page',
     'app_embedding_page_note' => 'must be named include.php',
     'plugin_logo_tips' => 'Tip: The icon of the plug-in is a 128 x 128 px png file named logo.png.It is recommended to use <a href="http://www.syncfusion.com/downloads/metrostudio" target="_blank">the Metro Studio software</a> to create the logo. The thumbnail of the plug-in (optional) is a 320x200px png file named screenshot.png Put it in the plugin\'s directory.',
-    'theme_logo_tips' => 'Tip: The thumbnail of the theme is a <b> 320x200px </ b> png file named screenshot.png, which is placed in the theme\'s directory.',
+    'theme_logo_tips' => 'Tip: The thumbnail of the theme is a <b> 320x240px </ b> png file named screenshot.png, which is placed in the theme\'s directory.',
     'detailed_description' => 'Detailed description',
     'export_sidebar' => 'Export sidebar configuration',
     'dependent_apps' => '[Advanced] List of dependent apps (separated by |)',

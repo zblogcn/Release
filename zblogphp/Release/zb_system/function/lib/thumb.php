@@ -5,7 +5,9 @@ if (!defined('ZBP_PATH')) {
 }
 
 // 系统提供的默认缩略图
-define('ZBP_THUMB_DEFAULT_IMG', ZBP_PATH . 'zb_system/image/default/thumb.png');
+if (!defined('ZBP_THUMB_DEFAULT_IMG')) {
+    define('ZBP_THUMB_DEFAULT_IMG', ZBP_PATH . 'zb_system/image/default/thumb.png');
+}
 
 /**
  * 缩略图类.
@@ -411,7 +413,11 @@ class Thumb
         $this->syncSrcFromTmp();
 
         $this->tmpRes = imagecreatetruecolor($clip_width, $clip_height);
-        imagefill($this->tmpRes, 0, 0, 0xffffff);
+
+        if (defined('ZC_THUMB_IMAGE_FILL') && ZC_THUMB_IMAGE_FILL == true) {
+            imagefill($this->tmpRes, 0, 0, 0xffffff);
+        }
+
         imagecopyresampled($this->tmpRes, $this->srcRes, 0, 0, $clipx, $clipy, $this->srcWidth, $this->srcHeight, $this->srcWidth, $this->srcHeight);
     }
 
@@ -452,7 +458,11 @@ class Thumb
         }
 
         $this->tmpRes = imagecreatetruecolor($dst_width, $dst_height);
-        imagefill($this->tmpRes, 0, 0, 0xffffff);
+
+        if (defined('ZC_THUMB_IMAGE_FILL') && ZC_THUMB_IMAGE_FILL == true) {
+            imagefill($this->tmpRes, 0, 0, 0xffffff);
+        }
+
         imagecopyresampled($this->tmpRes, $this->srcRes, 0, 0, 0, 0, $dst_width, $dst_height, $this->srcWidth, $this->srcHeight);
     }
 

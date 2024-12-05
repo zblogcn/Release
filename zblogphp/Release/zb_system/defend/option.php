@@ -85,8 +85,9 @@ return array(
 
     // '留言评论
     'ZC_COMMENT_TURNOFF'           => true,
-    'ZC_COMMENT_VERIFY_ENABLE'     => false,
+    'ZC_COMMENT_VERIFY_ENABLE'     => true,
     'ZC_COMMENT_REVERSE_ORDER'     => false,
+    'ZC_COMMENT_ORDERBY_TIME'      => false,
     'ZC_COMMENT_AUDIT'             => false,
     'ZC_COMMENT_VALIDCMTKEY_ENABLE' => false,
 
@@ -95,6 +96,9 @@ return array(
     'ZC_VERIFYCODE_WIDTH'  => 90,
     'ZC_VERIFYCODE_HEIGHT' => 30,
     'ZC_VERIFYCODE_FONT'   => 'zb_system/defend/arial.ttf',
+    'ZC_VERIFYCODE_LENGTH' => 5,
+    'ZC_VERIFYCODE_MAXANGLE' => 10,
+    'ZC_VERIFYCODE_MAXOFFSET' => 10,
 
     // '页面各项列数
     'ZC_DISPLAY_COUNT'          => 10,
@@ -228,6 +232,7 @@ return array(
     'ZC_JS_304_ENABLE'               => true,
     'ZC_DELMEMBER_WITH_ALLDATA'      => false,
     'ZC_THUMB_DEFAULT_QUALITY'       => 90,
+    'ZC_THUMB_IMAGE_FILL'            => true,
     'ZC_FIX_MODULE_MIXED_FILENAME'   => true,
 
     // API 相关

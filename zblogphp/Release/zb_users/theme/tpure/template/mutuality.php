@@ -1,9 +1,9 @@
-<?php die(); ?>{* Template Name:相关文章模块 *}
+<?php die(); ?>{* Template Name:相关文章模块(勿选) *}
 {if $zbp->Config('tpure')->PostRELATEON=='1'}
-{$aid=$article.ID}
-{$tagid=$article.Tags}
-{$cid=$article.Category.ID}
 {php}
+$aid=$article->ID;
+$tagid=$article->Tags;
+$cid=$article->Category->ID;
 if($zbp->Config('tpure')->PostRELATENUM){
 	$relatenum = $zbp->Config('tpure')->PostRELATENUM;
 }else{
@@ -15,7 +15,7 @@ if(empty($tagid)){
 }else{
 	$tagrd=array_rand($tagid);
 }
-if( sizeof($tagid)>0 && ($tagid[$tagrd]->Count)>1){
+if(sizeof($tagid)>0 && ($tagid[$tagrd]->Count)>1 && $zbp->Config('tpure')->PostRELATECATE == '0'){
 	$tagi='%{'.$tagrd.'}%';
 	$where = array(array('=','log_Status','0'),array('like','log_Tag',$tagi),array('<>','log_ID',$aid));
 }else{
@@ -32,7 +32,26 @@ switch ($zbp->option['ZC_DATABASE_TYPE']) {
 		$order = array('random()'=>'');
 	break;
 }
-$array = $zbp->GetArticleList(array('*'),$where,$order,array($relatenum),'');
+
+if(ZC_VERSION_COMMIT >= 2800){
+	$w = array();
+	$str = '';
+	if($zbp->Config('tpure')->PostRELATENUM)
+	{
+		$w['random'] = $zbp->Config('tpure')->PostRELATENUM;
+	}else{
+		$w['random'] = '6';
+	}
+	if($article->TagsCount && $zbp->Config('tpure')->PostRELATECATE != '1')
+	{
+	  $w['is_related'] = $article->ID;
+	}else{
+	  $w['cate'] = $article->Category->ID;
+	}
+	$array = GetList($w);
+}else{
+	$array = $zbp->GetArticleList(array('*'),$where,$order,array($relatenum),'');
+}
 {/php}
 {if count($array)>0}
 	<div class="block">

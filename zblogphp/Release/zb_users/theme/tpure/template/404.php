@@ -1,4 +1,4 @@
-{*Template Name:404错误页*}
+{* Template Name:404错误页 * Template Type:404 *}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,10 +36,10 @@
 				<h4>{$lang['tpure']['nopage']}</h4>
 				<p>{$lang['tpure']['trysearch']}</p>
 				<form name="search" method="post" action="{$host}zb_system/cmd.php?act=search" class="errorsearch">
-				<input type="text" name="q" size="11" class="errschtxt"> 
+				<input type="text" name="q" size="11" class="errschtxt">
 				<input type="submit" value="{$lang['tpure']['search']}" class="errschbtn">
 				</form>
-				<a class="goback" href="{$host}">{$lang['tpure']['back']} {$name} {$lang['tpure']['index']}</a>
+				<a class="goback" href="{$host}">{$lang['tpure']['back']}{$lang['tpure']['index']}</a>
 			</div>
         </div>
     </div>

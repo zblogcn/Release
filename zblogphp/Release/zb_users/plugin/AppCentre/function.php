@@ -49,15 +49,18 @@ function AppCentre_GetCheckQueryString($with_ignores = false)
     if ($app->LoadInfoByXml('theme', $zbp->theme) == true && !in_array($zbp->theme, $ia)) {
         $app->modified = str_replace(array(':',';'), '', $app->modified);
         $app->version  = str_replace(array(':',';'), '', $app->version);
-        $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
-
+        if (file_exists($zbp->path . 'zb_users/theme/' . $app->id . '/app_update.lock') == false) {
+            $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
+        }
     }
     foreach (explode('|', $zbp->option['ZC_USING_PLUGIN_LIST']) as $id) {
         $app = new app;
         if ($app->LoadInfoByXml('plugin', $id) == true && !in_array($id, $ia)) {
             $app->modified = str_replace(array(':',';'), '', $app->modified);
             $app->version  = str_replace(array(':',';'), '', $app->version);
-            $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
+            if (file_exists($zbp->path . 'zb_users/plugin/' . $app->id . '/app_update.lock') == false) {
+                $check .= $app->id . ':' . $app->modified . ':' . $app->version . ';';
+            }
         }
     }
     return urlencode($check);
@@ -98,6 +101,12 @@ function Server_Open($method)
                 $testhttps = Server_SendRequest(str_replace('http://', 'https://', APPCENTRE_URL) . 'testhttps.txt');
                 if (!$testhttps) {
                     define('APPCENTRE_CAN_NOT_HTTPS', true);
+                }
+            }
+
+            if (!$zbp->CheckApp(GetVars('id', 'GET'))) {
+                if ($zbp->user->IsGod == false) {
+                    $zbp->ShowError($zbp->lang['AppCentre']['non_root_prohibit_operation']);
                 }
             }
 
@@ -150,7 +159,7 @@ function Server_Open($method)
             die();
             //break;
         case 'search':
-            if (trim(GetVars('q', 'GET')) == '') {
+            if (trim(GetVars('q', 'GET', '')) == '') {
                 return;
             }
 
@@ -485,7 +494,10 @@ function AppCentre_PHPVersion($default)
         '7.3' => '7.3',
         '7.4' => '7.4',
         '8.0' => '8.0',
-        '8.1' => '8.1'
+        '8.1' => '8.1',
+        '8.2' => '8.2',
+        '8.3' => '8.3',
+        '8.4' => '8.4'
     );
     $i = 0;
     if ($default == '') {

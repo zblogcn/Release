@@ -18,12 +18,13 @@ function ActivePlugin_tpure()
         Add_Filter_Plugin('Filter_Plugin_Tag_Edit_Response', 'tpure_TagSEO');
         Add_Filter_Plugin('Filter_Plugin_Edit_Response5', 'tpure_SingleSEO');
     }
-    $zbp->lang['msg']['first_button'] = '首页️';
-    $zbp->lang['msg']['prev_button'] = '上一页';
-    $zbp->lang['msg']['next_button'] = '下一页';
-    $zbp->lang['msg']['last_button'] = '尾页';
-    $zbp->option['ZC_SEARCH_TYPE'] = 'list';
-    $zbp->option['ZC_SEARCH_COUNT'] = 10;
+    //自定义侧栏模块名称
+    $zbp->lang['msg']['sidebar'] = $zbp->lang['tpure']['index'].$zbp->lang['tpure']['sidebar'];
+    $zbp->lang['msg']['sidebar2'] = $zbp->lang['tpure']['catalog'].$zbp->lang['tpure']['sidebar'];
+    $zbp->lang['msg']['sidebar3'] = $zbp->lang['tpure']['article'].$zbp->lang['tpure']['sidebar'];
+    $zbp->lang['msg']['sidebar4'] = $zbp->lang['tpure']['page'].$zbp->lang['tpure']['sidebar'];
+    $zbp->lang['msg']['sidebar5'] = $zbp->lang['tpure']['search'].$zbp->lang['tpure']['page'].$zbp->lang['tpure']['sidebar'];
+    $zbp->lang['msg']['sidebar6'] = $zbp->lang['msg']['sidebar7'] = $zbp->lang['msg']['sidebar8'] = $zbp->lang['msg']['sidebar9'] = $zbp->lang['tpure']['themeunused'];
 }
 
 function tpure_SubMenu($id)
@@ -47,61 +48,59 @@ function tpure_AddMenu(&$m)
 
 function tpure_Header()
 {
-    global $bloghost;
+    global $zbp,$bloghost;
+    if($zbp->Config('tpure')->PostAJAXPOSTON == '0'){$ajaxpost = 0;}else{$ajaxpost = 1;}
     echo '<style>.header{background:url(' . $bloghost . 'zb_users/theme/tpure/style/images/banner.jpg) no-repeat center center;background-size:cover;}</style>';
+    echo '<script>window.theme = {ajaxpost:'.$ajaxpost.'}</script>';
 }
 
 function tpure_LoginHeader()
 {
     global $zbp;
-    $logo = $zbp->Config('tpure')->PostLOGO && $zbp->Config('tpure')->PostLOGOON == 1 ? $zbp->Config('tpure')->PostLOGO : $zbp->name;
+    $logo = $zbp->Config('tpure')->PostLOGO && $zbp->Config('tpure')->PostLOGOON == 1 ? $zbp->Config('tpure')->PostLOGO : '欢迎登录';
+    $banner = $zbp->Config('tpure')->PostLOGINBG ? $zbp->Config('tpure')->PostLOGINBG : $zbp->host . 'zb_users/theme/tpure/style/images/banner.jpg';
     echo <<<CSSJS
     <style>
-        .bg { height:100%; background:url({$zbp->host}zb_users/theme/tpure/style/images/banner.jpg) no-repeat center top; background-size:cover; }
-        .logo { width:100%; height:70px; margin:0 auto 32px; text-align:center; border-bottom:1px solid #eee; }
-        .logo a { width:0.1%; height:70px; margin:0 auto; display:table-cell; vertical-align:middle; }
-        .logo img { width:auto; height:40px; background:none; vertical-align:middle; }
-        #wrapper { width:400px; height:auto; padding-bottom:10px; border-radius:8px; background:#fff; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
-        .login { width:auto; }
-        .login input[type="text"], .login input[type="password"] { width:240px; float:left; border:1px solid #e4e8eb; outline:0; border-radius:3px; }
+        input:-webkit-autofill { -webkit-text-fill-color:#000 !important; background-color:transparent; background-image:none; transition:background-color 50000s ease-in-out 0s; }
+        .bg { height:100%; background:url({$banner}) no-repeat center top; background-size:cover; }
+        .logo { width:100%; height:auto; margin:0; padding:20px 0 10px; text-align:center; border-bottom:1px solid #eee; }
+        .logo img { width:auto; height:50px; margin:auto; background:none; display:block; }
+        #wrapper { width:440px; min-height:400px; height:auto; border-radius:8px; background:#fff; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
+        .login { width:auto; height:auto; padding:30px 40px 20px; }
+        .login input[type="text"], .login input[type="password"] { width:100%; height:42px; float:none; padding:0 14px; font-size:16px; line-height:42px; border:1px solid #e4e8eb; outline:0; border-radius:3px; box-sizing:border-box; }
+        .login input[type="password"] { font-size:24px; letter-spacing:5px; }
         .login input[type="text"]:focus, .login input[type="password"]:focus { color:#0188fb; background-color:#fff; border-color:#aab7c1; outline:0; box-shadow:0 0 0 0.2rem rgba(31,73,119,0.1); }
         .login dl { height:auto; }
-        .login dd.submit, .login dd.password, .login dd.username, .login dd.validcode { width:auto; overflow:visible; }
-        .login dd.validcode { position:relative; }
-        .login dd.validcode img { position:absolute; top:2px; right:2px; }
-        .login dd.checkbox { width:170px; }
-        .login label { padding-right:15px; }
-        .logintitle { font-size:24px; line-height:76px; position:relative; display:inline-block; }
-        .logintitle:before,.logintitle:after { content:""; width:50px; height:0; border-top:1px solid #ddd; position:absolute; top:38px; right:-70px; }
-        .logintitle:before { right:auto; left:-70px; }
-        .button { border-radius:3px; background:#0188fb; }
+        .login dd { margin-bottom:14px; }
+        .login dd.submit, .login dd.password, .login dd.username, .login dd.validcode { width:auto; float:none; overflow:visible; }
+        .login dd.validcode { height:auto; position:relative; }
+        .login dd.validcode label { margin-bottom:4px; }
+        .login dd.validcode img { height:38px; position:absolute; top:auto; right:2px; bottom:2px; }
+        .login dd.checkbox { width:170px; float:none; margin:0 0 10px; }
+        .login dd.checkbox input[type="checkbox"] { width:16px; height:16px; margin-right:6px;; }
+        .login label { width:auto; margin-bottom:5px; padding:0; font-size:16px; text-align:left; }
+        .logintitle { padding:0 70px; font-size:24px; color:#0188fb; line-height:40px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; position:relative; display:block; }
+        .button { width:100%; height:42px; float:none; font-size:16px; line-height:42px; border-radius:3px; outline:0; box-shadow:1px 3px 5px 0 rgba(72,108,255,0.3); background:#0188fb; }
         .button:hover { background:#0188fb; }
-        @media only screen and (max-width: 800px){
-            .login dd { float:left; margin-bottom:20px; padding:0; }
-            .login dd.username label, .login dd.password label, .login dd.validcode label { width:100px; text-align:right; }
-            .login dd.checkbox { width:175px; margin:0 0 10px 95px; padding:0; }
-            .login dd.submit { float:left; padding:0; }
-            .login dd.validcode { height:40px; }
+        @media only screen and (max-width: 768px){
+            .login { padding:30px 30px 10px; }
+            .login dd { float:left; margin-bottom:14px; padding:0; }
+            .login dd.validcode label { margin-bottom:5px; }
+            .login dd.checkbox { width:auto; padding:0; }
+            .login dd.submit { margin-right:0; }
         }
-        @media only screen and (max-width: 420px){
-            #wrapper { width:90%; padding:0; }
-            .login dd.submit, .login dd.password, .login dd.username, .login dd.validcode { width:100%; }
-            .login dd.username label, .login dd.password label, .login dd.validcode label { width:90px; }
-            .login input[type="text"], .login input[type="password"] { width:calc(100% - 120px); }
-            .login dd.validcode { margin-bottom:8px; }
-            .login dd.validcode img { width:70px; right:32px; }
-            .login dd.checkbox { margin-left:85px; }
-            .login dd.submit { margin:0; }
-            .login dd.submit .button { width:90%; height:40px; float:none; margin:0 auto 30px; border:0; display:block; }
+        @media only screen and (max-width: 520px){
+            #wrapper { width:96%; margin:0 auto; }
+            .login dd.username label, .login dd.password label { width:100%; }
         }
         </style>
         <script>
         $(function(){
         function check_is_img(url) {
-            return (url.match(/\.(jpeg|jpg|gif|png)$/) != null)
+            return (url.match(/\.(jpeg|jpg|gif|png|svg)$/) != null)
         }
         if(check_is_img("{$logo}")){
-            $(".logo").find("img").replaceWith('<img src="{$logo}">').end().wrapInner("<a href='"+bloghost+"'/>");
+            $(".logo").find("img").replaceWith('<img src="{$logo}"/>').end().wrapInner("<a href='"+bloghost+"'/>");
         }else{
             $(".logo").find("img").replaceWith('<span class="logintitle">{$logo}<span>').end().wrapInner("<a href='"+bloghost+"'/>");
         }
@@ -113,9 +112,30 @@ CSSJS;
 function tpure_Refresh()
 {
     global $zbp;
-    if ($zbp->option['ZC_DEBUG_MODE']) {
-        $zbp->BuildTemplate();
+    if ($zbp->ismanage){
+        return;
     }
+    if (defined("ZBP_IN_CMD")) {
+        return;
+    }
+    $zbp->lang['msg']['first_button'] = $zbp->lang['tpure']['index'];
+    $zbp->lang['msg']['prev_button'] = $zbp->lang['tpure']['prevpage'];
+    $zbp->lang['msg']['next_button'] = $zbp->lang['tpure']['nextpage'];
+    $zbp->lang['msg']['last_button'] = $zbp->lang['tpure']['endpage'];
+    $zbp->option['ZC_SEARCH_TYPE'] = 'list';
+    //$zbp->option['ZC_PAGEBAR_COUNT'] = 3;
+    //$zbp->option['ZC_SEARCH_COUNT'] = 10;
+}
+
+//分类列表页面包屑分类获取
+function tpure_navcate($id)
+{
+   $html = '';
+   $navcate = new Category;
+   $navcate->LoadInfoByID($id);
+   $html = ' &gt; <a href="' .$navcate->Url.'" title="查看' .$navcate->Name. '中的全部文章">' .$navcate->Name. '</a> '.$html;
+   if(($navcate->ParentID)>0){tpure_navcate($navcate->ParentID);}
+   echo $html;
 }
 
 function tpure_SearchMain(&$template)
@@ -133,16 +153,20 @@ function tpure_SearchMain(&$template)
     }
 }
 
-function tpure_Exclude_Category(&$type, &$page, &$category, &$author, &$datetime, &$tag, &$w, &$pagebar)
+function tpure_FormatID($ids)
+{
+    $filter = str_replace('，', ',', $ids);
+    $filter = preg_replace('/,+/', ',', $filter);
+    return trim($filter, ',');
+}
+
+function tpure_Exclude_Category($type, $page, $category, $author, $datetime, $tag, &$w, $pagebar)
 {
     global $zbp;
-    if ($type == 'index' && !isset($zbp->Config('tpure')->PostFILTERCATEGORY)) {
-        $w[] = array('NOT IN', 'log_CateID', $zbp->Config('tpure')->PostFILTERCATEGORY);
-        //以下是为了重建分页，过滤了分类，数量会发生变化
-        $pagebar = new Pagebar($zbp->option['ZC_INDEX_REGEX'], true, true);
-        $pagebar->PageCount = $zbp->displaycount;
-        $pagebar->PageNow = $page;
-        $pagebar->PageBarCount = $zbp->pagebarcount;
+    $filter = tpure_FormatID($zbp->Config('tpure')->PostFILTERCATEGORY);
+    if ($type == 'index' && $filter) {
+        $w[] = array('NOT IN', 'log_CateID', explode(',',$filter));
+        $pagebar->Count = null;
     }
 }
 
@@ -153,16 +177,14 @@ function tpure_Exclude_CategorySelect($default)
         $fpreturn = $fpname($default);
         if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
             $fpsignal = PLUGIN_EXITSIGNAL_NONE;
-
             return $fpreturn;
         }
     }
     $s = '';
-    $s .= '<option value="0">屏蔽多个分类ID</option>';
+    $s .= '<option value="0">'.$zbp->lang['tpure']['shieldcateid'].'</option>';
     foreach ($zbp->categoriesbyorder as $id => $cate) {
         $s .= '<option ' . ($default == $cate->ID ? 'selected="selected"' : '') . ' value="' . $cate->ID . '">' . $cate->SymbolName . '</option>';
     }
-
     return $s;
 }
 
@@ -176,13 +198,13 @@ function tpure_TimeAgo($ptime)
             return '刚刚';
         }
         $interval = array(
-            12 * 30 * 24 * 60 * 60  => '年前<time class="datetime"> (' . date('Y-m-d', $ptime) . ')</time>',
-            30 * 24 * 60 * 60       => '个月前<time class="datetime"> (' . date('m-d', $ptime) . ')</time>',
-            7 * 24 * 60 * 60        => '周前<time class="datetime"> (' . date('m-d', $ptime) . ')</time>',
-            24 * 60 * 60            => '天前',
-            60 * 60                 => '小时前',
-            60                      => '分钟前',
-            1                       => '秒前',
+            12 * 30 * 24 * 60 * 60  => $zbp->lang['tpure']['yearsago'].'<span class="datetime"> (' . date('Y-m-d', $ptime) . ')</span>',
+            30 * 24 * 60 * 60       => $zbp->lang['tpure']['monthago'].'<span class="datetime"> (' . date('m-d', $ptime) . ')</span>',
+            7 * 24 * 60 * 60        => $zbp->lang['tpure']['weeksago'].'<span class="datetime"> (' . date('m-d', $ptime) . ')</span>',
+            24 * 60 * 60            => $zbp->lang['tpure']['daysago'],
+            60 * 60                 => $zbp->lang['tpure']['monthsago'],
+            60                      => $zbp->lang['tpure']['minutesago'],
+            1                       => $zbp->lang['tpure']['secondsago'],
         );
         foreach ($interval as $secs => $str) {
             $d = $etime / $secs;
@@ -257,7 +279,6 @@ function tpure_CategorySEO()
     global $zbp,$cate; ?>
     <link rel="stylesheet" href="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/admin.css">
     <script type="text/javascript" src="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/custom.js"></script>
-    <script type="text/javascript" src="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/jscolor.js"></script>
     <?php
     if ($zbp->CheckPlugin('UEditor')) {
         echo '<script type="text/javascript" src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.config.php"></script>';
@@ -292,7 +313,6 @@ function tpure_TagSEO()
     global $zbp,$tag; ?>
     <link rel="stylesheet" href="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/admin.css">
     <script type="text/javascript" src="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/custom.js"></script>
-    <script type="text/javascript" src="<?php echo $zbp->host; ?>zb_users/theme/tpure/script/jscolor.js"></script>
     <?php
     if ($zbp->CheckPlugin('UEditor')) {
         echo '<script type="text/javascript" src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.config.php"></script>';
@@ -368,7 +388,6 @@ function tpure_Thumb($Source, $IsThumb = '0')
 {
     global $zbp;
     $ThumbSrc = '';
-    $randnum = mt_rand(1, 20);
     $pattern = "/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png]))[\'|\"].*?[\/]?>/i";
     $content = $Source->Content;
     preg_match_all($pattern, $content, $matchContent);
@@ -397,40 +416,46 @@ function InstallPlugin_tpure()
     global $zbp;
     if (!$zbp->Config('tpure')->HasKey('Version')) {
         $array = array(
-            'PostLOGO'            => $zbp->host . 'zb_users/theme/tpure/style/images/logo.png',
+            'PostLOGO'            => $zbp->host . 'zb_users/theme/tpure/style/images/logo.svg',
             'PostLOGOON'          => '0',
             'PostFAVICON'         => $zbp->host . 'zb_users/theme/tpure/style/images/favicon.ico',
             'PostFAVICONON'       => '0',
             'PostTHUMB'           => $zbp->host . 'zb_users/theme/tpure/style/images/thumb.png',
             'PostTHUMBON'         => '0',
+            'PostBANNERON'        => '1',
             'PostBANNER'          => $zbp->host . 'zb_users/theme/tpure/style/images/banner.jpg',
+            'PostBANNERDISPLAYON' => '1',
+            'PostBANNERFONT'      => 'Good Luck To You!',
+            'PostBANNERPCHEIGHT'  => '360',
+            'PostBANNERMHEIGHT'   => '150',
             'PostIMGON'           => '1',
             'PostSEARCHON'        => '1',
             'PostSCHTXT'          => '搜索...',
             'PostVIEWALLON'       => '1',
             'PostVIEWALLHEIGHT'   => '1000',
             'PostVIEWALLSTYLE'    => '1',
-            'PostLISTINFO'        => '{"user":"1","date":"1","cate":"0","view":"1","cmt":"0"}',
-            'PostARTICLEINFO'     => '{"user":"1","date":"1","cate":"1","view":"1","cmt":"0"}',
-            'PostPAGEINFO'        => '{"user":"1","date":"1","view":"0","cmt":"0"}',
+            'PostLISTINFO' => '{"user":"1","date":"1","cate":"0","view":"1","cmt":"0","edit":"1","del":"1"}',
+            'PostARTICLEINFO' => '{"user":"1","date":"1","cate":"1","view":"1","cmt":"0","edit":"1","del":"1"}',
+            'PostPAGEINFO' => '{"user":"1","date":"0","view":"0","cmt":"0","edit":"1","del":"1"}',
             'PostSINGLEKEY'       => '1',
             'PostPAGEKEY'         => '1',
             'PostRELATEON'        => '1',
+            'PostRELATECATE'      => '1',
             'PostRELATENUM'       => '6',
-            'PostINTRONUM'        => '100',
             'PostFILTERCATEGORY'  => '',
-            'PostSHARE'           => '',
+            'PostINTRONUM'        => '100',
+            'PostSITEMAPON'       => '1',
             'PostMOREBTNON'       => '1',
             'PostARTICLECMTON'    => '1',
             'PostPAGECMTON'       => '1',
             'PostFIXMENUON'       => '1',
             'PostLOGOHOVERON'     => '1',
-            'PostBANNERDISPLAYON' => '1',
             'PostBLANKON'         => '0',
             'PostGREYON'          => '0',
             'PostREMOVEPON'       => '1',
             'PostTIMEAGOON'       => '1',
             'PostBACKTOTOPON'     => '1',
+            'PostAJAXPOSTON'      => '1',
             'PostSAVECONFIG'      => '1',
 
             'SEOON'          => '0',

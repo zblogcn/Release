@@ -73,7 +73,7 @@ $zbpvers['162210'] = '1.6.8 Valyria Build 162210';
 $zbpvers['172900'] = '1.7.0 Tenet Build 172900';
 $zbpvers['172980'] = '1.7.1 Tenet Build 172980';
 $zbpvers['173000'] = '1.7.2 Tenet Build 173000';
-$zbpvers['173200'] = '1.7.3 Finch Build 173000';
+$zbpvers['173200'] = '1.7.3 Finch Build 173200';
 
 if (!isset($zbpvers[$GLOBALS['blogversion']])) {
     if (defined('ZC_VERSION_FULL')) {
@@ -140,7 +140,7 @@ function AppCentre_AddSiteInfoMenu()
     global $zbp;
     if ($zbp->Config('AppCentre')->enabledcheck) {
         $last = (int) $zbp->Config('AppCentre')->lastchecktime;
-        if ((time() - $last) > (11 * 60 * 60)) {
+        if ((time() - $last) > (23 * 60 * 60)) {
             echo "<script type='text/javascript'>$(document).ready(function(){  $.getScript('{$zbp->host}zb_users/plugin/AppCentre/main.php?method=checksilent&rnd='); });</script>";
             $zbp->Config('AppCentre')->lastchecktime = time();
             $zbp->SaveConfig('AppCentre');

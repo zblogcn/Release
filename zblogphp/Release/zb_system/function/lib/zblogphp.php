@@ -403,7 +403,9 @@ class ZBlogPHP
 
     //不保存进Option的单次开关
     public $cookie_tooken_httponly = true;//已废弃
+
     public $cookie_httponly = true;
+
     public $cookie_domain = '';
 
     public $logs_more_info = false;
@@ -633,7 +635,7 @@ class ZBlogPHP
      */
     public function __construct()
     {
-        global $option, $lang, $langs, $blogpath, $bloghost, $cookiespath, $cachedir, 
+        global $option, $lang, $langs, $blogpath, $bloghost, $cookiespath, $cachedir,
             $logsdir, $datadir, $table, $datainfo, $actions, $action, $blogversion,
             $blogtitle, $blogname, $blogsubname, $routes, $blogtheme, $blogstyle,$currenturl,
             $fullcurrenturl, $currentscript, $fullcurrentscript, $activedapps, $posttype,
@@ -845,15 +847,15 @@ class ZBlogPHP
         $this->option['ZC_BLOG_COMMIT'] = ZC_BLOG_COMMIT;
         $this->option['ZC_NOW_VERSION'] = $this->version;
         $this->option['ZC_BLOG_PRODUCT_FULL'] = $this->option['ZC_BLOG_PRODUCT'] . ' ' . ZC_VERSION_DISPLAY;
-        $this->option['ZC_BLOG_PRODUCT_FULLHTML'] = '<a href="https://www.zblogcn.com/" title="Z-BlogPHP ' . ZC_BLOG_VERSION . '" target="_blank" rel="noopener norefferrer">' . $this->option['ZC_BLOG_PRODUCT_FULL'] . '</a>';
-        $this->option['ZC_BLOG_PRODUCT_HTML'] = '<a href="https://www.zblogcn.com/" title="Z-BlogPHP ' . ZC_BLOG_VERSION . '" target="_blank" rel="noopener norefferrer">' . $this->option['ZC_BLOG_PRODUCT'] . '</a>';
+        $this->option['ZC_BLOG_PRODUCT_FULLHTML'] = '<a href="https://www.zblogcn.com/" title="Z-BlogPHP ' . ZC_BLOG_VERSION . '" target="_blank" rel="noopener noreferrer">' . $this->option['ZC_BLOG_PRODUCT_FULL'] . '</a>';
+        $this->option['ZC_BLOG_PRODUCT_HTML'] = '<a href="https://www.zblogcn.com/" title="Z-BlogPHP ' . ZC_BLOG_VERSION . '" target="_blank" rel="noopener noreferrer">' . $this->option['ZC_BLOG_PRODUCT'] . '</a>';
 
         if ($oldZone != $this->option['ZC_TIME_ZONE_NAME']) {
             date_default_timezone_set($this->option['ZC_TIME_ZONE_NAME']);
         }
 
         /*if(isset($_COOKIE['timezone'])){
-            $tz=GetVars('timezone','COOKIE');
+            $tz=GetVars('timezone', 'COOKIE');
             if(is_numeric($tz)){
             $tz=sprintf('%+d',-$tz);
             date_default_timezone_set('Etc/GMT' . $tz);
@@ -1561,8 +1563,8 @@ class ZBlogPHP
     public function Verify()
     {
         // 在普通 Web 页面中
-        $username = trim(GetVars('username_' . hash("crc32b", $this->guid), 'COOKIE'));
-        $token = trim(GetVars('token_' . hash("crc32b", $this->guid), 'COOKIE'));
+        $username = trim(GetVars('username_' . hash("crc32b", $this->guid), 'COOKIE', ''));
+        $token = trim(GetVars('token_' . hash("crc32b", $this->guid), 'COOKIE', ''));
         $user = $this->VerifyUserToken($token, $username);
 
         if (is_object($user)) {
@@ -2475,7 +2477,7 @@ class ZBlogPHP
     public function AddBuildModule($moduleFileName, $parameters = null)
     {
         $p = func_get_args();
-        if ($moduleFileName == 'archives' && $this->option['ZC_LARGE_DATA'] == false && isset($this->modulesbyfilename['archives'])) {
+        if ($moduleFileName == 'archives' && isset($this->modulesbyfilename['archives'])) {
             if ($this->modulesbyfilename['archives']->GetSideBarInUsed() == array()) {
                 return;
             }
@@ -4049,7 +4051,7 @@ class ZBlogPHP
      *
      * @return mixed
      */
-    public function ShowError($errorText, $file = null, $line = null, $moreinfo = null, $httpcode = null)
+    public function ShowError($errorText, $file = null, $line = null, $moreinfo = null, $httpcode = null, $messagefull = null)
     {
         $args = func_get_args();
         $errorCode = 0;
@@ -4062,7 +4064,9 @@ class ZBlogPHP
             $file = __FILE__;
             $line = __LINE__ - 11;
         }
-        $messagefull = $errorText . ' (set_exception_handler) ';
+        if (is_null($messagefull) or empty($messagefull)) {
+            $messagefull = $errorText . ' (set_exception_handler) ';
+        }
         if (!is_array($moreinfo) && !is_null($moreinfo)) {
             $moreinfo = array($moreinfo);
         }
@@ -4822,6 +4826,13 @@ class ZBlogPHP
      */
     public function CheckSiteClosed()
     {
+        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_CheckSiteClosed'] as $fpname => &$fpsignal) {
+            $fpreturn = $fpname();
+            if ($fpsignal == PLUGIN_EXITSIGNAL_RETURN) {
+                $fpsignal = PLUGIN_EXITSIGNAL_NONE;
+                return $fpreturn;
+            }
+        }
         if ($this->option['ZC_CLOSE_SITE']) {
             Http503();
             $this->ShowError(82, __FILE__, __LINE__);
@@ -4835,14 +4846,18 @@ class ZBlogPHP
     public function RedirectInstall()
     {
         if (!$this->option['ZC_DATABASE_TYPE']) {
-            $s = $_SERVER['QUERY_STRING'];
+            $s = GetVars('QUERY_STRING', 'GET');
             $s = empty($s) ? '' : '?' . $s;
-            Redirect302('./zb_install/index.php' . $s);
+            if (is_readable(ZBP_PATH . 'zb_install/index.php')) {
+                Redirect302('./zb_install/index.php' . $s);
+            }
         }
         if (isset($this->option['ZC_INSTALL_AFTER_CONFIG']) && $this->option['ZC_INSTALL_AFTER_CONFIG'] == true) {
             $r = $this->db->ExistTable($GLOBALS['table']['Config']);
             if ($r == false) {
-                Redirect302('./zb_install/index.php');
+                if (is_readable(ZBP_PATH . 'zb_install/index.php')) {
+                    Redirect302('./zb_install/index.php');
+                }
             }
         }
     }

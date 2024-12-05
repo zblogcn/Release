@@ -49,6 +49,9 @@ if (function_exists('gzencode')
 } else {
     $b = false;
 }
+
+$app->ignore_files[] = 'app_update.lock';
+
 //header('Content-type:text/xml');
 header('Content-Disposition:attachment;filename=' . $id . '_' . $app->version . '_' . $app->modified . '.zba');
 echo AppCentre_Pack($app, $b);

@@ -25,21 +25,21 @@ function VerifyLogin($throwException = true, $ignoreValidCode = true, $ignoreCsr
 
     if ($zbp->option['ZC_LOGIN_CSRFCHECK_ENABLE'] && $ignoreCsrfCheck == false) {
         $zbp->csrfExpirationMinute = 5;
-        if ($zbp->VerifyCSRFToken(GetVars('csrfToken' , 'POST'), 'login', 'minute') == false) {
+        if ($zbp->VerifyCSRFToken(GetVars('csrfToken', 'POST'), 'login', 'minute') == false) {
             $zbp->ShowError(5, __FILE__, __LINE__);
         }
     }
 
     if ($zbp->option['ZC_LOGIN_VERIFY_ENABLE'] && $ignoreValidCode == false) {
         $zbp->verifyCodeExpirationMinute = 5;
-        if ($zbp->CheckValidCode(GetVars('verify' , 'POST'), 'login', 'minute') == false) {
+        if ($zbp->CheckValidCode(GetVars('verify', 'POST'), 'login', 'minute') == false) {
             $zbp->ShowError(38, __FILE__, __LINE__);
         }
     }
 
     /* @var Member $m */
     $m = null;
-    if ($zbp->Verify_MD5(trim(GetVars('username', 'POST')), trim(GetVars('password', 'POST')), $m)) {
+    if ($zbp->Verify_MD5(trim(GetVars('username', 'POST', '')), trim(GetVars('password', 'POST', '')), $m)) {
         $zbp->user = $m;
         $zbp->islogin = true;
         $sd = (float) GetVars('savedate');
@@ -2224,7 +2224,7 @@ function SetSidebar()
         $optionName = $i === 1 ? 'ZC_SIDEBAR_ORDER' : "ZC_SIDEBAR{$i}_ORDER";
         $formName = $i === 1 ? 'sidebar' : "sidebar{$i}";
         if (isset($_POST[$formName])) {
-            $zbp->option[$optionName] = trim(GetVars($formName, 'POST'), '|');
+            $zbp->option[$optionName] = trim(GetVars($formName, 'POST', ''), '|');
         }
     }
     $zbp->SaveOption();

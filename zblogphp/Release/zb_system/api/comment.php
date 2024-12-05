@@ -68,6 +68,7 @@ function api_comment_post()
 
     //要求登录后，不再验证系统的验证码。
     $zbp->option['ZC_COMMENT_VERIFY_ENABLE'] = false;
+    $zbp->option['ZC_COMMENT_VALIDCMTKEY_ENABLE'] = false;
 
     try {
         $comment = PostComment();
@@ -143,7 +144,7 @@ function api_comment_list()
 {
     global $zbp;
 
-    $mng = (int) trim(GetVars('manage')); //&manage=1
+    $mng = (int) trim(GetVars('manage', '', '')); //&manage=1
     $postId = (int) GetVars('post_id');
     $authId = (int) GetVars('auth_id');
     $ischecking = (int) GetVars('ischecking');

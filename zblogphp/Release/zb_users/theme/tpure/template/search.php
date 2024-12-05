@@ -1,4 +1,4 @@
-{*Template Name:搜索页模板*}
+{* Template Name:搜索页模板 * Template Type:search *}
 {template:header}
 <body class="{$type}">
 <div class="wrapper">
@@ -15,9 +15,11 @@
                     {template:post-multi}
                     {/foreach}
                 </div>
+                {if $pagebar && $pagebar.PageAll > 1}
                 <div class="pagebar">
                     {template:pagebar}
                 </div>
+                {/if}
             </div>
             <div class="sidebar">
                 {template:sidebar5}

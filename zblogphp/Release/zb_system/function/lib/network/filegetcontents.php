@@ -29,6 +29,8 @@ class Network__filegetcontents implements Network__Interface
 
     private $url = '';
 
+    private $getdata = array();
+
     private $postdata = array();
 
     private $httpheader = array();
@@ -129,6 +131,45 @@ class Network__filegetcontents implements Network__Interface
     }
 
     /**
+     * 处理 querystring 到 url.
+     */
+    private function load_query_to_url()
+    {
+        $url = $this->url;
+
+        $this->parsed_url = parse_url($url);
+
+        $breforedata = array();
+        if (isset($this->parsed_url['query'])) {
+            parse_str($this->parsed_url['query'], $breforedata);
+        }
+
+        $newdata = array_merge($breforedata, $this->getdata);
+        $query_string = http_build_query($newdata);
+
+        $fragment = '';
+        if (stripos($url, '#') !== false) {
+            $url = SplitAndGet($url, '#');
+            $fragment = '#' . SplitAndGet($url, '#', 1);
+        }
+        $url = SplitAndGet($url, '?');
+        $url = $url . '?' . $query_string . $fragment;
+
+        $this->url = $url;
+    }
+
+    /**
+     * 新增查询.
+     *
+     * @param string $name
+     * @param string $entity
+     */
+    public function addQuery($name, $entity)
+    {
+        $this->getdata[$name] = $entity;
+    }
+
+    /**
      * @param $bstrMethod
      * @param $bstrUrl
      * @param bool   $varAsync
@@ -177,7 +218,9 @@ class Network__filegetcontents implements Network__Interface
             $data = http_build_query($data);
         }
 
-        if ($this->option['method'] == 'POST') {
+        $this->load_query_to_url();
+
+        if ($this->option['method'] == 'POST' || $this->option['method'] == 'PUT') {
             if (is_array($varBody) && count($this->postdata) > 0) {
                 foreach ($varBody as $key => $value) {
                     $this->add_postdata($key, $value);
@@ -337,6 +380,17 @@ class Network__filegetcontents implements Network__Interface
     }
 
     /**
+     * @param string $name
+     * @param string $entity
+     *
+     * @return void
+     */
+    public function addFormParam($name, $entity)
+    {
+        $this->addText($name, $entity);
+    }
+
+    /**
      * @return string
      */
     private function private_buildPostData()
@@ -401,6 +455,7 @@ class Network__filegetcontents implements Network__Interface
 
         $this->option = array();
         $this->url = '';
+        $this->getdata = array();
         $this->postdata = array();
         $this->httpheader = array();
         $this->responseHeader = array();

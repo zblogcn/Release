@@ -113,6 +113,10 @@ function updatedb_14to15()
 }
 
 if (isset($_GET['updatedb'])) {
+    if ($zbp->user->IsGod == false) {
+        $zbp->ShowError($zbp->lang['AppCentre']['non_root_prohibit_operation']);
+    }
+
     //if ($zbp->version >= 150101 && $zbp->version < 170000 && (int) $zbp->option['ZC_LAST_VERSION'] < 150101) {
     //    updatedb_14to15();
     //}
@@ -128,6 +132,10 @@ if (isset($_GET['updatedb'])) {
 }
 
 if (GetVars('update', 'GET') != '') {
+    if ($zbp->user->IsGod == false) {
+        $zbp->ShowError($zbp->lang['AppCentre']['non_root_prohibit_operation']);
+    }
+
     $url = APPCENTRE_SYSTEM_UPDATE . '' . GetVars('update', 'GET') . '.xml';
     $f = AppCentre_GetHttpContent($url);
     $xml = simplexml_load_string($f);
@@ -161,6 +169,10 @@ if (GetVars('update', 'GET') != '') {
 }
 
 if (GetVars('restore', 'GET') != '') {
+    if ($zbp->user->IsGod == false) {
+        $zbp->ShowError($zbp->lang['AppCentre']['non_root_prohibit_operation']);
+    }
+
     $file = base64_decode(GetVars('restore', 'GET'));
     $file = str_replace('\\', '/', $file);
     $hash = 'hash' . strtoupper(GetVars('hash', 'GET'));

@@ -776,10 +776,10 @@ class SQL__Global
 
         if (isset($this->option['limit'])) {
             if ($this->option['limit'] > 0) {
-                $sql[] = "LIMIT " . str_replace(array('"',"'"), '', $this->option['limit']);
+                $sql[] = "LIMIT " . str_replace(array('"',"'",';'), '', $this->option['limit']);
 
                 if (isset($this->option['offset'])) {
-                    $sql[] = "OFFSET " . str_replace(array('"',"'"), '', $this->option['offset']);
+                    $sql[] = "OFFSET " . str_replace(array('"',"'",';'), '', $this->option['offset']);
                 }
             }
         }
@@ -1285,7 +1285,12 @@ class SQL__Global
     protected function buildTRUNCATE()
     {
         $sql = &$this->pri_sql;
-        $sql[] = 'TABLE';
+        if (get_class($this) == 'SQL__SQLite') {
+            $sql = array('DELETE');
+            $sql[] = 'FROM';
+        } else {
+            $sql[] = 'TABLE';
+        }
         $this->buildTable();
     }
 

@@ -93,7 +93,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 
 
 <table class="tableFull tableBorder tableBorder-thcenter">
-<tr><td class="td30"><p><b>· <?php echo $zbp->lang['AppCentre']['tfa_verification']; ?></b></p></td><td><p>&nbsp;<input id="tfa_verification" name="tfa_verification" style="width:550px;"  type="text" value="" placeholder="<?php echo $zbp->lang['AppCentre']['tfa_verification_placeholder']; ?>" /></p></td></tr>
+<tr><td class="td30"><p><b>· <?php echo $zbp->lang['AppCentre']['tfa_verification']; ?></b></p></td><td><p>&nbsp;<input id="tfa_verification" name="tfa_verification" style="width:550px;"  type="text" value="" placeholder="<?php echo $zbp->lang['AppCentre']['tfa_verification_placeholder']; autocomplete="off"?>" /></p></td></tr>
 </table>
 <script type="text/javascript">
 var jsoninfo=eval(<?php echo $t; ?>);

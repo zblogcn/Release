@@ -13,10 +13,10 @@ if ($zbp->CheckRights('admin')) {
     Redirect302('cmd.php?act=admin');
 }
 ?><!DOCTYPE HTML>
-<html>
+<html lang="<?php echo $lang['lang_bcp47']; ?>">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="robots" content="none" />
     <meta name="viewport" content="width=device-width,viewport-fit=cover" />
     <meta name="generator" content="<?php echo $option['ZC_BLOG_PRODUCT_FULL']; ?>" />
@@ -37,7 +37,7 @@ HookFilterPlugin('Filter_Plugin_Login_Header');
   <div class="logo"><img src="image/admin/none.gif" title="<?php echo htmlspecialchars($blogname); ?>" alt="<?php echo htmlspecialchars($blogname); ?>"/></div>
   <div class="login">
     <form method="post" action="#">
-    <input type="hidden" name="csrfToken" value="<?php echo $zbp->GetCSRFToken('login', 'minute');?>">
+    <input type="hidden" name="csrfToken" value="<?php echo $zbp->GetCSRFToken('login', 'minute'); ?>">
     <dl>
       <dt></dt>
       <dd class="username"><label for="edtUserName"><?php echo $lang['msg']['username']; ?></label><input type="text" id="edtUserName" name="edtUserName" size="20" value="<?php echo GetVars('username', 'COOKIE'); ?>" tabindex="1" /></dd>

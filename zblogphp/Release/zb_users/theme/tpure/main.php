@@ -26,17 +26,17 @@ $act = $_GET['act'] == "base" ? 'base' : $_GET['act'];
 require $blogpath . 'zb_system/admin/admin_header.php';
 require $blogpath . 'zb_system/admin/admin_top.php';
 if ($zbp->CheckPlugin('UEditor')) {
-    echo '<script type="text/javascript" src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.config.php"></script>';
-    echo '<script type="text/javascript" src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.all.min.js"></script>';
+    echo '<script src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.config.php"></script>';
+    echo '<script src="' . $zbp->host . 'zb_users/plugin/UEditor/ueditor.all.min.js"></script>';
 }
 ?>
 <link rel="stylesheet" href="./script/admin.css">
-<script type="text/javascript" src="./script/custom.js"></script>
+<script src="./script/custom.js"></script>
 <div class="twrapper">
 <div class="theader">
 	<div class="theadbg"><div class="tips">提示：<strong>Ctrl + S</strong> 可快速保存设置</div></div>
 	<div class="tuser">
-		<div class="tuserimg"><img src="style/images/sethead.png" /></div>
+		<div class="tuserimg"><img src="style/images/sethead.png" alt=""></div>
 		<div class="tusername"><?php echo $blogtitle; ?></div>
 	</div>
 	<div class="tmenu">
@@ -110,14 +110,14 @@ if ($act == 'base') {
 						<th width=20%>图片LOGO与动效</th>
 					</tr>
 					<tr>
-						<td><?php if ($zbp->Config('tpure')->PostLOGO) { ?><img src="<?php echo $zbp->Config('tpure')->PostLOGO; ?>" width="120" class="thumbimg" /><?php } else { ?><img src="style/images/logo.png" width="120" class="thumbimg" /><?php } ?></td>
+						<td><?php if ($zbp->Config('tpure')->PostLOGO) { ?><img src="<?php echo $zbp->Config('tpure')->PostLOGO; ?>" alt="" width="120" class="thumbimg"><?php } else { ?><img src="style/images/logo.png" alt="" width="120" class="thumbimg"><?php } ?></td>
 						<td><input type="text" id="PostLOGO" name="PostLOGO" value="<?php if ($zbp->Config('tpure')->PostLOGO) {
         echo $zbp->Config('tpure')->PostLOGO;
     } else {
         echo $zbp->host . 'zb_users/theme/tpure/style/images/logo.png';
     } ?>" class="urltext thumbsrc"></td>
 						<td><input type="button" class="uploadimg" value="上传"></td>
-						<td>是否启用 <input type="text" id="PostLOGOON" name="PostLOGOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostLOGOON; ?>" /><br>启用动效 <input type="text" id="PostLOGOHOVERON" name="PostLOGOHOVERON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostLOGOHOVERON; ?>" /></td>
+						<td>是否启用 <input type="text" id="PostLOGOON" name="PostLOGOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostLOGOON; ?>"><br>启用动效 <input type="text" id="PostLOGOHOVERON" name="PostLOGOHOVERON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostLOGOHOVERON; ?>"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -135,14 +135,14 @@ if ($act == 'base') {
 						<th width="20%">是否启用图标</th>
 					</tr>
 					<tr>
-						<td><?php if ($zbp->Config('tpure')->PostFAVICON) { ?><img src="<?php echo $zbp->Config('tpure')->PostFAVICON; ?>" width="16" class="thumbimg" /><?php } else { ?><img src="style/images/favicon.ico" width="16" class="thumbimg" /><?php } ?></td>
+						<td><?php if ($zbp->Config('tpure')->PostFAVICON) { ?><img src="<?php echo $zbp->Config('tpure')->PostFAVICON; ?>" alt="" width="16" class="thumbimg"><?php } else { ?><img src="style/images/favicon.ico" alt="" width="16" class="thumbimg"><?php } ?></td>
 						<td><input type="text" id="PostFAVICON" name="PostFAVICON" value="<?php if ($zbp->Config('tpure')->PostFAVICON) {
         echo $zbp->Config('tpure')->PostFAVICON;
     } else {
         echo $zbp->host . 'zb_users/theme/tpure/style/images/favicon.ico';
     } ?>" class="urltext thumbsrc"></td>
 						<td><input type="button" class="uploadimg" value="上传"></td>
-						<td><input type="text" id="PostFAVICONON" name="PostFAVICONON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostFAVICONON; ?>" /></td>
+						<td><input type="text" id="PostFAVICONON" name="PostFAVICONON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostFAVICONON; ?>"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -159,14 +159,14 @@ if ($act == 'base') {
 						<th width="20%">是否启用默认图</th>
 					</tr>
 					<tr>
-						<td><?php if ($zbp->Config('tpure')->PostTHUMB) { ?><img src="<?php echo $zbp->Config('tpure')->PostTHUMB; ?>" width="120" class="thumbimg" /><?php } else { ?><img src="style/images/thumb.png" width="120" class="thumbimg" /><?php } ?></td>
+						<td><?php if ($zbp->Config('tpure')->PostTHUMB) { ?><img src="<?php echo $zbp->Config('tpure')->PostTHUMB; ?>" alt="" width="120" class="thumbimg"><?php } else { ?><img src="style/images/thumb.png" alt="" width="120" class="thumbimg"><?php } ?></td>
 						<td><input type="text" id="PostTHUMB" name="PostTHUMB" value="<?php if ($zbp->Config('tpure')->PostTHUMB) {
         echo $zbp->Config('tpure')->PostTHUMB;
     } else {
         echo $zbp->host . 'zb_users/theme/tpure/style/images/thumb.png';
     } ?>" class="urltext thumbsrc"></td>
 						<td><input type="button" class="uploadimg" value="上传"></td>
-						<td>无图默认 <input type="text" id="PostTHUMBON" name="PostTHUMBON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostTHUMBON; ?>" /><br>有则展示 <input type="text" id="PostIMGON" name="PostIMGON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostIMGON; ?>" /></td>
+						<td>无图默认 <input type="text" id="PostTHUMBON" name="PostTHUMBON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostTHUMBON; ?>"><br>有则展示 <input type="text" id="PostIMGON" name="PostIMGON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostIMGON; ?>"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -183,10 +183,10 @@ if ($act == 'base') {
 						<th width="20%">操作</th>
 					</tr>
 					<tr>
-						<td><img src="<?php echo $zbp->Config('tpure')->PostBANNER; ?>" width="120" class="thumbimg" /></td>
+						<td><img src="<?php echo $zbp->Config('tpure')->PostBANNER; ?>" alt="" width="120" class="thumbimg"></td>
 						<td><input type="text" id="PostBANNER" name="PostBANNER" value="<?php echo $zbp->Config('tpure')->PostBANNER; ?>" class="urltext thumbsrc"></td>
 						<td><input type="button" class="uploadimg format" value="上传"></td>
-						<td>是否启用：<input type="text" id="PostBANNERON" name="PostBANNERON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBANNERON; ?>" /><br>视差滚动：<input type="text" id="PostBANNERDISPLAYON" name="PostBANNERDISPLAYON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBANNERDISPLAYON; ?>" /></td>
+						<td>是否启用：<input type="text" id="PostBANNERON" name="PostBANNERON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBANNERON; ?>"><br>视差滚动：<input type="text" id="PostBANNERDISPLAYON" name="PostBANNERDISPLAYON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBANNERDISPLAYON; ?>"></td>
 					</tr>
 					<tr>
 						<th colspan="2">Banner文字内容</th>
@@ -195,8 +195,8 @@ if ($act == 'base') {
 					</tr>
 					<tr>
 						<td colspan="2"><input type="text" id="PostBANNERFONT" name="PostBANNERFONT" value="<?php echo $zbp->Config('tpure')->PostBANNERFONT; ?>" class="urltext thumbsrc" style="width:390px;"></td>
-						<td><input type="number" id="PostBANNERPCHEIGHT" name="PostBANNERPCHEIGHT" value="<?php echo $zbp->Config('tpure')->PostBANNERPCHEIGHT; ?>" style="width:80px;" /></td>
-						<td><input type="number" id="PostBANNERMHEIGHT" name="PostBANNERMHEIGHT" value="<?php echo $zbp->Config('tpure')->PostBANNERMHEIGHT; ?>" style="width:80px;" /></td>
+						<td><input type="number" id="PostBANNERPCHEIGHT" name="PostBANNERPCHEIGHT" value="<?php echo $zbp->Config('tpure')->PostBANNERPCHEIGHT; ?>" style="width:80px;"></td>
+						<td><input type="number" id="PostBANNERMHEIGHT" name="PostBANNERMHEIGHT" value="<?php echo $zbp->Config('tpure')->PostBANNERMHEIGHT; ?>" style="width:80px;"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -205,32 +205,32 @@ if ($act == 'base') {
 		<dt>搜索设置</dt>
 		<dd class="half">
 			<label>导航搜索开关</label>
-			<input type="text" id="PostSEARCHON" name="PostSEARCHON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSEARCHON; ?>" />
+			<input type="text" id="PostSEARCHON" name="PostSEARCHON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSEARCHON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示导航搜索；<br>“OFF”为隐藏导航搜索。</span>
 		</dd>
 		<dd class="half">
 			<label for="PostSCHTXT">搜索默认文字</label>
-			<input type="text" id="PostSCHTXT" name="PostSCHTXT" value="<?php echo $zbp->Config('tpure')->PostSCHTXT; ?>" class="settext" />
+			<input type="text" id="PostSCHTXT" name="PostSCHTXT" value="<?php echo $zbp->Config('tpure')->PostSCHTXT; ?>" class="settext">
 			<i class="help"></i><span class="helpcon">导航搜索条中默认显示的文字</span>
 		</dd>
 		<dt>文章页阅读更多设置</dt>
 		<dd data-stretch="viewall">
 			<label>阅读更多开关</label>
-			<input type="text" id="PostVIEWALLON" name="PostVIEWALLON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostVIEWALLON; ?>" />
+			<input type="text" id="PostVIEWALLON" name="PostVIEWALLON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostVIEWALLON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为启用长文章正文自动折叠；<br>“OFF”为加载全部正文。</span>
 		</dd>
 		<div class="viewallinfo"<?php echo $zbp->Config('tpure')->PostVIEWALLON == 1 ? '' : ' style="display:none"'; ?>>
 		<dd class="half">
 			<label for="PostVIEWALLHEIGHT">自动阅读高度</label>
-			<input type="number" id="PostVIEWALLHEIGHT" name="PostVIEWALLHEIGHT" value="<?php echo $zbp->Config('tpure')->PostVIEWALLHEIGHT; ?>" min="1" step="1" class="settext" />
+			<input type="number" id="PostVIEWALLHEIGHT" name="PostVIEWALLHEIGHT" value="<?php echo $zbp->Config('tpure')->PostVIEWALLHEIGHT; ?>" min="1" step="1" class="settext">
 			<i class="help"></i><span class="helpcon">设置页面已读区域高度(单位px)。</span>
 		</dd>
 		<dd class="half">
 			<label>阅读更多样式</label>
 			<div class="layoutset">
-				<input type="radio" id="layoutl" name="PostVIEWALLSTYLE" value="1" <?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '1' ? 'checked="checked"' : ''; ?> class="hideradio" />
+				<input type="radio" id="layoutl" name="PostVIEWALLSTYLE" value="1" <?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '1' ? 'checked="checked"' : ''; ?> class="hideradio">
 				<label for="layoutl"<?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '1' ? ' class="on"' : ''; ?>><img src="style/images/viewallstyle1.png" alt=""></label>
-				<input type="radio" id="layoutr" name="PostVIEWALLSTYLE" value="0" <?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '0' ? 'checked="checked"' : ''; ?> class="hideradio" />
+				<input type="radio" id="layoutr" name="PostVIEWALLSTYLE" value="0" <?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '0' ? 'checked="checked"' : ''; ?> class="hideradio">
 				<label for="layoutr"<?php echo $zbp->Config('tpure')->PostVIEWALLSTYLE == '0' ? ' class="on"' : ''; ?>><img src="style/images/viewallstyle0.png" alt=""></label>
 			</div>
 			<i class="help"></i><span class="helpcon">“ON”为显示未读百分比；<br>“OFF”为显示查看更多按钮样式。</span>
@@ -304,29 +304,29 @@ if ($act == 'base') {
 		<dt>键盘左右键翻页设置</dt>
 		<dd class="half">
 			<label>上下篇翻页</label>
-			<input type="text" id="PostSINGLEKEY" name="PostSINGLEKEY" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSINGLEKEY; ?>" />
+			<input type="text" id="PostSINGLEKEY" name="PostSINGLEKEY" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSINGLEKEY; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为开启文章上一篇与下一篇左右键翻页；<br>“OFF”为关闭文章上一篇与下一篇左右键翻页。</span>
 		</dd>
 		<dd class="half">
 			<label>列表分页条</label>
-			<input type="text" id="PostPAGEKEY" name="PostPAGEKEY" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostPAGEKEY; ?>" />
+			<input type="text" id="PostPAGEKEY" name="PostPAGEKEY" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostPAGEKEY; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为开启列表底部分页条左右键翻页；<br>“OFF”为关闭列表底部分页条左右键翻页。</span>
 		</dd>
 		<dt>相关文章设置</dt>
 		<dd data-stretch="relate" class="half">
 			<label>相关文章开关</label>
-			<input type="text" id="PostRELATEON" name="PostRELATEON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostRELATEON; ?>" />
+			<input type="text" id="PostRELATEON" name="PostRELATEON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostRELATEON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示文章页相关文章；<br>“OFF”为文章页不加载相关文章。</span>
 		</dd>
 		<div class="relateinfo"<?php echo $zbp->Config('tpure')->PostRELATEON == 1 ? '' : ' style="display:none"'; ?>>
 		<dd class="half">
 			<label>仅限本分类</label>
-			<input type="text" id="PostRELATECATE" name="PostRELATECATE" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostRELATECATE; ?>" />
+			<input type="text" id="PostRELATECATE" name="PostRELATECATE" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostRELATECATE; ?>">
 			<i class="help"></i><span class="helpcon">开启状态为仅显示文章页所在分类下的随机文章；<br>关闭状态为显示含有同标签的随机文章(不限分类)。</span>
 		</dd>
 		<dd>
 			<label for="PostRELATENUM">相关文章条数</label>
-			<input type="number" id="PostRELATENUM" name="PostRELATENUM" value="<?php echo $zbp->Config('tpure')->PostRELATENUM; ?>" min="1" step="1" class="settext" />
+			<input type="number" id="PostRELATENUM" name="PostRELATENUM" value="<?php echo $zbp->Config('tpure')->PostRELATENUM; ?>" min="1" step="1" class="settext">
 			<i class="help"></i><span class="helpcon">设置文章页相关文章条数，默认6条。</span>
 		</dd>
 		</div>
@@ -338,73 +338,73 @@ if ($act == 'base') {
         </dd>
         <dd class="PostFILTERCATEGORYID half">
             <label for="PostFILTERCATEGORYID">过滤的分类ID</label>
-            <input type="text" id="PostFILTERCATEGORYID" name="PostFILTERCATEGORY" value="<?php echo $zbp->Config('tpure')->PostFILTERCATEGORY; ?>" placeholder="不过滤请留空" class="settext" />
+            <input type="text" id="PostFILTERCATEGORYID" name="PostFILTERCATEGORY" value="<?php echo $zbp->Config('tpure')->PostFILTERCATEGORY; ?>" placeholder="不过滤请留空" class="settext">
             <i class="help"></i><span class="helpcon">请填写首页需要屏蔽的分类ID；<br>多个分类ID之间用逗号分隔；<br>不限制分类数量及顺序，不过滤请留空。<br><em>分类ID在左侧分类管理中查看。</em></span>
         </dd>
 		<dt>其他设置</dt>
 		<dd>
 			<label for="PostINTRONUM">摘要字数</label>
-			<input type="number" id="PostINTRONUM" name="PostINTRONUM" value="<?php echo $zbp->Config('tpure')->PostINTRONUM; ?>" step="10" class="settext" />
+			<input type="number" id="PostINTRONUM" name="PostINTRONUM" value="<?php echo $zbp->Config('tpure')->PostINTRONUM; ?>" step="10" class="settext">
 			<i class="help"></i><span class="helpcon">列表摘要字数限制，留空则显示系统摘要。</span>
 		</dd>
 		<dd class="half">
 			<label>面包屑导航</label>
-			<input type="text" id="PostSITEMAPON" name="PostSITEMAPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSITEMAPON; ?>" />
+			<input type="text" id="PostSITEMAPON" name="PostSITEMAPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSITEMAPON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示面包屑导航；<br>“OFF”为关闭面包屑导航。</span>
 		</dd>
 		<dd class="half">
 			<label>查看全文按钮</label>
-			<input type="text" id="PostMOREBTNON" name="PostMOREBTNON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostMOREBTNON; ?>" />
+			<input type="text" id="PostMOREBTNON" name="PostMOREBTNON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostMOREBTNON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示列表查看全文按钮；<br>“OFF”为隐藏列表查看全文按钮。</span>
 		</dd>
 		<dd class="half">
 			<label>文章评论开关</label>
-			<input type="text" id="PostARTICLECMTON" name="PostARTICLECMTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostARTICLECMTON; ?>" />
+			<input type="text" id="PostARTICLECMTON" name="PostARTICLECMTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostARTICLECMTON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示文章（article）评论功能；<br>“OFF”为隐藏文章（article）评论功能。</span>
 		</dd>
 		<dd class="half">
 			<label>页面评论开关</label>
-			<input type="text" id="PostPAGECMTON" name="PostPAGECMTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostPAGECMTON; ?>" />
+			<input type="text" id="PostPAGECMTON" name="PostPAGECMTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostPAGECMTON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为显示页面（page）评论功能；<br>“OFF”为隐藏页面（page）评论功能。</span>
 		</dd>
 		<dd class="half">
 			<label>导航悬浮开关</label>
-			<input type="text" id="PostFIXMENUON" name="PostFIXMENUON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostFIXMENUON; ?>" />
+			<input type="text" id="PostFIXMENUON" name="PostFIXMENUON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostFIXMENUON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为开启导航菜单浮动屏幕顶部；<br>“OFF”为导航固定页面顶部。</span>
 		</dd>
 		<dd class="half">
 			<label>链接新窗口</label>
-			<input type="text" id="PostBLANKON" name="PostBLANKON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBLANKON; ?>" />
+			<input type="text" id="PostBLANKON" name="PostBLANKON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBLANKON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为链接最佳SEO状态；<br>“OFF”为全站链接新窗口打开。</span>
 		</dd>
 		<dd class="half">
 			<label>整站变灰</label>
-			<input type="text" id="PostGREYON" name="PostGREYON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostGREYON; ?>" />
+			<input type="text" id="PostGREYON" name="PostGREYON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostGREYON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为开启整站变灰效果；<br>“OFF”为关闭整站变灰效果。</span>
 		</dd>
 		<dd class="half">
 			<label>清理空段落</label>
-			<input type="text" id="PostREMOVEPON" name="PostREMOVEPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostREMOVEPON; ?>" />
+			<input type="text" id="PostREMOVEPON" name="PostREMOVEPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostREMOVEPON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为清理文章页空白段落；<br>“OFF”为显示文章页空白段落。</span>
 		</dd>
 		<dd class="half">
 			<label>友好化时间</label>
-			<input type="text" id="PostTIMEAGOON" name="PostTIMEAGOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostTIMEAGOON; ?>" />
+			<input type="text" id="PostTIMEAGOON" name="PostTIMEAGOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostTIMEAGOON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为友好化时间[格式如：5分钟前]；<br>“OFF”为传统时间[格式如：1970-01-01]；</span>
 		</dd>
 		<dd class="half">
 			<label>返回顶部开关</label>
-			<input type="text" id="PostBACKTOTOPON" name="PostBACKTOTOPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBACKTOTOPON; ?>" />
+			<input type="text" id="PostBACKTOTOPON" name="PostBACKTOTOPON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostBACKTOTOPON; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为启用"返回顶部"功能；<br>“OFF”为取消"返回顶部"功能。</span>
 		</dd>
 		<dd class="half">
             <label>无刷新提交</label>
-            <input type="text" id="PostAJAXPOSTON" name="PostAJAXPOSTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostAJAXPOSTON; ?>" />
+            <input type="text" id="PostAJAXPOSTON" name="PostAJAXPOSTON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostAJAXPOSTON; ?>">
             <i class="help"></i><span class="helpcon">开启状态为主题设置页保存时采用Ajax无刷新提交；<br>关闭状态为常规表单提交方式；<br>初始时未开启也支持无刷新提交。</span>
         </dd>
 		<dd class="half">
 			<label>保存配置信息</label>
-			<input type="text" id="PostSAVECONFIG" name="PostSAVECONFIG" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSAVECONFIG; ?>" />
+			<input type="text" id="PostSAVECONFIG" name="PostSAVECONFIG" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostSAVECONFIG; ?>">
 			<i class="help"></i><span class="helpcon">“ON”为保存配置信息，启用或卸载主题后不清空配置信息；<br>“OFF”为删除配置信息，启用或卸载主题后将清空配置信息。<br>若不再使用本主题，请选择"OFF"提交，则清空配置信息。</span>
 		</dd>
 		<dd class="setok"><input type="submit" value="保存设置" class="setbtn"></dd>
@@ -429,15 +429,15 @@ if ($act == 'seo') {
 	<dt>SEO设置</dt>
 	<dd data-stretch="seo" class="seoon">
 		<label>SEO开关</label>
-		<input type="text" id="SEOON" name="SEOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->SEOON; ?>" />
+		<input type="text" id="SEOON" name="SEOON" class="checkbox" value="<?php echo $zbp->Config('tpure')->SEOON; ?>">
 		<i class="help"></i><span class="helpcon">“ON”为启用首页/分类/标签/文章自定义SEO信息；<br>“OFF”为关闭自定义SEO信息。<br>开启后，编辑文章/分类/标签时可设置自定义SEO信息。</span>
 	</dd>
     <div class="seoinfo"<?php echo $zbp->Config('tpure')->SEOON == 1 ? '' : ' style="display:none"'; ?>>
-        <dd><label for="SEOTITLE">首页标题</label><input type="text" name="SEOTITLE" id="SEOTITLE" class="settext" value="<?php echo $zbp->Config('tpure')->SEOTITLE; ?>" /><i class="help"></i><span class="helpcon">请设置网站首页标题。</span></dd>
-        <dd><label for="SEOKEYWORDS">首页关键词</label><input type="text" name="SEOKEYWORDS" id="SEOKEYWORDS" class="settext" value="<?php echo $zbp->Config('tpure')->SEOKEYWORDS; ?>" /><i class="help"></i><span class="helpcon">请设置网站首页关键词。</span></dd>
+        <dd><label for="SEOTITLE">首页标题</label><input type="text" name="SEOTITLE" id="SEOTITLE" class="settext" value="<?php echo $zbp->Config('tpure')->SEOTITLE; ?>"><i class="help"></i><span class="helpcon">请设置网站首页标题。</span></dd>
+        <dd><label for="SEOKEYWORDS">首页关键词</label><input type="text" name="SEOKEYWORDS" id="SEOKEYWORDS" class="settext" value="<?php echo $zbp->Config('tpure')->SEOKEYWORDS; ?>"><i class="help"></i><span class="helpcon">请设置网站首页关键词。</span></dd>
         <dd><label for="SEODESCRIPTION">首页描述</label><textarea name="SEODESCRIPTION" id="SEODESCRIPTION" cols="30" rows="3" class="setinput"><?php echo $zbp->Config('tpure')->SEODESCRIPTION; ?></textarea><i class="help"></i><span class="helpcon">请设置网站首页描述。</span></dd>
 	</div>
-	<dd class="setok"><input type="submit" value="保存设置" class="setbtn" /></dd>
+	<dd class="setok"><input type="submit" value="保存设置" class="setbtn"></dd>
 </dl>
 </form>
 
@@ -456,33 +456,33 @@ if ($act == 'color') {
         $zbp->BuildTemplate();
         $zbp->ShowHint('good');
     } ?>
-<script type="text/javascript" src="./plugin/jscolor/jscolor.js"></script>
+<script src="./plugin/jscolor/jscolor.js"></script>
 <form name="color" method="post" class="setting">
 	<input type="hidden" name="csrfToken" value="<?php echo $zbp->GetCSRFToken() ?>">
 <dl>
 	<dt>色彩设置</dt>
 	<dd data-stretch="color" class="coloron">
 		<label>自定义配色</label>
-		<input type="text" id="PostCOLORON" name="PostCOLORON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostCOLORON; ?>" />
+		<input type="text" id="PostCOLORON" name="PostCOLORON" class="checkbox" value="<?php echo $zbp->Config('tpure')->PostCOLORON; ?>">
 		<i class="help"></i><span class="helpcon">“ON”为启用自定义配色；<br>“OFF”为使用主题默认颜色。</span>
 	</dd>
 	<div class="colorinfo"<?php echo $zbp->Config('tpure')->PostCOLORON == 1 ? '' : ' style="display:none"'; ?>>
 	<dd class="half">
 		<label for="PostCOLOR">主色调</label>
-		<input type="text" name="PostCOLOR" id="PostCOLOR" class="color settext" value="<?php echo $zbp->Config('tpure')->PostCOLOR; ?>" />
+		<input type="text" name="PostCOLOR" id="PostCOLOR" class="color settext" value="<?php echo $zbp->Config('tpure')->PostCOLOR; ?>">
 		<i class="help"></i><span class="helpcon">请设置网站主色调,默认为 004c98。</span>
 	</dd>
 	<dd class="half">
 		<label for="PostBGCOLOR">页面背景色</label>
-		<input type="text" name="PostBGCOLOR" id="PostBGCOLOR" class="color settext" value="<?php echo $zbp->Config('tpure')->PostBGCOLOR; ?>" />
+		<input type="text" name="PostBGCOLOR" id="PostBGCOLOR" class="color settext" value="<?php echo $zbp->Config('tpure')->PostBGCOLOR; ?>">
 		<i class="help"></i><span class="helpcon">请设置页面body背景色，默认为 ffffff。</span>
 	</dd>
 	<dd>
 		<label for="">侧栏位置</label>
 		<div class="layoutset">
-			<input type="radio" id="layoutl" name="PostSIDELAYOUT" value="l" <?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'l' ? 'checked="checked"' : ''; ?> class="hideradio" />
+			<input type="radio" id="layoutl" name="PostSIDELAYOUT" value="l" <?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'l' ? 'checked="checked"' : ''; ?> class="hideradio">
 			<label for="layoutl"<?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'l' ? ' class="on"' : ''; ?>><img src="style/images/sideleft.png" alt=""></label>
-			<input type="radio" id="layoutr" name="PostSIDELAYOUT" value="r" <?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'r' ? 'checked="checked"' : ''; ?> class="hideradio" />
+			<input type="radio" id="layoutr" name="PostSIDELAYOUT" value="r" <?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'r' ? 'checked="checked"' : ''; ?> class="hideradio">
 			<label for="layoutr"<?php echo $zbp->Config('tpure')->PostSIDELAYOUT == 'r' ? ' class="on"' : ''; ?>><img src="style/images/sideright.png" alt=""></label>
 		</div>
 		<i class="help"></i><span class="helpcon">请设置侧栏位置，默认为侧栏居右。</span>
@@ -495,7 +495,7 @@ if ($act == 'color') {
 		<i class="help"></i><span class="helpcon">自定义CSS，辅助配色。</span>
 	</dd>
 	</div>
-	<dd class="setok"><input type="submit" value="保存设置" class="setbtn" /></dd>
+	<dd class="setok"><input type="submit" value="保存设置" class="setbtn"></dd>
 </dl>
 </form>
 
@@ -507,7 +507,7 @@ if ($act == 'color') {
 	<p>Copyright &copy; 2010-<script>document.write(new Date().getFullYear());</script> <a href="https://www.toyean.com/" target="_blank">拓源网</a> all rights reserved.</p>
 </div>
 
-<script type="text/javascript">ActiveTopMenu("topmenu_tpure");</script>
+<script>ActiveTopMenu("topmenu_tpure");</script>
 <?php
 require $blogpath . 'zb_system/admin/admin_footer.php';
 RunTime();

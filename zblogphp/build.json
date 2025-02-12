@@ -47,6 +47,12 @@
             "name": "1.7.3 Finch",
             "php" : 5.2,
             "channel": "normal,beta,alpha"
+        },
+        {
+            "version": 173400,
+            "name": "1.7.4 Shelter",
+            "php" : 5.2,
+            "channel": "normal,beta,alpha"
         }
     ]
 }

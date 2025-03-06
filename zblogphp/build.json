@@ -49,7 +49,7 @@
             "channel": "normal,beta,alpha"
         },
         {
-            "version": 173410,
+            "version": 173420,
             "name": "1.7.4 Shelter",
             "php" : 5.2,
             "channel": "normal,beta,alpha"

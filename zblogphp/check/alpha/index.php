@@ -1,4 +1,5 @@
 <?php
+header("Cache-Control: no-cache, no-store");
 
 $old = 170000;
 $php = '5.2';

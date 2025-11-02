@@ -1,5 +1,4 @@
 <?php
-header("Cache-Control: no-cache, no-store");
 
 if($_SERVER['QUERY_STRING']=='install'){
 	header("Content-type:text/xml; Charset=utf-8");

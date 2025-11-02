@@ -1,5 +1,4 @@
 <?php
-header("Cache-Control: no-cache, no-store");
 
 if (is_readable('./build.json')) {
     $json = json_decode(file_get_contents('./build.json'));

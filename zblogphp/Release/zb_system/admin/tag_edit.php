@@ -59,22 +59,14 @@ if ($tag->ID == 0) {
     </div>
     <div id="divMain2" class="edit tag_edit">
         <form id="edit" name="edit" method="post" action="#">
-            <input id="edtID" name="ID" type="hidden" value="
-            <?php
-            echo $tag->ID;
-            ?>
-            " />
-            <input id="edtType" name="Type" type="hidden" value="
-            <?php
-            echo $tag->Type;
-            ?>
-            " />
+            <input id="edtID" name="ID" type="hidden" value="<?php echo $tag->ID; ?>" />
+            <input id="edtType" name="Type" type="hidden" value="<?php echo $tag->Type; ?>" />
             <p>
                 <span class="title">
                     <?php echo $lang['msg']['name']; ?>:</span>
                 <span class="star">(*)</span>
                 <br />
-                <input id="edtName" class="edit" size="40" name="Name" maxlength="<?php echo $option['ZC_TAGS_NAME_MAX']; ?>" type="text" value="<?php echo $tag->Name; ?>" /></p>
+                <input id="edtName" class="edit" size="40" name="Name" maxlength="<?php echo $zbp->option['ZC_TAGS_NAME_MAX']; ?>" type="text" value="<?php echo $tag->Name; ?>" /></p>
             <p>
                 <span class="title">
                     <?php echo $lang['msg']['alias']; ?>:</span>

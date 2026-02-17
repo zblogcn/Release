@@ -23,7 +23,7 @@
 <pubdate>2024-07-18</pubdate>
 <modified>2024-10-25</modified>
 <price>0</price>
-<phpver>8.0</phpver>
+<phpver>8.1</phpver>
 <advanced>
   <dependency></dependency>
   <rewritefunctions></rewritefunctions>

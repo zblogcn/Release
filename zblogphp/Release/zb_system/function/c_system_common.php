@@ -840,7 +840,7 @@ function plugin_dir_path($file)
 }
 
 /**
- * 获取目录下文件夹列表(递归).
+ * 获取目录下文件夹列表.
  *
  * @param string $dir 目录
  *
@@ -899,7 +899,7 @@ function GetDirsInDir_Recursive($dir)
 }
 
 /**
- * 获取目录下指定类型文件列表(递归).
+ * 获取目录下指定类型文件列表.
  *
  * @param string $dir  目录
  * @param string $type 文件类型，以｜分隔
@@ -1216,6 +1216,10 @@ function GetVars($name, $type = 'REQUEST', $default = null)
         $type = 'REQUEST';
     }
     $array = &$GLOBALS[strtoupper("_$type")];
+
+    if (!is_array($array)) {
+        return $default;
+    }
 
     if (array_key_exists($name, $array)) {
         return $array[$name];

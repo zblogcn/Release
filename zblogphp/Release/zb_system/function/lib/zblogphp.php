@@ -922,6 +922,9 @@ class ZBlogPHP
         $this->themeapp = new App();
         $this->themeinfo = $this->themeapp->GetInfoArray();
 
+        $this->option = &$GLOBALS['zbp_option'];
+        $this->option = $GLOBALS['option'];
+
         $this->isinitialized = true;
         return true;
     }
@@ -2311,13 +2314,18 @@ class ZBlogPHP
      */
     public function BuildTemplate()
     {
-        $this->BuildTemplate_Once();
+        $this->template->LoadTemplates();
 
-        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_BuildTemplate_End'] as $fpname => &$fpsignal) {
-            $fpname($this->template);
+        foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_BuildTemplate'] as $fpname => &$fpsignal) {
+            $fpname($this->template->templates);
         }
 
-        return true;
+        $s = implode($this->template->templates);
+        $md5 = md5($s);
+        $this->cache->templates_md5_array = serialize(array($this->template->template_dirname => $md5));
+        $this->SaveCache();
+
+        return $this->template->BuildTemplate();
     }
 
     /**
@@ -2333,21 +2341,16 @@ class ZBlogPHP
         $this->template->theme = $theme;
         $this->template->template_dirname = $template_dirname;
         $this->template->SetPath();
-        return $this->BuildTemplate_Once();
-    }
-
-    /**
-     * 模板解析.
-     *
-     * @return bool
-     */
-    private function BuildTemplate_Once()
-    {
         $this->template->LoadTemplates();
 
         foreach ($GLOBALS['hooks']['Filter_Plugin_Zbp_BuildTemplate'] as $fpname => &$fpsignal) {
             $fpname($this->template->templates);
         }
+
+        $s = implode($this->template->templates);
+        $md5 = md5($s);
+        $this->cache->templates_md5_array = serialize(array($this->template->template_dirname => $md5));
+        $this->SaveCache();
 
         return $this->template->BuildTemplate();
     }
@@ -2355,77 +2358,38 @@ class ZBlogPHP
     /**
      * 更新模板缓存.
      *
-     * @param bool $onlycheck  为真的且$forcebuild为假的话，只判断是否需要而不Build，返回false就是需要更新，为true就不需要
-     * @param bool $forcebuild
+     * @param bool $onlycheck 为真时，返回值为false表示需要BuildTemplate
+     * @param bool $forcebuild 强制BuildTemplate
      *
      * @return bool
      */
     public function CheckTemplate($onlycheck = false, $forcebuild = false)
     {
-        $this->template->LoadTemplates();
+        //$forcebuild = true 强制跳过比较
+        if ($forcebuild == true) {
+            $this->BuildTemplate();
+            return true;
+        }
+
         $s = implode($this->template->templates);
         $md5 = md5($s);
-
-        //本函数的返回值很有意思，为false表示需要rebuild 为true表示已重建完成或是不需要rebuild
-        //$zbp->CheckTemplate(true) == false 的意思，就是判断模板需需要重刷新吗？
-
         $array_md5 = @unserialize($this->cache->templates_md5_array);
         if (!is_array($array_md5)) {
             $array_md5 = array();
         }
-
         $new_md5 = GetValueInArray($array_md5, $this->template->template_dirname);
 
-        //如果对比不一样,$onlycheck就有用了
-        if ($md5 != $new_md5) {
-            if ($onlycheck == true && $forcebuild == false) {
-                return false;
-            }
-            $this->BuildTemplate();
-            $array_md5[$this->template->template_dirname] = $md5;
-            $this->cache->templates_md5_array = serialize($array_md5);
-            $this->SaveCache();
-
-            return true;
-        }
-        //如果对比一样的话，$forcebuild就有用了
-        if ($md5 == $new_md5) {
-            if ($onlycheck == true && $forcebuild == false) {
+        if ($onlycheck == true) {
+            return ($md5 == $new_md5);
+        } elseif ($onlycheck == false) {
+            //$onlycheck = false时
+            if ($md5 != $new_md5) {
+                $this->BuildTemplate();
                 return true;
             }
-            if ($forcebuild == true) {
-                $this->BuildTemplate();
-                $array_md5[$this->template->template_dirname] = $md5;
-                $this->cache->templates_md5_array = serialize($array_md5);
-                $this->SaveCache();
-            }
         }
 
         return true;
-
-        /*
-        //如果对比不一样,$onlycheck就有用了
-        if ($md5 != $this->cache->templates_md5) {
-            if ($onlycheck == true && $forcebuild == false) {
-                return false;
-            }
-            $this->BuildTemplate();
-            $this->cache->templates_md5 = $md5;
-            $this->SaveCache();
-
-            return true;
-        }
-        //如果对比一样的话，$forcebuild就有用了
-        if ($md5 == $this->cache->templates_md5) {
-            if ($forcebuild == true) {
-                $this->BuildTemplate();
-                $this->cache->templates_md5 = $md5;
-                $this->SaveCache();
-            }
-        }
-
-        return true;
-        */
     }
 
     /**
@@ -3381,6 +3345,12 @@ class ZBlogPHP
         }
 
         $like = ($this->db->type == 'pgsql') ? 'ILIKE' : 'LIKE';
+        if ($this->db->type == 'pgsql' || $this->db->type == 'mysql') {
+            $name = str_replace('_', '\_', $name);
+        } elseif ($this->db->type == 'sqlite') {
+            $like = 'ESCAPE_LIKE';
+        }
+
         $sql = $this->db->sql->Select($this->table['Member'], '*', array(array($like, 'mem_Name', $name)), array('mem_ID' => 'ASC'), 1, null);
 
         /** @var Member[] $am */
@@ -3415,6 +3385,11 @@ class ZBlogPHP
         }
 
         $like = ($this->db->type == 'pgsql') ? 'ILIKE' : 'LIKE';
+        if ($this->db->type == 'pgsql' || $this->db->type == 'mysql') {
+            $name = str_replace('_', '\_', $name);
+        } elseif ($this->db->type == 'sqlite') {
+            $like = 'ESCAPE_LIKE';
+        }
 
         $sql = $this->db->sql->get()->select($this->table['Member'])->where(
             array(
@@ -3423,7 +3398,7 @@ class ZBlogPHP
                     array('mem_Alias', $name),
                 )
             )
-        )->orderBy(array('mem_ID' => 'asc'))->limit(1)->sql;
+        )->orderBy(array('mem_ID' => 'ASC'))->limit(1)->sql;
 
         /** @var Member[] $am */
         $am = $this->GetListType('Member', $sql);
@@ -3457,12 +3432,17 @@ class ZBlogPHP
         }
 
         $like = ($this->db->type == 'pgsql') ? 'ILIKE' : 'LIKE';
+        if ($this->db->type == 'pgsql' || $this->db->type == 'mysql') {
+            $name = str_replace('_', '\_', $name);
+        } elseif ($this->db->type == 'sqlite') {
+            $like = 'ESCAPE_LIKE';
+        }
 
         $sql = $this->db->sql->get()->select($this->table['Member'])->where(
             array(
                 array('=', 'mem_Alias', $name)
             )
-        )->orderBy(array('mem_ID' => 'asc'))->limit(1)->sql;
+        )->orderBy(array('mem_ID' => 'ASC'))->limit(1)->sql;
 
         /** @var Member[] $am */
         $am = $this->GetListType('Member', $sql);
@@ -4051,7 +4031,7 @@ class ZBlogPHP
                 $content = $this->lang['msg']['operation_failed'];
             }
         }
-        $delay = ($delay * 10000);
+        $delay = ($delay * 1000);
         echo "<script type='text/javascript'>$('.main').prepend('<div class=\"hint\"><p class=\"hint hint_" . $signal . "\" data-delay=\"" . $delay . "\">";
         echo str_replace("'", "\'", $content);
         echo "</p></div>');</script>";
@@ -4080,11 +4060,11 @@ class ZBlogPHP
             $errorText = $this->lang['error'][$errorText];
         }
 
-        if ($file == null or $line == null) {
+        if ($file == null || $line == null) {
             $file = __FILE__;
             $line = __LINE__ - 11;
         }
-        if (is_null($messagefull) or empty($messagefull)) {
+        if (is_null($messagefull) || empty($messagefull)) {
             $messagefull = $errorText . ' (set_exception_handler) ';
         }
         if (!is_array($moreinfo) && !is_null($moreinfo)) {

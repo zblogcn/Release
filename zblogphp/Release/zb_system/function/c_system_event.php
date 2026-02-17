@@ -1514,6 +1514,8 @@ function PostTag()
     if (isset($_POST['Alias'])) {
         $_POST['Alias'] = FormatString($_POST['Alias'], '[noscript]');
     }
+    $_POST['ID'] = trim($_POST['ID']);
+    $_POST['Type'] = trim($_POST['Type']);
 
     $tag = new Tag();
     if (GetVars('ID', 'POST') == 0) {
@@ -2327,6 +2329,7 @@ function SaveSetting()
     $lang = include $zbp->usersdir . 'language/' . $zbp->option['ZC_BLOG_LANGUAGEPACK'] . '.php';
     $zbp->option['ZC_BLOG_LANGUAGE'] = $lang['lang'];
     $zbp->option['ZC_BLOG_PRODUCT'] = 'Z-BlogPHP';
+    $zbp->cache->reload_statistic_time = 0;
     $zbp->SaveOption();
 
     return true;

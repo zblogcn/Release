@@ -3,55 +3,61 @@
         {
             "version": 130707,
             "name": "1.0 Beta",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 151935,
             "name": "1.5 Zero",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 162090,
             "name": "1.6.0 Valyria",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 162210,
             "name": "1.6.8 Valyria",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 172900,
             "name": "1.7.0 Tenet",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 173060,
             "name": "1.7.2 Tenet",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 173200,
             "name": "1.7.3 Beta",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "beta,alpha"
         },
         {
             "version": 173295,
             "name": "1.7.3 Finch",
-            "php" : 5.2,
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         },
         {
             "version": 173430,
             "name": "1.7.4 Shelter",
-            "php" : 5.2,
+            "php": 5.2,
+            "channel": "normal,beta,alpha"
+        },
+        {
+            "version": 173520,
+            "name": "1.7.5 Optimus",
+            "php": 5.2,
             "channel": "normal,beta,alpha"
         }
     ]

@@ -59,6 +59,12 @@
             "name": "1.7.5 Optimus",
             "php": 5.2,
             "channel": "normal,beta,alpha"
+        },
+        {
+            "version": 173555,
+            "name": "1.7.5 Optimus",
+            "php": 5.2,
+            "channel": "normal,beta,alpha"
         }
     ]
 }
